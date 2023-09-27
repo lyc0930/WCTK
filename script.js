@@ -209,60 +209,7 @@ function clickPiece(event)
     }
 }
 
-
-function movePhase(piece)
-{
-    movingPiece = piece;
-    removeHighlight("reachable", clickCell_movePhase);
-    if (movingPiece && movingPiece.movePoints > 0)
-    {
-        const distance = distanceMapOf(movingPiece);
-
-        var reachableCells = []
-        for (const cell of document.getElementsByClassName("cell"))
-        {
-            const row = cell.row;
-            const col = cell.col;
-            if (distance[row][col] > 0 && distance[row][col] <= movingPiece.movePoints && isStayable(cell, movingPiece))
-            {
-                reachableCells.push(cell);
-            }
-        }
-        highlightCells(reachableCells, "reachable", clickCell_movePhase);
-        movingPiece.addEventListener("click", clickPiece_movePhase);
-    }
-    else
-    {
-        console.log("移动阶段结束");
-        movingPiece.removeEventListener("click", clickPiece_movePhase)
-        movingPiece = null;
-    }
-}
-
-function clickPiece_movePhase(event)
-{
-    // End movePhase
-    console.log("移动阶段结束");
-    movingPiece.removeEventListener("click", clickPiece_movePhase);
-    removeHighlight("reachable", clickCell_movePhase);
-    movingPiece = null;
-}
-
-function clickCell_movePhase(event)
-{
-    event.preventDefault();
-    const cell = event.target.closest(".cell");
-
-    if (movingPiece)
-    {
-        if (move(movingPiece, cell, true))
-        {
-            movePhase(movingPiece);
-        }
-    }
-}
-
-function moveSteps(piece, fixed = false)
+function moveSteps(piece, fixed = false, ifConsumeMovePoints = false)
 {
     movingPiece = piece;
     if (fixed)
@@ -273,7 +220,7 @@ function moveSteps(piece, fixed = false)
     {
         removeHighlight("reachable", clickCell_moveSteps);
     }
-    if (movingPiece && movingPiece.moveSteps > 0)
+    if (movingPiece)
     {
         const distance = distanceMapOf(movingPiece);
 
@@ -282,9 +229,16 @@ function moveSteps(piece, fixed = false)
         {
             const row = cell.row;
             const col = cell.col;
-            if (distance[row][col] > 0 && distance[row][col] <= movingPiece.moveSteps && isStayable(cell, movingPiece))
+            if (distance[row][col] > 0 && isStayable(cell, movingPiece))
             {
-                reachableCells.push(cell);
+                if (!ifConsumeMovePoints && distance[row][col] <= movingPiece.moveSteps)
+                {
+                    reachableCells.push(cell);
+                }
+                if (ifConsumeMovePoints && distance[row][col] <= movingPiece.movePoints)
+                {
+                    reachableCells.push(cell);
+                }
             }
         }
         if (fixed)
@@ -296,11 +250,6 @@ function moveSteps(piece, fixed = false)
             highlightCells(reachableCells, "reachable", clickCell_moveSteps);
             movingPiece.addEventListener("click", clickPiece_moveSteps);
         }
-    }
-    else
-    {
-        movingPiece.removeEventListener("click", clickPiece_movePhase)
-        movingPiece = null;
     }
 }
 
@@ -317,10 +266,9 @@ function clickCell_moveSteps(event)
 {
     event.preventDefault();
     const cell = event.target.closest(".cell");
-
     if (movingPiece)
     {
-        if (move(movingPiece, cell, false))
+        if (move(movingPiece, cell, !(movingPiece.moveSteps && movingPiece.moveSteps > 0)))
         {
             moveSteps(movingPiece);
         }
@@ -334,7 +282,7 @@ function clickCell_moveSteps_fixed(event)
 
     if (movingPiece)
     {
-        if (move(movingPiece, cell, false))
+        if (move(movingPiece, cell, !(movingPiece.moveSteps && movingPiece.moveSteps > 0)))
         {
             moveSteps(movingPiece, true);
         }
@@ -493,9 +441,8 @@ function move(piece, cell, ifConsumeMovePoints = false)
     const col = cell.col;
     const distance = distanceMapOf(piece);
 
-    if (piece && cell.classList.contains("reachable", clickCell_movePhase) && (distance[row][col] > 0) && isStayable(cell, piece))
+    if (piece && cell.classList.contains("reachable") && (distance[row][col] > 0) && isStayable(cell, piece))
     {
-
         var steps = distance[row][col];
 
         if (ifConsumeMovePoints)
@@ -540,12 +487,11 @@ function move(piece, cell, ifConsumeMovePoints = false)
                 }
             }
         }
-        moveLink.pop() // 移除起点
+        // moveLink.pop() // 移除起点
         var moveLog = `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1})`;
-        for (var i = 0; i < moveLink.length; i++)
+        for (var i = moveLink.length - 2; i >= 0; i--)
         {
-            const currentCell = moveLink.pop();
-            // TODO: Fix bug
+            const currentCell = moveLink[i];
             step(piece, currentCell);
             moveLog += ` -> (${currentCell.row + 1}, ${currentCell.col + 1})`;
         }
@@ -1198,13 +1144,14 @@ function initializeGame()
     activeCheckbox.addEventListener("change", function (event)
     {
         selectedPiece.active = activeCheckbox.checked;
+        const avatar = selectedPiece.querySelector(".avatar");
         if (activeCheckbox.checked)
         {
-            selectedPiece.src = "./assets/Avatar/active/" + heroes[selectedPiece.name][0] + ".png";
+            avatar.src = "./assets/Avatar/active/" + heroes[selectedPiece.name][0] + ".png";
         }
         else
         {
-            selectedPiece.src = "./assets/Avatar/inactive/" + heroes[selectedPiece.name][0] + ".png";
+            avatar.src = "./assets/Avatar/inactive/" + heroes[selectedPiece.name][0] + ".png";
             console.log(`${selectedPiece.name}回合结束`);
         }
     }
@@ -1232,7 +1179,7 @@ function initializeGame()
             selectedPiece.movePoints = selectedPiece.hp;
 
             // 移动阶段
-            movePhase(selectedPiece);
+            moveSteps(selectedPiece, fixed = false, ifConsumeMovePoints = true);
         }
     });
     var buttonXunShan = document.getElementById("XunShan");
