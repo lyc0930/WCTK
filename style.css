@@ -1,0 +1,316 @@
+#chessboard {
+    width: 91vmin;
+    height: 91vmin;
+    border: 1vmin outset gray;
+    position: absolute;
+    /* margin: auto;*/
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    /* top: 0;
+    bottom: 0; */
+    box-sizing: content-box;
+    display: flex;
+    flex-wrap: wrap;
+    background-image: url('./assets/Map/野战.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: local;
+}
+
+@media screen and (orientation:landscape) {
+.graveyard {
+    width: 13vmin;
+    height: 39vmin;
+    position: absolute;
+    box-sizing: content-box;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#redgraveyard {
+    top: calc(53vmin + 8px);
+    left: calc(50vw - 59.5vmin);
+}
+#bluegraveyard {
+    top: calc(1vmin + 8px);
+    right: calc(50vw - 59.5vmin);
+}
+}
+
+@media screen and (orientation:portrait) {
+.graveyard {
+    width: 39vmin;
+    height: 13vmin;
+    position: absolute;
+    box-sizing: content-box;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#redgraveyard {
+    top: calc(93vmin + 8px);
+    left: calc(50vw - 45.5vmin);
+}
+
+#bluegraveyard {
+    top: calc(93vmin + 8px);
+    right: calc(50vw - 45.5vmin);
+}
+}
+
+.grave {
+    width: 13vmin;
+    height: 13vmin;
+    /* border: .1vmin solid gray; */
+    border: 0;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.cell {
+    width: 13vmin;
+    height: 13vmin;
+    border: .1vmin solid gray;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* .plain {
+            background-color: rgb(255, 255, 255);
+        } */
+
+.ridge {
+    border: .3vmin outset gray;
+}
+
+.piece {
+    border-radius: 50%;
+    position: absolute;
+    cursor: grab;
+    border-style: outset;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.piece:only-of-type {
+    width: 10vmin;
+    height: 10vmin;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-width: .8vmin;
+}
+
+.piece:nth-of-type(2):nth-last-of-type(1) {
+    width: 7.5vmin;
+    height: 7.5vmin;
+    top: 0%;
+    left: 0%;
+    border-width: .60vmin;
+}
+
+.piece:nth-of-type(1):nth-last-of-type(2) {
+    width: 5.6vmin;
+    height: 5.6vmin;
+    bottom: 0%;
+    right: 0%;
+    border-width: .448vmin;
+}
+
+.piece:nth-of-type(n+3):nth-last-of-type(1) {
+    width: 66%;
+    height: 66%;
+    top: 0%;
+    left: 0%;
+    border-width: 5.28%;
+}
+
+.piece:nth-of-type(n+2):nth-last-of-type(2) {
+    width: 30%;
+    height: 30%;
+    bottom: 0%;
+    right: 0%;
+    border-width: 2.40%;
+}
+
+.piece:nth-of-type(n+1):nth-last-of-type(3) {
+    width: 30%;
+    height: 30%;
+    bottom: 33.333%;
+    right: 0%;
+    border-width: 2.40%;
+}
+
+.piece:nth-of-type(n):nth-last-of-type(4) {
+    width: 30%;
+    height: 30%;
+    top: 0%;
+    right: 0%;
+    border-width: 2.40%;
+}
+
+.piece:nth-of-type(n-1):nth-last-of-type(5) {
+    width: 30%;
+    height: 30%;
+    bottom: 0%;
+    right: 33.333%;
+    border-width: 2.40%;
+}
+
+.piece:nth-of-type(n-2):nth-last-of-type(6) {
+    width: 30%;
+    height: 30%;
+    bottom: 0%;
+    left: 0%;
+    border-width: 2.40%;
+}
+
+.red-piece {
+    border-color: rgba(255, 0, 0, 0.4);
+}
+
+.red-piece:hover {
+    border-color: rgba(255, 0, 0, 1);
+}
+
+.blue-piece {
+    border-color: rgba(0, 0, 255, 0.4);
+}
+
+.blue-piece:hover {
+    border-color: rgba(0, 0, 255, 1);
+}
+
+.reachable {
+    background-color: rgba(255, 255, 0, 0.2);
+}
+
+.reachable:hover {
+    background-color: rgba(255, 255, 0, 0.4);
+}
+
+.landable {
+    background-color: rgba(0, 255, 0, 0.1);
+}
+
+.landable:hover {
+    background-color: rgba(0, 255, 0, 0.2);
+}
+
+.targetable {
+    background-color: rgba(0, 0, 255, 0.15);
+}
+
+.targetable:hover {
+    background-color: rgba(0, 0, 255, 0.3);
+}
+
+.attackable {
+    background-color: rgba(255, 36, 0, 0.1);
+}
+
+.attackable:hover {
+    background-color: rgba(255, 36, 0, 0.2);
+}
+
+.flag {
+    position: absolute;
+    cursor: pointer;
+    z-index: 99;
+    border: none;
+}
+
+.piece>.flag {
+    width: 65%;
+    height: 65%;
+    left: -15%;
+    top: -8%;
+    opacity: 0.75;
+}
+
+.cell>.flag:first-of-type:last-of-type {
+    width: 70%;
+    height: 70%;
+    left: 15%;
+    top: 15%;
+    opacity: 1;
+}
+
+.cell>.flag:nth-of-type(1):nth-last-of-type(2) {
+    width: 60%;
+    height: 60%;
+    left: -5%;
+    top: 35%;
+    opacity: 1;
+}
+
+.cell>.flag:nth-of-type(2):nth-last-of-type(1) {
+    width: 60%;
+    height: 60%;
+    left: 45%;
+    top: 5%;
+    opacity: 1;
+}
+
+.menu {
+    width: 200px;
+    border: 2px solid gray;
+    /* display: none; */
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 8px 8px 8px 8px;
+    border-radius: 8px;
+    position: absolute;
+    z-index: 101;
+    /* vertical-align: auto; */
+    /* flex-wrap: wrap; */
+}
+
+.menu > div {
+    margin-top: 4px;
+    font-size: large;
+}
+
+.heroSelect {
+    width: 65%;
+    font-size: large;
+}
+
+.heroSelect option {
+    font-size: large;
+}
+
+.checkbox {
+    transform: scale(1.3);
+}
+
+.numberButton {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    /* margin: 0 0 0 0; */
+    padding: 0 0 0 0;
+    transform: translate(0, -16%);
+    text-align: center;
+    align-content: center;
+    /* font-size: larger; */
+    background-color: white;
+    border: 1px outset gray;
+}
+
+
+.functionButton {
+    width: 48%;
+    border-radius: 8px;
+    padding: 4px 4px 4px 4px;
+    font-size: large;
+    text-align: center;
+    align-content: center;
+    background-color: white;
+    border: 1px outset gray;
+}

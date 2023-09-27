@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>三国杀战棋</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div id="menu" class="menu">
+        <div>
+        <label>武将：</label>
+        <select id="heroSelect" class="heroSelect">
+        </select>
+        </div>
+        <div>
+            <label>活跃：</label>
+            <input type="checkbox" class="checkbox" id="activeCheckbox">
+            <label>主帅：</label>
+            <input type="checkbox" class="checkbox" id="carrierCheckbox">
+        </div>
+        <div>
+            <label>体力值：</label>
+            <button class="numberButton" id="HPMinus">-</button>
+            <label type="number" class="number" id="HP">4</label>
+            <label>/</label>
+            <label type="number" class="number" id="maxHP">4</label>
+            <button class="numberButton" id="HPPlus">+</button>
+        </div>
+        <div>
+            <label>攻击范围：</label>
+            <button class="numberButton" id="rangeMinus">-</button>
+            <label type="number" class="number" id="range">1</label>
+            <button class="numberButton" id="rangePlus">+</button>
+        </div>
+        <div>
+            <button class="functionButton" id="movePhase">移动阶段</button>
+            <button class="functionButton" id="XunShan"> 迅【闪】</button>
+            <button class="functionButton" id="AnDuChenCang">暗度陈仓</button>
+            <button class="functionButton" id="BingGuiShenSu">兵贵神速</button>
+            <button class="functionButton" id="QiMenDunJia">奇门遁甲</button>
+            <button class="functionButton" id="YouDiShenRu">诱敌深入</button>
+        </div>
+    </div>
+    <div id="chessboard">
+    </div>
+    <div id="redgraveyard" class="graveyard Red">
+    </div>
+    <div id="bluegraveyard" class="graveyard Blue">
+    </div>
+    <script src="./script.js"></script>
+
+</body>
+
+</html>
