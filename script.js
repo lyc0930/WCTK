@@ -105,6 +105,8 @@ const labelMaxHP = document.getElementById("maxHP");
 const labelRange = document.getElementById("range");
 
 
+var draggingPiece = null; // 正在拖动的棋子
+
 var jumpingPiece = null; // 正在转移的棋子
 
 var movingPiece = null; // 正在移动的棋子
@@ -116,57 +118,60 @@ var currentPlayer = null; // 当前回合玩家
 // 棋子拖动事件
 function dragStart(event)
 {
-    jumpingPiece = event.target.closest(".piece");
+    draggingPiece = event.target.closest(".piece");
+    // jumpingPiece = event.target.closest(".piece");
 
-    var landableCells = [];
-    for (const cell of document.getElementsByClassName("cell"))
-    {
-        if (isStayable(cell, this))
-        {
-            landableCells.push(cell);
-        }
-    }
-    highlightCells(landableCells, "landable");
+    // var landableCells = [];
+    // for (const cell of document.getElementsByClassName("cell"))
+    // {
+    //     if (isStayable(cell, this))
+    //     {
+    //         landableCells.push(cell);
+    //     }
+    // }
+    // highlightCells(landableCells, "landable");
 }
 
 function dragEnd()
 {
-    jumpingPiece = null;
-    removeHighlight("landable");
+    draggingPiece = null;
+    // removeHighlight("landable");
 }
 
 function dropPiece(event)
 {
     event.preventDefault();
     const cell = event.target.closest(".cell");
-    jump(jumpingPiece, cell);
+    // jump(jumpingPiece, cell);
+    goto(draggingPiece, cell);
 }
 
 function dropPiece_onPiece(event)
 {
     event.preventDefault();
     const cell = event.target.closest(".cell");
-    jump(jumpingPiece, cell);
+    // jump(jumpingPiece, cell);
+    goto(draggingPiece, cell);
 }
 
 function dropPiece_grave(event)
 {
     event.preventDefault();
     const grave = event.target.closest(".grave");
-    console.log(`${jumpingPiece.name}死亡`);
-    if (jumpingPiece === redCarrier)
+    console.log(`${draggingPiece.name}死亡`);
+    if (draggingPiece === redCarrier)
     {
-        jumpingPiece.parentElement.appendChild(redFlag);
-        console.log(`${jumpingPiece.name}掉落帅旗`);
+        draggingPiece.parentElement.appendChild(redFlag);
+        console.log(`${draggingPiece.name}掉落帅旗`);
         redCarrier = null;
     }
-    else if (jumpingPiece === blueCarrier)
+    else if (draggingPiece === blueCarrier)
     {
-        jumpingPiece.parentElement.appendChild(blueFlag);
-        console.log(`${jumpingPiece.name}掉落帅旗`);
+        draggingPiece.parentElement.appendChild(blueFlag);
+        console.log(`${draggingPiece.name}掉落帅旗`);
         blueCarrier = null;
     }
-    grave.appendChild(jumpingPiece);
+    grave.appendChild(draggingPiece);
 }
 
 
@@ -533,6 +538,43 @@ function jump(piece, cell)
     const row = cell.row;
     const col = cell.col;
     if (piece && cell.classList.contains("landable") && isStayable(cell, piece))
+    {
+        if (piece.parentElement.classList.contains("grave"))
+        {
+            console.log(`${piece.name}登场于(${row + 1}, ${col + 1})`);
+        }
+        else
+        {
+            console.log(piece.name, `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) |> (${row + 1}, ${col + 1})`);
+        }
+
+        if (redFlag.parentElement === cell && redCarrier === null && piece.classList.contains("red-piece"))
+        {
+            redCarrier = piece;
+            redCarrier.appendChild(redFlag);
+            piece.carrier = true;
+            console.log(`${piece.name}成为主帅`);
+        }
+        if (blueFlag.parentElement === cell && blueCarrier === null && piece.classList.contains("blue-piece"))
+        {
+            blueCarrier = piece;
+            blueCarrier.appendChild(blueFlag);
+            piece.carrier = true;
+            console.log(`${piece.name}成为主帅`);
+        }
+        cell.appendChild(piece);
+
+        return true;
+    }
+    return false;
+}
+
+// 朴素拖动
+function goto(piece, cell)
+{
+    const row = cell.row;
+    const col = cell.col;
+    if (piece)
     {
         if (piece.parentElement.classList.contains("grave"))
         {
