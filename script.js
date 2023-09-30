@@ -10,77 +10,77 @@ const terrain = [
 ];
 
 const heroes = {
-    // pinyin, MaxHP, HP, attackRange
-    "曹操": ["caocao", 4, 4, 1],
-    "司马懿": ["simayi", 3, 3, 1],
-    "夏侯惇": ["xiahoudun", 4, 4, 1],
-    "张辽": ["zhangliao", 4, 4, 1],
-    "许褚": ["xuchu", 4, 4, 1],
-    "郭嘉": ["guojia", 3, 3, 1],
-    "甄姬": ["zhenji", 3, 3, 1],
-    "曹纯": ["caochun", 4, 4, 1],
-    "典韦": ["dianwei", 4, 4, 1],
-    "刘备": ["liubei", 4, 4, 1],
-    "关羽": ["guanyu", 4, 4, 1],
-    "张飞": ["zhangfei", 4, 4, 1],
-    "诸葛亮": ["zhugeliang", 3, 3, 1],
-    "赵云": ["zhaoyun", 4, 4, 1],
-    "马超": ["machao", 4, 4, 1],
-    "黄月英": ["huangyueying", 3, 3, 1],
-    "黄忠": ["huangzhong", 4, 4, 1],
-    "孙乾": ["sunqian", 3, 3, 1],
-    "孙权": ["sunquan", 4, 4, 1],
-    "甘宁": ["ganning", 4, 4, 1],
-    "吕蒙": ["lvmeng", 4, 4, 1],
-    "黄盖": ["huanggai", 4, 4, 1],
-    "周瑜": ["zhouyu", 3, 3, 1],
-    "大乔": ["daqiao", 3, 3, 1],
-    "陆逊": ["luxun", 3, 3, 1],
-    "孙尚香": ["sunshangxiang", 3, 3, 1],
-    "祖茂": ["zumao", 4, 4, 1],
-    "华佗": ["huatuo", 3, 3, 1],
-    "吕布": ["lvbu", 4, 4, 1],
-    "貂蝉": ["diaochan", 3, 3, 1],
-    "董卓": ["dongzhuo", 4, 4, 1],
-    "张绣": ["zhangxiu", 4, 4, 1],
-    "刘表": ["liubiao", 4, 4, 1],
-    "曹仁": ["caoren", 4, 4, 1],
-    "魏延": ["weiyan", 4, 4, 1],
-    "祝融": ["zhurong", 4, 4, 1],
-    "孙坚": ["sunjian", 4, 4, 1],
-    "鲁肃": ["lusu", 3, 3, 1],
-    "张角": ["zhangjiao", 3, 3, 1],
-    "陈宫": ["chengong", 3, 3, 1],
-    "邓艾": ["dengai", 4, 4, 1],
-    "荀彧": ["xunyu", 3, 3, 1],
-    "孟获": ["menghuo", 4, 4, 1],
-    "法正": ["fazheng", 3, 3, 1],
-    "孙策": ["sunce", 4, 4, 1],
-    "贾诩": ["jiaxu", 3, 3, 1],
-    "庞德": ["pangde", 4, 4, 1],
-    "高顺": ["gaoshun", 4, 4, 1],
-    "华雄": ["huaxiong", 4, 4, 1],
-    "夏侯渊": ["xiahouyuan", 4, 4, 1],
-    "姜维": ["jiangwei", 4, 4, 1],
-    "小乔": ["xiaoqiao", 3, 3, 1],
-    "乐进&李典": ["yuejin&lidian", 4, 4, 1],
-    "关兴&张苞": ["guanxing&zhangbao", 4, 4, 1],
-    "张昭&张纮": ["zhangzhao&zhanghong", 4, 4, 1],
-    "颜良&文丑": ["yanliang&wenchou", 4, 4, 1],
-    "程普": ["chengpu", 4, 4, 1],
-    "张郃": ["zhanghe", 4, 4, 1],
-    "徐晃": ["xuhuang", 4, 4, 1],
-    "于禁": ["yujin", 4, 4, 1],
-    "庞统": ["pangtong", 3, 3, 1],
-    "太史慈": ["taishici", 4, 4, 1],
-    "周泰": ["zhoutai", 4, 4, 1],
-    "韩当": ["handang", 4, 4, 1],
-    "程昱": ["chengyu", 3, 3, 1],
-    "袁绍": ["yuanshao", 4, 4, 1],
-    "刘协": ["liuxie", 3, 3, 1],
-    "卑弥呼": ["beimihu", 3, 3, 1],
-    "王异": ["wangyi", 3, 3, 1],
-    "左慈": ["zuoci", 3, 3, 1],
+    // pinyin, MaxHP, HP
+    "曹操": ["caocao", 4, 4],
+    "司马懿": ["simayi", 3, 3],
+    "夏侯惇": ["xiahoudun", 4, 4],
+    "张辽": ["zhangliao", 4, 4],
+    "许褚": ["xuchu", 4, 4],
+    "郭嘉": ["guojia", 3, 3],
+    "甄姬": ["zhenji", 3, 3],
+    "曹纯": ["caochun", 4, 4],
+    "典韦": ["dianwei", 4, 4],
+    "刘备": ["liubei", 4, 4],
+    "关羽": ["guanyu", 4, 4],
+    "张飞": ["zhangfei", 4, 4],
+    "诸葛亮": ["zhugeliang", 3, 3],
+    "赵云": ["zhaoyun", 4, 4],
+    "马超": ["machao", 4, 4],
+    "黄月英": ["huangyueying", 3, 3],
+    "黄忠": ["huangzhong", 4, 4],
+    "孙乾": ["sunqian", 3, 3],
+    "孙权": ["sunquan", 4, 4],
+    "甘宁": ["ganning", 4, 4],
+    "吕蒙": ["lvmeng", 4, 4],
+    "黄盖": ["huanggai", 4, 4],
+    "周瑜": ["zhouyu", 3, 3],
+    "大乔": ["daqiao", 3, 3],
+    "陆逊": ["luxun", 3, 3],
+    "孙尚香": ["sunshangxiang", 3, 3],
+    "祖茂": ["zumao", 4, 4],
+    "华佗": ["huatuo", 3, 3],
+    "吕布": ["lvbu", 4, 4],
+    "貂蝉": ["diaochan", 3, 3],
+    "董卓": ["dongzhuo", 4, 4],
+    "张绣": ["zhangxiu", 4, 4],
+    "刘表": ["liubiao", 4, 4],
+    "曹仁": ["caoren", 4, 4],
+    "魏延": ["weiyan", 4, 4],
+    "祝融": ["zhurong", 4, 4],
+    "孙坚": ["sunjian", 4, 4],
+    "鲁肃": ["lusu", 3, 3],
+    "张角": ["zhangjiao", 3, 3],
+    "陈宫": ["chengong", 3, 3],
+    "邓艾": ["dengai", 4, 4],
+    "荀彧": ["xunyu", 3, 3],
+    "孟获": ["menghuo", 4, 4],
+    "法正": ["fazheng", 3, 3],
+    "孙策": ["sunce", 4, 4],
+    "贾诩": ["jiaxu", 3, 3],
+    "庞德": ["pangde", 4, 4],
+    "高顺": ["gaoshun", 4, 4],
+    "华雄": ["huaxiong", 4, 4],
+    "夏侯渊": ["xiahouyuan", 4, 4],
+    "姜维": ["jiangwei", 4, 4],
+    "小乔": ["xiaoqiao", 3, 3],
+    "乐进&李典": ["yuejin&lidian", 4, 4],
+    "关兴&张苞": ["guanxing&zhangbao", 4, 4],
+    "张昭&张纮": ["zhangzhao&zhanghong", 4, 4],
+    "颜良&文丑": ["yanliang&wenchou", 4, 4],
+    "程普": ["chengpu", 4, 4],
+    "张郃": ["zhanghe", 4, 4],
+    "徐晃": ["xuhuang", 4, 4],
+    "于禁": ["yujin", 4, 4],
+    "庞统": ["pangtong", 3, 3],
+    "太史慈": ["taishici", 4, 4],
+    "周泰": ["zhoutai", 4, 4],
+    "韩当": ["handang", 4, 4],
+    "程昱": ["chengyu", 3, 3],
+    "袁绍": ["yuanshao", 4, 4],
+    "刘协": ["liuxie", 3, 3],
+    "卑弥呼": ["beimihu", 3, 3],
+    "王异": ["wangyi", 3, 3],
+    "左慈": ["zuoci", 3, 3],
 }
 
 const weapons = {
@@ -145,6 +145,128 @@ var movingPiece = null; // 正在移动的棋子
 var selectedPiece = null; // 选中的棋子
 
 var currentPlayer = null; // 当前回合玩家
+
+class StateHistory
+{
+    constructor()
+    {
+        this.history = []; // 用于保存状态历史记录的数组
+        this.currentIndex = -1; // 当前状态的索引
+    }
+
+    // 更新状态
+    updateHistory(newState)
+    {
+        // 截断历史记录，删除当前状态之后的记录
+        this.history = this.history.slice(0, this.currentIndex + 1);
+        // 添加新状态到历史记录
+        this.history.push(newState);
+        this.currentIndex++;
+    }
+
+    // 撤销操作
+    undo()
+    {
+        if (this.currentIndex > 0)
+        {
+            this.currentIndex--;
+            return this.history[this.currentIndex];
+        }
+        return null; // 没有可以撤销的状态
+    }
+
+    // 重做操作
+    redo()
+    {
+        if (this.currentIndex < this.history.length - 1)
+        {
+            this.currentIndex++;
+            return this.history[this.currentIndex];
+        }
+        return null; // 没有可以重做的状态
+    }
+
+    // 获取当前状态
+    getCurrentState()
+    {
+        return this.history[this.currentIndex];
+    }
+}
+
+const stateHistory = new StateHistory();
+
+function saveState()
+{
+    const state = {
+        players: [],
+    };
+    if (redCarrier)
+    {
+        state.redCarrier = redCarrier;
+    }
+    else
+    {
+        red_flag = document.querySelector("img[title='红方帅旗']");
+        state.redFlagPosition = [red_flag.parentElement.row, red_flag.parentElement.col];
+    }
+    if (blueCarrier)
+    {
+        state.blueCarrier = blueCarrier;
+    }
+    else
+    {
+        blue_flag = document.querySelector("img[title='蓝方帅旗']");
+        state.blueFlagPosition = [blue_flag.parentElement.row, blue_flag.parentElement.col];
+    }
+
+    for (const piece of Pieces)
+    {
+        state.players.push({
+            piece: piece,
+            HP: piece.hp,
+            position: [piece.parentElement.row, piece.parentElement.col],
+            weapons: piece.weapons,
+            armors: piece.armors,
+            horses: piece.horses,
+            carrier: piece.carrier,
+        });
+    }
+    stateHistory.updateHistory(state);
+}
+
+function recoverStatefrom(state)
+{
+    for (const player of state.players)
+    {
+        player.piece.hp = player.hp;
+        player.piece.weapons = player.weapons;
+        player.piece.armors = player.armors;
+        player.piece.horses = player.horses;
+        player.piece.carrier = player.carrier;
+        const cell = document.getElementsByClassName("cell")[player.position[0] * 7 + player.position[1]];
+        cell.appendChild(player.piece);
+    }
+
+    if (state.redCarrier)
+    {
+        redCarrier = state.redCarrier;
+    }
+    else
+    {
+        const cell = document.getElementsByClassName("cell")[state.redFlagPosition[0] * 7 + state.redFlagPosition[1]];
+        cell.appendChild(redFlag);
+    }
+    if (state.blueCarrier)
+    {
+        blueCarrier = state.blueCarrier;
+    }
+    else
+    {
+        const cell = document.getElementByClassName("cell")[state.blueFlagPosition[0] * 7 + state.blueFlagPosition[1]];
+        cell.appendChild(blueFlag);
+    }
+}
+
 
 // 棋子拖动事件
 function dragStart(event)
@@ -533,6 +655,9 @@ function piecePositionChange(piece, cell)
         oldRadio.checked = false;
         console.log(`${piece.name}成为主帅`);
     }
+
+    // 保存状态
+    saveState();
 }
 
 // 转移
@@ -850,7 +975,7 @@ function onMouseEnterPiece(event)
     {
         const row = cell.row;
         const col = cell.col;
-        const attackRange = this.range;
+        const attackRange = weapons[this.weapons[0]];
         if (Math.abs(row - hoverRow) + Math.abs(col - hoverCol) <= attackRange)
         {
             attackableCells.push(cell);
@@ -927,7 +1052,9 @@ function createPiece(color, name, index)
     piece.name = name;
     piece.maxhp = heroes[name][1];
     piece.hp = heroes[name][2];
-    piece.range = heroes[name][3];
+    piece.weapons = [""];
+    piece.armors = [""];
+    piece.horses = [""];
     piece.carrier = false;
     piece.acted = false;
 
@@ -1250,6 +1377,7 @@ function initializeGame()
         {
             const index = event.target.id.slice(-1);
             const piece = Pieces[index - 1];
+            piece.weapons[0] = weaponSelect.value;
             piece.range = weapons[weaponSelect.value];
         });
 
@@ -1264,7 +1392,9 @@ function initializeGame()
         }
         armorSelect.addEventListener("change", function (event)
         {
-
+            const index = event.target.id.slice(-1);
+            const piece = Pieces[index - 1];
+            piece.armors[0] = armorSelect.value;
         });
 
         const horseSelect = document.getElementById("horseSelect" + i);
@@ -1278,7 +1408,9 @@ function initializeGame()
         }
         horseSelect.addEventListener("change", function (event)
         {
-
+            const index = event.target.id.slice(-1);
+            const piece = Pieces[index - 1];
+            piece.horses[0] = horseSelect.value;
         });
     }
 
@@ -1329,7 +1461,51 @@ function initializeGame()
     // {
     //     YouDiShenRu(selectedPiece);
     // });
+
+    // 撤销重做
+    document.addEventListener("wheel", function (event)
+    {
+        event.preventDefault();
+        if (event.deltaY < 0)
+        {
+            const previousState = stateHistory.undo();
+            if (previousState)
+            {
+                recoverStatefrom(previousState);
+            }
+        } else if (event.deltaY > 0)
+        {
+            const nextState = stateHistory.redo();
+            if (nextState)
+            {
+                recoverStatefrom(nextState);
+            }
+        }
+    }, { passive: false });
+
+    document.addEventListener("keydown", function (event)
+    {
+        if (event.key == 'ArrowUp')
+        {
+            event.preventDefault();
+            const previousState = stateHistory.undo();
+            if (previousState)
+            {
+                recoverStatefrom(previousState);
+            }
+        }
+        else if (event.key == 'ArrowDown')
+        {
+            event.preventDefault();
+            const nextState = stateHistory.redo();
+            if (nextState)
+            {
+                recoverStatefrom(nextState);
+            }
+        }
+    });
 }
 
 // 启动游戏
 initializeGame();
+saveState();
