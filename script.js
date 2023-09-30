@@ -185,27 +185,6 @@ function dropPiece_onPiece(event)
     leap(draggingPiece, cell);
 }
 
-function dropPiece_grave(event)
-{
-    event.preventDefault();
-    const grave = event.target.closest(".grave");
-    console.log(`${draggingPiece.name}死亡`);
-    if (draggingPiece === redCarrier)
-    {
-        draggingPiece.parentElement.appendChild(redFlag);
-        console.log(`${draggingPiece.name}掉落帅旗`);
-        redCarrier = null;
-    }
-    else if (draggingPiece === blueCarrier)
-    {
-        draggingPiece.parentElement.appendChild(blueFlag);
-        console.log(`${draggingPiece.name}掉落帅旗`);
-        blueCarrier = null;
-    }
-    grave.appendChild(draggingPiece);
-}
-
-
 
 // 棋子点击事件
 function clickPiece(event)
@@ -1042,6 +1021,80 @@ function initializeGame()
 
     createChessboard();
 
+    // 为body增加dragover事件监听以便全局拖动
+    document.body.addEventListener("dragover", function (event)
+    {
+        event.preventDefault();
+    });
+
+    document.body.addEventListener("drop", function (event)
+    {
+        const chessboardRect = document.getElementById("chessboard").getBoundingClientRect();
+
+        if (event.clientX < chessboardRect.left || event.clientX > chessboardRect.right || event.clientY < chessboardRect.top || event.clientY > chessboardRect.bottom)
+        {
+            event.preventDefault();
+            var grave = null;
+            let min_d_sqr = 100000000;
+            if (draggingPiece.classList.contains("red-piece"))
+            {
+
+                for (const red_grave of document.getElementsByClassName("grave Red"))
+                {
+                    // 如果red_grave没有child
+                    if (red_grave.children.length === 0)
+                    {
+                        const { left, top, width, height } = red_grave.getBoundingClientRect()
+                        const centerX = left + width / 2
+                        const centerY = top + height / 2
+                        const d_sqr = Math.pow(event.clientX - centerX, 2) + Math.pow(event.clientY - centerY, 2)
+                        if (d_sqr < min_d_sqr)
+                        {
+                            min_d_sqr = d_sqr;
+                            grave = red_grave;
+                        }
+                    }
+                }
+            }
+            else if (draggingPiece.classList.contains("blue-piece"))
+            {
+                for (const blue_grave of document.getElementsByClassName("grave Blue"))
+                {
+                    if (blue_grave.children.length === 0)
+                    {
+                        const { left, top, width, height } = blue_grave.getBoundingClientRect()
+                        const centerX = left + width / 2
+                        const centerY = top + height / 2
+                        const d_sqr = Math.pow(event.clientX - centerX, 2) + Math.pow(event.clientY - centerY, 2)
+                        if (d_sqr < min_d_sqr)
+                        {
+                            min_d_sqr = d_sqr;
+                            grave = blue_grave;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return;
+            }
+            console.log(`${draggingPiece.name}死亡`);
+            if (draggingPiece === redCarrier)
+            {
+                draggingPiece.parentElement.appendChild(redFlag);
+                console.log(`${draggingPiece.name}掉落帅旗`);
+                redCarrier = null;
+            }
+            else if (draggingPiece === blueCarrier)
+            {
+                draggingPiece.parentElement.appendChild(blueFlag);
+                console.log(`${draggingPiece.name}掉落帅旗`);
+                blueCarrier = null;
+            }
+            grave.appendChild(draggingPiece);
+        }
+    });
+
     for (const cell of document.getElementsByClassName("cell"))
     {
         cell.addEventListener("dragover", function (event)
@@ -1050,14 +1103,7 @@ function initializeGame()
         });
         cell.addEventListener("drop", dropPiece);
     }
-    for (const grave of document.getElementsByClassName("grave"))
-    {
-        grave.addEventListener("dragover", function (event)
-        {
-            event.preventDefault();
-        });
-        grave.addEventListener("drop", dropPiece_grave);
-    }
+
     for (var i = 1; i <= 6; i++)
     {
         const heroSelect = document.getElementById("heroSelect" + i);
