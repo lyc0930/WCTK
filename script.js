@@ -83,6 +83,42 @@ const heroes = {
     "左慈": ["zuoci", 3, 3, 1],
 }
 
+const weapons = {
+    "": 1,
+    "诸葛连弩": 1,
+    "狂歌戟": 2,
+    "长柄瓜锤": 2,
+    "青缸剑": 2,
+    "雌雄双股剑": 2,
+    "寒冰剑": 2,
+    "青龙偃月刀": 3,
+    "丈八蛇矛": 3,
+    "钩镰枪": 3,
+    "贯石斧": 3,
+    "朱雀羽扇": 4,
+    "方天画戟": 4,
+    "湛金枪": 4
+}
+
+const armors = {
+    "": "",
+    "八卦阵": "",
+    "仁王盾": "",
+    "护心镜": "",
+    "磐石甲": ""
+}
+
+const horses = {
+    "": "",
+    "的卢": "active",
+    "绝影": "active",
+    "爪黄飞电": "active",
+    "赤兔": "cross",
+    "大宛": "cross",
+    "紫骅": "cross",
+    "乌云踏雪": "still",
+    "燎原火": "still",
+}
 
 const redFlag = document.createElement("img");
 redFlag.inert = "true";
@@ -98,12 +134,7 @@ blueFlag.className = "flag";
 blueFlag.src = "./assets/Flag/blue.png";
 var BlueCarrier = null;
 
-const heroSelect = document.getElementById("heroSelect");
-const carrierCheckbox = document.getElementById("carrierCheckbox");
-const labelHP = document.getElementById("HP");
-const labelMaxHP = document.getElementById("maxHP");
-const labelRange = document.getElementById("range");
-
+var Pieces = [];
 
 var draggingPiece = null; // 正在拖动的棋子
 
@@ -143,7 +174,7 @@ function dropPiece(event)
     event.preventDefault();
     const cell = event.target.closest(".cell");
     // jump(jumpingPiece, cell);
-    goto(draggingPiece, cell);
+    leap(draggingPiece, cell);
 }
 
 function dropPiece_onPiece(event)
@@ -151,7 +182,7 @@ function dropPiece_onPiece(event)
     event.preventDefault();
     const cell = event.target.closest(".cell");
     // jump(jumpingPiece, cell);
-    goto(draggingPiece, cell);
+    leap(draggingPiece, cell);
 }
 
 function dropPiece_grave(event)
@@ -181,34 +212,17 @@ function clickPiece(event)
 {
     event.preventDefault();
 
-    var menu = document.getElementById('menu');
-    var heroOption = document.getElementById(this.name)
-
-    if (menu.style.display === 'none' || heroOption.selected === false)
+    if (selectedPiece == null)
     {
         selectedPiece = this;
-        currentPlayer = this;
-
-        // 显示菜单
-        menu.style.display = 'block';
-        // menu.style.left = event.clientX + 'px';
-        // menu.style.top = event.clientY + 'px';
-        heroOption.selected = true;
-        carrierCheckbox.checked = this.carrier === true;
-        activeCheckbox.checked = this.active === true;
-        labelHP.textContent = this.hp;
-        labelMaxHP.textContent = this.maxhp;
-        labelRange.textContent = this.range;
+        // currentPlayer = this;
     }
     else
     {
         if (document.getElementsByClassName("reachable").length <= 0 && document.getElementsByClassName("landable").length <= 0 && document.getElementsByClassName("targetable").length <= 0)
         {
             selectedPiece = null;
-            currentPlayer = null;
-
-            // 隐藏菜单
-            menu.style.display = 'none';
+            // currentPlayer = null;
         }
 
     }
@@ -308,15 +322,15 @@ function clickCell_jump(event)
     }
 }
 
-function clickPiece_exchange(event)
+function clickPiece_swap(event)
 {
     event.preventDefault();
     const piece = event.target.closest(".piece");
     if (jumpingPiece)
     {
-        if (exchange(jumpingPiece, piece))
+        if (swap(jumpingPiece, piece))
         {
-            removeHighlight("targetable", clickPiece_exchange);
+            removeHighlight("targetable", clickPiece_swap);
             jumpingPiece = null;
         }
     }
@@ -507,29 +521,39 @@ function move(piece, cell, ifConsumeMovePoints = false)
     return false;
 }
 
+// 移动一步
 function step(piece, cell)
 {
     if (piece && isPassable(cell, piece) && adjacentCells(cell, piece).includes(piece.parentElement))
 {
-        if (redFlag.parentElement === cell && redCarrier === null && piece.classList.contains("red-piece"))
-        {
-            redCarrier = piece;
-            redCarrier.appendChild(redFlag);
-            piece.carrier = true;
-            console.log(`${piece.name}成为主帅`);
-        }
-        if (blueFlag.parentElement === cell && blueCarrier === null && piece.classList.contains("blue-piece"))
-        {
-            blueCarrier = piece;
-            blueCarrier.appendChild(blueFlag);
-            piece.carrier = true;
-            console.log(`${piece.name}成为主帅`);
-        }
-
         cell.appendChild(piece);
+        piecePositionChange(piece, cell);
         return true;
     }
     return false;
+}
+
+function piecePositionChange(piece, cell)
+{
+    // 帅旗逻辑
+    if (redFlag.parentElement === cell && redCarrier === null && piece.classList.contains("red-piece"))
+    {
+        redCarrier = piece;
+        redCarrier.appendChild(redFlag);
+        piece.carrier = true;
+        const oldRadio = document.getElementById("carrierRadio" + (Pieces.indexOf(redCarrier) + 1));
+        oldRadio.checked = false;
+        console.log(`${piece.name}成为主帅`);
+    }
+    if (blueFlag.parentElement === cell && blueCarrier === null && piece.classList.contains("blue-piece"))
+    {
+        blueCarrier = piece;
+        blueCarrier.appendChild(blueFlag);
+        piece.carrier = true;
+        const oldRadio = document.getElementById("carrierRadio" + (Pieces.indexOf(redCarrier) + 1));
+        oldRadio.checked = false;
+        console.log(`${piece.name}成为主帅`);
+    }
 }
 
 // 转移
@@ -539,43 +563,23 @@ function jump(piece, cell)
     const col = cell.col;
     if (piece && cell.classList.contains("landable") && isStayable(cell, piece))
     {
-        if (piece.parentElement.classList.contains("grave"))
-        {
-            console.log(`${piece.name}登场于(${row + 1}, ${col + 1})`);
-        }
-        else
-        {
-            console.log(piece.name, `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) |> (${row + 1}, ${col + 1})`);
-        }
-
-        if (redFlag.parentElement === cell && redCarrier === null && piece.classList.contains("red-piece"))
-        {
-            redCarrier = piece;
-            redCarrier.appendChild(redFlag);
-            piece.carrier = true;
-            console.log(`${piece.name}成为主帅`);
-        }
-        if (blueFlag.parentElement === cell && blueCarrier === null && piece.classList.contains("blue-piece"))
-        {
-            blueCarrier = piece;
-            blueCarrier.appendChild(blueFlag);
-            piece.carrier = true;
-            console.log(`${piece.name}成为主帅`);
-        }
+        console.log(piece.name, `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) |> (${row + 1}, ${col + 1})`);
         cell.appendChild(piece);
+        piecePositionChange(piece, cell);
 
         return true;
     }
     return false;
 }
 
-// 朴素拖动
-function goto(piece, cell)
+// 任意拖动
+function leap(piece, cell)
 {
     const row = cell.row;
     const col = cell.col;
     if (piece)
     {
+        // 复活逻辑
         if (piece.parentElement.classList.contains("grave"))
         {
             console.log(`${piece.name}登场于(${row + 1}, ${col + 1})`);
@@ -585,21 +589,8 @@ function goto(piece, cell)
             console.log(piece.name, `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) |> (${row + 1}, ${col + 1})`);
         }
 
-        if (redFlag.parentElement === cell && redCarrier === null && piece.classList.contains("red-piece"))
-        {
-            redCarrier = piece;
-            redCarrier.appendChild(redFlag);
-            piece.carrier = true;
-            console.log(`${piece.name}成为主帅`);
-        }
-        if (blueFlag.parentElement === cell && blueCarrier === null && piece.classList.contains("blue-piece"))
-        {
-            blueCarrier = piece;
-            blueCarrier.appendChild(blueFlag);
-            piece.carrier = true;
-            console.log(`${piece.name}成为主帅`);
-        }
         cell.appendChild(piece);
+        piecePositionChange(piece, cell);
 
         return true;
     }
@@ -607,7 +598,7 @@ function goto(piece, cell)
 }
 
 // 交换
-function exchange(pieceP, pieceQ)
+function swap(pieceP, pieceQ)
 {
     const cellP = pieceP.parentElement;
     const cellQ = pieceQ.parentElement;
@@ -621,40 +612,12 @@ function exchange(pieceP, pieceQ)
     if ((pieceP && isStayable(cellQ, pieceP)) && pieceQ && isStayable(cellP, pieceQ))
     {
         console.log(pieceP.name, `(${cellP.row + 1}, ${cellP.col + 1}) |> (${cellQ.row + 1}, ${cellQ.col + 1})`);
-
-        if (redFlag.parentElement === cellQ && redCarrier === null && pieceP.classList.contains("red-piece"))
-        {
-            redCarrier = pieceP;
-            redCarrier.appendChild(redFlag);
-            pieceP.carrier = true;
-            console.log(`${pieceP.name}成为主帅`);
-        }
-        if (blueFlag.parentElement === cellQ && blueCarrier === null && pieceP.classList.contains("blue-piece"))
-        {
-            blueCarrier = pieceP;
-            blueCarrier.appendChild(blueFlag);
-            pieceP.carrier = true;
-            console.log(`${pieceP.name}成为主帅`);
-        }
         cellQ.appendChild(pieceP);
+        piecePositionChange(pieceP, cellQ);
 
         console.log(pieceQ.name, `(${cellQ.row + 1}, ${cellQ.col + 1}) |> (${cellP.row + 1}, ${cellP.col + 1})`);
-
-        if (redFlag.parentElement === cellP && redCarrier === null && pieceQ.classList.contains("red-piece"))
-        {
-            redCarrier = pieceQ;
-            redCarrier.appendChild(redFlag);
-            pieceQ.carrier = true;
-            console.log(`${pieceQ.name}成为主帅`);
-        }
-        if (blueFlag.parentElement === cellP && blueCarrier === null && pieceQ.classList.contains("blue-piece"))
-        {
-            blueCarrier = pieceQ;
-            blueCarrier.appendChild(blueFlag);
-            pieceQ.carrier = true;
-            console.log(`${pieceQ.name}成为主帅`);
-        }
         cellP.appendChild(pieceQ);
+        piecePositionChange(pieceQ, cellP);
 
         return true;
     }
@@ -715,7 +678,7 @@ function QiMenDunJia(user, limit = 2)
             }
         }
     }
-    highlightPieces(targetablePieces, "targetable", clickPiece_exchange);
+    highlightPieces(targetablePieces, "targetable", clickPiece_swap);
 }
 
 function YouDiShenRu(user, limit = 4)
@@ -922,62 +885,6 @@ function onMouseLeavePiece(event)
     removeHighlight("attackable");
 }
 
-function decreaseHP()
-{
-    if (selectedPiece)
-    {
-        var HP = selectedPiece.hp;
-        if (HP > 0)
-        {
-            labelHP.textContent = HP - 1;
-            selectedPiece.hp = HP - 1;
-
-        }
-    }
-}
-
-function increaseHP()
-{
-    if (selectedPiece)
-    {
-        var HP = selectedPiece.hp;
-        var MaxHP = selectedPiece.maxhp;
-        if (HP < MaxHP)
-        {
-            labelHP.textContent = HP + 1;
-            selectedPiece.hp = HP + 1;
-        }
-    }
-}
-
-function decreaseRange()
-{
-    if (selectedPiece)
-    {
-        var range = selectedPiece.range;
-        if (range > 1)
-        {
-            labelRange.textContent = range - 1;
-            selectedPiece.range = range - 1;
-        }
-
-    }
-}
-
-function increaseRange()
-{
-    if (selectedPiece)
-    {
-        var range = selectedPiece.range;
-        if (range < 9)
-        {
-            labelRange.textContent = range + 1;
-            selectedPiece.range = range + 1;
-        }
-    }
-}
-
-
 // 创建棋盘
 function createChessboard()
 {
@@ -1027,7 +934,7 @@ function createChessboard()
 }
 
 // 创建棋子
-function createPiece(color, name)
+function createPiece(color, name, index)
 {
     const piece = document.createElement("div");
     const avatar = document.createElement("img");
@@ -1043,7 +950,23 @@ function createPiece(color, name)
     piece.hp = heroes[name][2];
     piece.range = heroes[name][3];
     piece.carrier = false;
-    piece.active = true;
+    piece.acted = false;
+
+    const heroSelect = document.getElementById("heroSelect" + index);
+    var heroOption = document.getElementById(piece.name + index);
+    heroOption.selected = true;
+
+    const actedCheckbox = document.getElementById("actedCheckbox" + index);
+    actedCheckbox.checked = false;
+
+    const carrierRadio = document.getElementById("carrierRadio" + index);
+    carrierRadio.checked = false;
+
+    const labelHP = document.getElementById("HP" + index);
+    labelHP.textContent = piece.hp;
+
+    const labelMaxHP = document.getElementById("maxHP" + index);
+    labelMaxHP.textContent = piece.maxhp;
 
     // 添加鼠标事件
     piece.addEventListener("dragstart", dragStart);
@@ -1065,7 +988,6 @@ function initializePieces()
     for (var i = 0; i < 6; i++)
     {
         var index = Math.floor(Math.random() * (heroesList.length - i));
-        console.log(index, heroesList[index]);
         selectedHeroes.push(heroesList[index]);
         heroesList[index] = heroesList[heroesList.length - 1 - i];
     }
@@ -1075,25 +997,36 @@ function initializePieces()
         {
             if (chessboard.children[i].classList.contains("Red"))
             {
-
-                const redPiece = createPiece("red", selectedHeroes.pop());
+                const redPiece = createPiece("red", selectedHeroes.pop(), 6 - selectedHeroes.length);
+                Pieces.push(redPiece);
                 chessboard.children[i].appendChild(redPiece);
                 if (chessboard.children[i].classList.contains("base"))
                 {
                     redPiece.carrier = true;
+                    const carrierRadio = document.getElementById("carrierRadio" + (6 - selectedHeroes.length));
+                    carrierRadio.checked = true;
                     redCarrier = redPiece;
                     console.log(`${redPiece.name}成为主帅`);
                     redCarrier.appendChild(redFlag);
                 }
 
             }
-            else
+        }
+    }
+    for (var i = 0; i < chessboard.children.length; i++)
+    {
+        if (chessboard.children[i].classList.contains("camp") || chessboard.children[i].classList.contains("base"))
+        {
+            if (chessboard.children[i].classList.contains("Blue"))
             {
-                const bluePiece = createPiece("blue", selectedHeroes.pop());
+                const bluePiece = createPiece("blue", selectedHeroes.pop(), 6 - selectedHeroes.length);
+                Pieces.push(bluePiece);
                 chessboard.children[i].appendChild(bluePiece);
                 if (chessboard.children[i].classList.contains("base"))
                 {
                     bluePiece.carrier = true;
+                    const carrierRadio = document.getElementById("carrierRadio" + (6 - selectedHeroes.length));
+                    carrierRadio.checked = true;
                     blueCarrier = bluePiece;
                     console.log(`${bluePiece.name}成为主帅`);
                     blueCarrier.appendChild(blueFlag);
@@ -1108,7 +1041,6 @@ function initializeGame()
 {
 
     createChessboard();
-    initializePieces();
 
     for (const cell of document.getElementsByClassName("cell"))
     {
@@ -1126,133 +1058,231 @@ function initializeGame()
         });
         grave.addEventListener("drop", dropPiece_grave);
     }
-    for (var name in heroes)
+    for (var i = 1; i <= 6; i++)
     {
-        const option = document.createElement("option");
-        option.id = name;
-        option.value = name;
-        option.innerText = name;
-        heroSelect.appendChild(option);
-    }
-    heroSelect.addEventListener("change", function (event)
-    {
-        if (selectedPiece)
+        const heroSelect = document.getElementById("heroSelect" + i);
+        for (var name in heroes)
         {
-            selectedPiece.name = heroSelect.value;
-            const avatar = selectedPiece.querySelector(".avatar");
+            const option = document.createElement("option");
+            option.id = name + i;
+            option.value = name;
+            option.innerText = name;
+            heroSelect.appendChild(option);
+        }
+        heroSelect.addEventListener("change", function (event)
+        {
+            const index = event.target.id.slice(-1);
+            const piece = Pieces[index - 1];
+            piece.name = heroSelect.value;
+            const avatar = piece.querySelector(".avatar");
             avatar.src = "./assets/Avatar/active/" + heroes[heroSelect.value][0] + ".png";
-            selectedPiece.maxhp = heroes[heroSelect.value][1];
-            selectedPiece.hp = heroes[heroSelect.value][2];
-            selectedPiece.range = heroes[heroSelect.value][3];
+            piece.maxhp = heroes[heroSelect.value][1];
+            piece.hp = heroes[heroSelect.value][2];
+            piece.range = heroes[heroSelect.value][3];
         }
-    }
-    );
-    carrierCheckbox.addEventListener("change", function (event)
-    {
-        selectedPiece.carrier = carrierCheckbox.checked;
-        if (selectedPiece.classList.contains("red-piece"))
+        );
+
+        const carrierRadio = document.getElementById("carrierRadio" + i);
+        carrierRadio.addEventListener("click", function (event)
         {
-            if (carrierCheckbox.checked)
+            const index = event.target.id.slice(-1);
+            const piece = Pieces[index - 1];
+            carrierRadio.checked = !carrierRadio.checked;
+            piece.carrier = carrierRadio.checked;
+            if (piece.classList.contains("red-piece"))
             {
-                selectedPiece.appendChild(redFlag);
-                console.log(`${selectedPiece.name}成为主帅`);
-                redCarrier = selectedPiece;
+                if (carrierRadio.checked)
+                {
+                    piece.appendChild(redFlag);
+                    console.log(`${piece.name}成为主帅`);
+                    if (redCarrier != null && redCarrier != piece)
+                    {
+                        const oldRadio = document.getElementById("carrierRadio" + (Pieces.indexOf(redCarrier) + 1));
+                        oldRadio.checked = false;
+                        redCarrier.carrier = false;
+                    }
+                    redCarrier = piece;
+                }
+                else
+                {
+                    piece.parentElement.appendChild(redFlag);
+                    console.log(`${piece.name}掉落帅旗`);
+                    redCarrier = null;
+                }
             }
             else
             {
-                selectedPiece.parentElement.appendChild(redFlag);
-                console.log(`${selectedPiece.name}掉落帅旗`);
-                redCarrier = null;
+                if (carrierRadio.checked)
+                {
+                    piece.appendChild(blueFlag);
+                    console.log(`${piece.name}成为主帅`);
+                    if (blueCarrier != null && blueCarrier != piece)
+                    {
+                        const oldRadio = document.getElementById("carrierRadio" + (Pieces.indexOf(redCarrier) + 1));
+                        oldRadio.checked = false;
+                        blueCarrier.carrier = false;
+                    }
+                    blueCarrier = piece;
+                }
+                else
+                {
+                    piece.parentElement.appendChild(blueFlag);
+                    console.log(`${piece.name}掉落帅旗`);
+                    blueCarrier = null;
+                }
             }
+
         }
-        else
+        );
+
+        const actedCheckbox = document.getElementById("actedCheckbox" + i);
+        actedCheckbox.addEventListener("change", function (event)
         {
-            if (carrierCheckbox.checked)
+            const index = event.target.id.slice(-1);
+            const piece = Pieces[index - 1];
+            if (!actedCheckbox.checked)
             {
-                selectedPiece.appendChild(blueFlag);
-                console.log(`${selectedPiece.name}成为主帅`);
-                blueCarrier = selectedPiece;
+                for (const piece of Pieces)
+                {
+                    piece.acted = false;
+                    const checkBox = document.getElementById("actedCheckbox" + (Pieces.indexOf(piece) + 1));
+                    checkBox.checked = false;
+                    const avatar = piece.querySelector(".avatar");
+                    avatar.src = "./assets/Avatar/active/" + heroes[piece.name][0] + ".png";
+                }
+                console.log(`新轮次开始`);
             }
             else
             {
-                selectedPiece.parentElement.appendChild(blueFlag);
-                console.log(`${selectedPiece.name}掉落帅旗`);
-                blueCarrier = null;
+                piece.acted = true;
+                const avatar = piece.querySelector(".avatar");
+                avatar.src = "./assets/Avatar/inactive/" + heroes[piece.name][0] + ".png";
+                console.log(`${piece.name}回合结束`);
             }
         }
+        );
 
+        const buttonHPDown = document.getElementById("HPMinus" + i);
+        buttonHPDown.addEventListener("click", function (event)
+        {
+            const index = event.target.id.slice(-1);
+            const piece = Pieces[index - 1];
+            const labelHP = document.getElementById("HP" + index);
+            var HP = piece.hp;
+            if (HP > 0)
+            {
+                labelHP.textContent = HP - 1;
+                piece.hp = HP - 1;
+
+            }
+        });
+        const buttonHPUp = document.getElementById("HPPlus" + i);
+        buttonHPUp.addEventListener("click", function (event)
+        {
+            const index = event.target.id.slice(-1);
+            const piece = Pieces[index - 1];
+            const labelHP = document.getElementById("HP" + index);
+            var HP = piece.hp;
+            var MaxHP = piece.maxhp;
+            if (HP < MaxHP)
+            {
+                labelHP.textContent = HP + 1;
+                piece.hp = HP + 1;
+            }
+        });
+
+        const weaponSelect = document.getElementById("weaponSelect" + i);
+        for (var name in weapons)
+        {
+            const option = document.createElement("option");
+            option.id = name + i;
+            option.value = name;
+            option.innerText = name;
+            weaponSelect.appendChild(option);
+        }
+        weaponSelect.addEventListener("change", function (event)
+        {
+            const index = event.target.id.slice(-1);
+            const piece = Pieces[index - 1];
+            piece.range = weapons[weaponSelect.value];
+        });
+
+        const armorSelect = document.getElementById("armorSelect" + i);
+        for (var name in armors)
+        {
+            const option = document.createElement("option");
+            option.id = name + i;
+            option.value = name;
+            option.innerText = name;
+            armorSelect.appendChild(option);
+        }
+        armorSelect.addEventListener("change", function (event)
+        {
+
+        });
+
+        const horseSelect = document.getElementById("horseSelect" + i);
+        for (var name in horses)
+        {
+            const option = document.createElement("option");
+            option.id = name + i;
+            option.value = name;
+            option.innerText = name;
+            horseSelect.appendChild(option);
+        }
+        horseSelect.addEventListener("change", function (event)
+        {
+
+        });
     }
-    );
-    activeCheckbox.addEventListener("change", function (event)
-    {
-        selectedPiece.active = activeCheckbox.checked;
-        const avatar = selectedPiece.querySelector(".avatar");
-        if (activeCheckbox.checked)
-        {
-            avatar.src = "./assets/Avatar/active/" + heroes[selectedPiece.name][0] + ".png";
-        }
-        else
-        {
-            avatar.src = "./assets/Avatar/inactive/" + heroes[selectedPiece.name][0] + ".png";
-            console.log(`${selectedPiece.name}回合结束`);
-        }
-    }
-    );
 
-    var buttonHPDown = document.getElementById("HPMinus");
-    buttonHPDown.addEventListener("click", decreaseHP);
-    var buttonHPUp = document.getElementById("HPPlus");
-    buttonHPUp.addEventListener("click", increaseHP);
-    var buttonRangeDown = document.getElementById("rangeMinus");
-    buttonRangeDown.addEventListener("click", decreaseRange);
-    var buttonRangeUp = document.getElementById("rangePlus");
-    buttonRangeUp.addEventListener("click", increaseRange);
+    initializePieces();
 
 
-    var buttonMovePhase = document.getElementById("movePhase");
-    buttonMovePhase.addEventListener("click", function (event)
-    {
-        if (selectedPiece.active === true)
-        {
-            console.log("移动阶段开始");
-            // 移动阶段开始时
+    // var buttonMovePhase = document.getElementById("movePhase");
+    // buttonMovePhase.addEventListener("click", function (event)
+    // {
+    //     if (selectedPiece.acted === false)
+    //     {
+    //         console.log("移动阶段开始");
+    //         // 移动阶段开始时
 
-            // 获得移动力
-            selectedPiece.movePoints = selectedPiece.hp;
+    //         // 获得移动力
+    //         selectedPiece.movePoints = selectedPiece.hp;
 
-            // 移动阶段
-            moveSteps(selectedPiece, fixed = false, ifConsumeMovePoints = true);
-        }
-    });
-    var buttonXunShan = document.getElementById("XunShan");
-    buttonXunShan.addEventListener("click", function (event)
-    {
-        console.log("迅【闪】");
-        selectedPiece.moveSteps = 1;
-        moveSteps(selectedPiece, true);
-    });
-    var buttonAnDuChenCang = document.getElementById("AnDuChenCang");
-    buttonAnDuChenCang.addEventListener("click", function (event)
-    {
-        AnDuChenCang(selectedPiece)
-    });
-    var buttonBingGuiShenSu = document.getElementById("BingGuiShenSu");
-    buttonBingGuiShenSu.addEventListener("click", function (event)
-    {
-        BingGuiShenSu(selectedPiece)
+    //         // 移动阶段
+    //         moveSteps(selectedPiece, fixed = false, ifConsumeMovePoints = true);
+    //     }
+    // });
+    // var buttonXunShan = document.getElementById("XunShan");
+    // buttonXunShan.addEventListener("click", function (event)
+    // {
+    //     console.log("迅【闪】");
+    //     selectedPiece.moveSteps = 1;
+    //     moveSteps(selectedPiece, true);
+    // });
+    // var buttonAnDuChenCang = document.getElementById("AnDuChenCang");
+    // buttonAnDuChenCang.addEventListener("click", function (event)
+    // {
+    //     AnDuChenCang(selectedPiece)
+    // });
+    // var buttonBingGuiShenSu = document.getElementById("BingGuiShenSu");
+    // buttonBingGuiShenSu.addEventListener("click", function (event)
+    // {
+    //     BingGuiShenSu(selectedPiece)
 
-    });
-    var buttonQiMenDunJia = document.getElementById("QiMenDunJia");
-    buttonQiMenDunJia.addEventListener("click", function (event)
-    {
-        QiMenDunJia(selectedPiece);
+    // });
+    // var buttonQiMenDunJia = document.getElementById("QiMenDunJia");
+    // buttonQiMenDunJia.addEventListener("click", function (event)
+    // {
+    //     QiMenDunJia(selectedPiece);
 
-    });
-    var buttonYouDiShenRu = document.getElementById("YouDiShenRu");
-    buttonYouDiShenRu.addEventListener("click", function (event)
-    {
-        YouDiShenRu(selectedPiece);
-    });
+    // });
+    // var buttonYouDiShenRu = document.getElementById("YouDiShenRu");
+    // buttonYouDiShenRu.addEventListener("click", function (event)
+    // {
+    //     YouDiShenRu(selectedPiece);
+    // });
 }
 
 // 启动游戏
