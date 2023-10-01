@@ -221,15 +221,30 @@ function saveState()
 
     for (const piece of Pieces)
     {
-        state.players.push({
+        player_state = {
             piece: piece,
-            HP: piece.hp,
+            HP: piece.HP,
             position: [piece.parentElement.row, piece.parentElement.col],
-            weapons: piece.weapons,
-            armors: piece.armors,
-            horses: piece.horses,
+            acted: piece.acted,
             carrier: piece.carrier,
-        });
+            weapons: [],
+            armors: [],
+            horses: [],
+        };
+
+        for (const weapon of piece.weapons)
+        {
+            player_state.weapons.push(weapon);
+        }
+        for (const armor of piece.armors)
+        {
+            player_state.armors.push(armor);
+        }
+        for (const horse of piece.horses)
+        {
+            player_state.horses.push(horse);
+        }
+        state.players.push(player_state);
     }
     stateHistory.updateHistory(state);
 }
@@ -238,11 +253,41 @@ function recoverStatefrom(state)
 {
     for (const player of state.players)
     {
-        player.piece.hp = player.hp;
+        const index = Pieces.indexOf(player.piece) + 1;
+
+        player.piece.HP = player.HP;
+        const labelHP = document.getElementById("HP" + index);
+        labelHP.textContent = player.HP;
+
+        player.piece.acted = player.acted;
+        const actedCheckbox = document.getElementById("actedCheckbox" + index);
+        actedCheckbox.checked = player.acted;
+        const avatar = player.piece.querySelector(".avatar");
+        if (player.acted)
+        {
+            avatar.src = "./assets/Avatar/inactive/" + heroes[player.piece.name][0] + ".png";
+        }
+        else
+        {
+            avatar.src = "./assets/Avatar/active/" + heroes[player.piece.name][0] + ".png";
+        }
+
         player.piece.weapons = player.weapons;
+        const weaponSelect = document.getElementById("weaponSelect" + index);
+        weaponSelect.value = player.weapons[0];
+
         player.piece.armors = player.armors;
+        const armorSelect = document.getElementById("armorSelect" + index);
+        armorSelect.value = player.armors[0];
+
         player.piece.horses = player.horses;
+        const horseSelect = document.getElementById("horseSelect" + index);
+        horseSelect.value = player.horses[0];
+
         player.piece.carrier = player.carrier;
+        const carrierRadio = document.getElementById("carrierRadio" + index);
+        carrierRadio.checked = player.carrier;
+
         const cell = document.getElementsByClassName("cell")[player.position[0] * 7 + player.position[1]];
         cell.appendChild(player.piece);
     }
@@ -1050,8 +1095,8 @@ function createPiece(color, name, index)
     piece.title = name;
     piece.draggable = true;
     piece.name = name;
-    piece.maxhp = heroes[name][1];
-    piece.hp = heroes[name][2];
+    piece.maxHP = heroes[name][1];
+    piece.HP = heroes[name][2];
     piece.weapons = [""];
     piece.armors = [""];
     piece.horses = [""];
@@ -1069,10 +1114,10 @@ function createPiece(color, name, index)
     carrierRadio.checked = false;
 
     const labelHP = document.getElementById("HP" + index);
-    labelHP.textContent = piece.hp;
+    labelHP.textContent = piece.HP;
 
     const labelMaxHP = document.getElementById("maxHP" + index);
-    labelMaxHP.textContent = piece.maxhp;
+    labelMaxHP.textContent = piece.maxHP;
 
     // 添加鼠标事件
     piece.addEventListener("dragstart", dragStart);
@@ -1249,8 +1294,8 @@ function initializeGame()
             piece.name = heroSelect.value;
             const avatar = piece.querySelector(".avatar");
             avatar.src = "./assets/Avatar/active/" + heroes[heroSelect.value][0] + ".png";
-            piece.maxhp = heroes[heroSelect.value][1];
-            piece.hp = heroes[heroSelect.value][2];
+            piece.maxHP = heroes[heroSelect.value][1];
+            piece.HP = heroes[heroSelect.value][2];
             piece.range = heroes[heroSelect.value][3];
         }
         );
@@ -1258,6 +1303,7 @@ function initializeGame()
         const carrierRadio = document.getElementById("carrierRadio" + i);
         carrierRadio.addEventListener("click", function (event)
         {
+            // TODO
             const index = event.target.id.slice(-1);
             const piece = Pieces[index - 1];
             carrierRadio.checked = !carrierRadio.checked;
@@ -1304,7 +1350,7 @@ function initializeGame()
                     blueCarrier = null;
                 }
             }
-
+            saveState();
         }
         );
 
@@ -1332,6 +1378,7 @@ function initializeGame()
                 avatar.src = "./assets/Avatar/inactive/" + heroes[piece.name][0] + ".png";
                 console.log(`${piece.name}回合结束`);
             }
+            saveState();
         }
         );
 
@@ -1341,11 +1388,11 @@ function initializeGame()
             const index = event.target.id.slice(-1);
             const piece = Pieces[index - 1];
             const labelHP = document.getElementById("HP" + index);
-            var HP = piece.hp;
+            var HP = piece.HP;
             if (HP > 0)
             {
                 labelHP.textContent = HP - 1;
-                piece.hp = HP - 1;
+                piece.HP = HP - 1;
 
             }
         });
@@ -1355,12 +1402,12 @@ function initializeGame()
             const index = event.target.id.slice(-1);
             const piece = Pieces[index - 1];
             const labelHP = document.getElementById("HP" + index);
-            var HP = piece.hp;
-            var MaxHP = piece.maxhp;
+            var HP = piece.HP;
+            var MaxHP = piece.maxHP;
             if (HP < MaxHP)
             {
                 labelHP.textContent = HP + 1;
-                piece.hp = HP + 1;
+                piece.HP = HP + 1;
             }
         });
 
@@ -1379,6 +1426,7 @@ function initializeGame()
             const piece = Pieces[index - 1];
             piece.weapons[0] = weaponSelect.value;
             piece.range = weapons[weaponSelect.value];
+            saveState();
         });
 
         const armorSelect = document.getElementById("armorSelect" + i);
@@ -1395,6 +1443,7 @@ function initializeGame()
             const index = event.target.id.slice(-1);
             const piece = Pieces[index - 1];
             piece.armors[0] = armorSelect.value;
+            saveState();
         });
 
         const horseSelect = document.getElementById("horseSelect" + i);
@@ -1411,6 +1460,7 @@ function initializeGame()
             const index = event.target.id.slice(-1);
             const piece = Pieces[index - 1];
             piece.horses[0] = horseSelect.value;
+            saveState();
         });
     }
 
@@ -1426,7 +1476,7 @@ function initializeGame()
     //         // 移动阶段开始时
 
     //         // 获得移动力
-    //         selectedPiece.movePoints = selectedPiece.hp;
+    //         selectedPiece.movePoints = selectedPiece.HP;
 
     //         // 移动阶段
     //         moveSteps(selectedPiece, fixed = false, ifConsumeMovePoints = true);
