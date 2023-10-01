@@ -282,6 +282,7 @@ function recoverStatefrom(state)
             player.piece.HP = player.HP;
             const labelHP = document.getElementById("HP" + index);
             labelHP.textContent = player.HP;
+            labelHP.style.color = HPColor(player.HP, heroes[player.piece.name][1]);
 
             player.piece.weapons = player.weapons;
             const weaponSelect = document.getElementById("weaponSelect" + index);
@@ -330,6 +331,35 @@ function recoverStatefrom(state)
         const cell = document.getElementByClassName("cell")[state.blueFlagPosition[0] * 7 + state.blueFlagPosition[1]];
         cell.appendChild(blueFlag);
     }
+}
+
+function HPColor(HP, maxHP)
+{
+    var factor = HP / maxHP;
+
+    var color1 = { r: 255, g: 50, b: 50 }; // 红色
+    var color2 = { r: 200, g: 100, b: 0 }; // 黄色
+    var color3 = { r: 50, g: 160, b: 50 }; // 绿色
+
+    var result = {};
+
+    if (factor > 0.5)
+    {
+        // 血量在一半以上，从黄色插值到绿色
+        factor = (factor - 0.5) * 2; // 调整因子，使其在0到1之间
+        result.r = Math.round(color2.r + factor * (color3.r - color2.r));
+        result.g = Math.round(color2.g + factor * (color3.g - color2.g));
+        result.b = Math.round(color2.b + factor * (color3.b - color2.b));
+    } else
+    {
+        // 血量在一半以下，从红色插值到黄色
+        factor = factor * 2; // 调整因子，使其在0到1之间
+        result.r = Math.round(color1.r + factor * (color2.r - color1.r));
+        result.g = Math.round(color1.g + factor * (color2.g - color1.g));
+        result.b = Math.round(color1.b + factor * (color2.b - color1.b));
+    }
+
+    return 'rgb(' + result.r + ',' + result.g + ',' + result.b + ')';
 }
 
 
@@ -1136,6 +1166,7 @@ function createPiece(color, name, index)
 
     const labelHP = document.getElementById("HP" + index);
     labelHP.textContent = piece.HP;
+    labelHP.style.color = HPColor(piece.HP, piece.maxHP);
 
     const labelMaxHP = document.getElementById("maxHP" + index);
     labelMaxHP.textContent = piece.maxHP;
@@ -1412,9 +1443,11 @@ function initializeGame()
             if (HP > 0)
             {
                 labelHP.textContent = HP - 1;
+                labelHP.style.color = HPColor(HP - 1, piece.maxHP);
                 piece.HP = HP - 1;
 
             }
+            saveState();
         });
         const buttonHPUp = document.getElementById("HPPlus" + i);
         buttonHPUp.addEventListener("click", function (event)
@@ -1427,8 +1460,10 @@ function initializeGame()
             if (HP < MaxHP)
             {
                 labelHP.textContent = HP + 1;
+                labelHP.style.color = HPColor(HP + 1, piece.maxHP);
                 piece.HP = HP + 1;
             }
+            saveState();
         });
 
         const weaponSelect = document.getElementById("weaponSelect" + i);
