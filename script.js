@@ -221,30 +221,41 @@ function saveState()
 
     for (const piece of Pieces)
     {
-        player_state = {
+        let player = {
             piece: piece,
-            HP: piece.HP,
-            position: [piece.parentElement.row, piece.parentElement.col],
             acted: piece.acted,
-            carrier: piece.carrier,
-            weapons: [],
-            armors: [],
-            horses: [],
         };
+        if (piece.parentElement.classList.contains("grave"))
+        {
+            player.alive = false;
+            player.grave = piece.parentElement;
+            player.carrier = false;
+        }
+        else
+        {
+            player.alive = true;
+            player.HP = piece.HP;
+            player.position = [piece.parentElement.row, piece.parentElement.col];
+            player.acted = piece.acted;
+            player.carrier = piece.carrier;
+            player.weapons = [];
+            player.armors = [];
+            player.horses = [];
 
-        for (const weapon of piece.weapons)
-        {
-            player_state.weapons.push(weapon);
+            for (const weapon of piece.weapons)
+            {
+                player.weapons.push(weapon);
+            }
+            for (const armor of piece.armors)
+            {
+                player.armors.push(armor);
+            }
+            for (const horse of piece.horses)
+            {
+                player.horses.push(horse);
+            }
         }
-        for (const armor of piece.armors)
-        {
-            player_state.armors.push(armor);
-        }
-        for (const horse of piece.horses)
-        {
-            player_state.horses.push(horse);
-        }
-        state.players.push(player_state);
+        state.players.push(player);
     }
     stateHistory.updateHistory(state);
 }
@@ -254,11 +265,6 @@ function recoverStatefrom(state)
     for (const player of state.players)
     {
         const index = Pieces.indexOf(player.piece) + 1;
-
-        player.piece.HP = player.HP;
-        const labelHP = document.getElementById("HP" + index);
-        labelHP.textContent = player.HP;
-
         player.piece.acted = player.acted;
         const actedCheckbox = document.getElementById("actedCheckbox" + index);
         actedCheckbox.checked = player.acted;
@@ -271,30 +277,43 @@ function recoverStatefrom(state)
         {
             avatar.src = "./assets/Avatar/active/" + heroes[player.piece.name][0] + ".png";
         }
+        if (player.alive)
+        {
+            player.piece.HP = player.HP;
+            const labelHP = document.getElementById("HP" + index);
+            labelHP.textContent = player.HP;
 
-        player.piece.weapons = player.weapons;
-        const weaponSelect = document.getElementById("weaponSelect" + index);
-        weaponSelect.value = player.weapons[0];
+            player.piece.weapons = player.weapons;
+            const weaponSelect = document.getElementById("weaponSelect" + index);
+            weaponSelect.value = player.weapons[0];
 
-        player.piece.armors = player.armors;
-        const armorSelect = document.getElementById("armorSelect" + index);
-        armorSelect.value = player.armors[0];
+            player.piece.armors = player.armors;
+            const armorSelect = document.getElementById("armorSelect" + index);
+            armorSelect.value = player.armors[0];
 
-        player.piece.horses = player.horses;
-        const horseSelect = document.getElementById("horseSelect" + index);
-        horseSelect.value = player.horses[0];
+            player.piece.horses = player.horses;
+            const horseSelect = document.getElementById("horseSelect" + index);
+            horseSelect.value = player.horses[0];
 
-        player.piece.carrier = player.carrier;
-        const carrierCheckbox = document.getElementById("carrierCheckbox" + index);
-        carrierCheckbox.checked = player.carrier;
+            player.piece.carrier = player.carrier;
+            const carrierCheckbox = document.getElementById("carrierCheckbox" + index);
+            carrierCheckbox.checked = player.carrier;
 
-        const cell = document.getElementsByClassName("cell")[player.position[0] * 7 + player.position[1]];
-        cell.appendChild(player.piece);
+            const cell = document.getElementsByClassName("cell")[player.position[0] * 7 + player.position[1]];
+            cell.appendChild(player.piece);
+        }
+        else
+        {
+            const grave = player.grave;
+            grave.appendChild(player.piece);
+        }
+
     }
 
     if (state.redCarrier)
     {
         redCarrier = state.redCarrier;
+        redCarrier.appendChild(redFlag);
     }
     else
     {
@@ -304,6 +323,7 @@ function recoverStatefrom(state)
     if (state.blueCarrier)
     {
         blueCarrier = state.blueCarrier;
+        blueCarrier.appendChild(blueFlag);
     }
     else
     {
@@ -1265,6 +1285,7 @@ function initializeGame()
                 blueCarrier = null;
             }
             grave.appendChild(draggingPiece);
+            saveState();
         }
     });
 
@@ -1306,9 +1327,6 @@ function initializeGame()
         {
             const index = event.target.id.slice(-1);
             const piece = Pieces[index - 1];
-            // event.preventDefault();
-
-            // this.checked = !this.checked;
             piece.carrier = this.checked;
             if (piece.classList.contains("red-piece"))
             {
