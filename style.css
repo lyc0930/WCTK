@@ -320,10 +320,6 @@ body {
     font-size: large;
 }
 
-.radio {
-    transform: scale(1.3);
-}
-
 .checkbox {
     transform: scale(1.3);
 }

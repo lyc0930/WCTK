@@ -285,8 +285,8 @@ function recoverStatefrom(state)
         horseSelect.value = player.horses[0];
 
         player.piece.carrier = player.carrier;
-        const carrierRadio = document.getElementById("carrierRadio" + index);
-        carrierRadio.checked = player.carrier;
+        const carrierCheckbox = document.getElementById("carrierCheckbox" + index);
+        carrierCheckbox.checked = player.carrier;
 
         const cell = document.getElementsByClassName("cell")[player.position[0] * 7 + player.position[1]];
         cell.appendChild(player.piece);
@@ -687,8 +687,8 @@ function piecePositionChange(piece, cell)
         redCarrier = piece;
         redCarrier.appendChild(redFlag);
         piece.carrier = true;
-        const oldRadio = document.getElementById("carrierRadio" + (Pieces.indexOf(redCarrier) + 1));
-        oldRadio.checked = false;
+        const oldCheckbox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(redCarrier) + 1));
+        oldCheckbox.checked = false;
         console.log(`${piece.name}成为主帅`);
     }
     if (blueFlag.parentElement === cell && blueCarrier === null && piece.classList.contains("blue-piece"))
@@ -696,8 +696,8 @@ function piecePositionChange(piece, cell)
         blueCarrier = piece;
         blueCarrier.appendChild(blueFlag);
         piece.carrier = true;
-        const oldRadio = document.getElementById("carrierRadio" + (Pieces.indexOf(redCarrier) + 1));
-        oldRadio.checked = false;
+        const oldCheckbox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(redCarrier) + 1));
+        oldCheckbox.checked = false;
         console.log(`${piece.name}成为主帅`);
     }
 
@@ -1110,8 +1110,9 @@ function createPiece(color, name, index)
     const actedCheckbox = document.getElementById("actedCheckbox" + index);
     actedCheckbox.checked = false;
 
-    const carrierRadio = document.getElementById("carrierRadio" + index);
-    carrierRadio.checked = false;
+    const carrierCheckbox = document.getElementById("carrierCheckbox" + index);
+    carrierCheckbox.checked = false;
+    carrierCheckbox.required = false;
 
     const labelHP = document.getElementById("HP" + index);
     labelHP.textContent = piece.HP;
@@ -1154,8 +1155,8 @@ function initializePieces()
                 if (chessboard.children[i].classList.contains("base"))
                 {
                     redPiece.carrier = true;
-                    const carrierRadio = document.getElementById("carrierRadio" + (6 - selectedHeroes.length));
-                    carrierRadio.checked = true;
+                    const carrierCheckbox = document.getElementById("carrierCheckbox" + (6 - selectedHeroes.length));
+                    carrierCheckbox.checked = true;
                     redCarrier = redPiece;
                     console.log(`${redPiece.name}成为主帅`);
                     redCarrier.appendChild(redFlag);
@@ -1176,8 +1177,8 @@ function initializePieces()
                 if (chessboard.children[i].classList.contains("base"))
                 {
                     bluePiece.carrier = true;
-                    const carrierRadio = document.getElementById("carrierRadio" + (6 - selectedHeroes.length));
-                    carrierRadio.checked = true;
+                    const carrierCheckbox = document.getElementById("carrierCheckbox" + (6 - selectedHeroes.length));
+                    carrierCheckbox.checked = true;
                     blueCarrier = bluePiece;
                     console.log(`${bluePiece.name}成为主帅`);
                     blueCarrier.appendChild(blueFlag);
@@ -1300,24 +1301,25 @@ function initializeGame()
         }
         );
 
-        const carrierRadio = document.getElementById("carrierRadio" + i);
-        carrierRadio.addEventListener("click", function (event)
+        const carrierCheckbox = document.getElementById("carrierCheckbox" + i);
+        carrierCheckbox.addEventListener("change", function (event)
         {
-            // TODO
             const index = event.target.id.slice(-1);
             const piece = Pieces[index - 1];
-            carrierRadio.checked = !carrierRadio.checked;
-            piece.carrier = carrierRadio.checked;
+            // event.preventDefault();
+
+            // this.checked = !this.checked;
+            piece.carrier = this.checked;
             if (piece.classList.contains("red-piece"))
             {
-                if (carrierRadio.checked)
+                if (this.checked)
                 {
                     piece.appendChild(redFlag);
                     console.log(`${piece.name}成为主帅`);
                     if (redCarrier != null && redCarrier != piece)
                     {
-                        const oldRadio = document.getElementById("carrierRadio" + (Pieces.indexOf(redCarrier) + 1));
-                        oldRadio.checked = false;
+                        const oldCheckbox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(redCarrier) + 1));
+                        oldCheckbox.checked = false;
                         redCarrier.carrier = false;
                     }
                     redCarrier = piece;
@@ -1331,14 +1333,14 @@ function initializeGame()
             }
             else
             {
-                if (carrierRadio.checked)
+                if (this.checked)
                 {
                     piece.appendChild(blueFlag);
                     console.log(`${piece.name}成为主帅`);
                     if (blueCarrier != null && blueCarrier != piece)
                     {
-                        const oldRadio = document.getElementById("carrierRadio" + (Pieces.indexOf(redCarrier) + 1));
-                        oldRadio.checked = false;
+                        const oldCheckbox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(redCarrier) + 1));
+                        oldCheckbox.checked = false;
                         blueCarrier.carrier = false;
                     }
                     blueCarrier = piece;
