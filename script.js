@@ -1637,7 +1637,9 @@ function initializeGame()
     // });
 
     // 撤销重做
-    document.addEventListener("wheel", function (event)
+    const chessboard = document.getElementById("chessboard");
+
+    chessboard.addEventListener("wheel", function (event)
     {
         event.preventDefault();
         if (event.deltaY < 0)
