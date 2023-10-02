@@ -1201,6 +1201,7 @@ function createPiece(color, name, index)
         const shiftX = event.clientX - (rect.left + 0.5 * rect.width);
         const shiftY = event.clientY - (rect.top + 0.5 * rect.height);
 
+        // TODO 攻击范围的高亮显示
         function onMouseDragPiece(event)
         {
             if (draggingPiece === null)
@@ -1312,6 +1313,7 @@ function createPiece(color, name, index)
     });
 
     // 添加触摸事件
+    // TODO 屏幕抖动
     piece.addEventListener("touchstart", function (event)
     {
         const rect = piece.getBoundingClientRect();
