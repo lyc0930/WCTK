@@ -264,7 +264,7 @@ function saveState()
     }
     stateHistory.updateHistory(state);
 }
-
+// TODO bug with equippment
 function recoverStatefrom(state)
 {
     for (const player of state.players)
@@ -1029,8 +1029,6 @@ function baseOf(piece)
 }
 
 // 棋子悬浮提示
-// TODO touch
-// TODO canvas erase
 var hoverPiece = null;
 var attackableCells = [];
 
@@ -1203,7 +1201,7 @@ function createPiece(color, name, index)
         const shiftX = event.clientX - (rect.left + 0.5 * rect.width);
         const shiftY = event.clientY - (rect.top + 0.5 * rect.height);
 
-        function onDragPiece(event)
+        function onMouseDragPiece(event)
         {
             if (draggingPiece === null)
             {
@@ -1212,16 +1210,16 @@ function createPiece(color, name, index)
                 document.body.append(piece);
             }
 
-            draggingPiece.style.left = event.pageX - shiftX + 'px';
-            draggingPiece.style.top = event.pageY - shiftY + 'px';
+            draggingPiece.style.left = event.clientX - shiftX + 'px';
+            draggingPiece.style.top = event.clientY - shiftY + 'px';
         }
 
-        document.addEventListener('mousemove', onDragPiece);
+        document.addEventListener('mousemove', onMouseDragPiece);
 
         piece.addEventListener('mouseup', function (event)
         {
             event.stopPropagation();
-            document.removeEventListener('mousemove', onDragPiece);
+            document.removeEventListener('mousemove', onMouseDragPiece);
             if (draggingPiece != null)
             {
                 draggingPiece.removeEventListener('mouseup', arguments.callee);
@@ -1312,11 +1310,126 @@ function createPiece(color, name, index)
                 draggingPieceParent = null;
             }
         });
-
     });
 
-    // piece.addEventListener("touchstart", dragStart);
-    // piece.addEventListener("touchend", dragEnd);
+    // 添加触摸事件
+    piece.addEventListener("touchstart", function (event)
+    {
+        const rect = piece.getBoundingClientRect();
+
+        const shiftX = event.touches[0].clientX - (rect.left + 0.5 * rect.width);
+        const shiftY = event.touches[0].clientY - (rect.top + 0.5 * rect.height);
+
+        function onTouchDragPiece(event)
+        {
+            if (draggingPiece === null)
+            {
+                draggingPiece = piece;
+                draggingPieceParent = piece.parentElement;
+                document.body.append(piece);
+            }
+
+            draggingPiece.style.left = event.touches[0].clientX - shiftX + 'px';
+            draggingPiece.style.top = event.touches[0].clientY - shiftY + 'px';
+        }
+
+        piece.addEventListener('touchmove', onTouchDragPiece);
+
+        piece.addEventListener('touchend', function (event)
+        {
+            event.stopPropagation();
+            piece.removeEventListener('touchmove', onTouchDragPiece);
+            if (draggingPiece != null)
+            {
+                draggingPiece.removeEventListener('touchend', arguments.callee);
+                draggingPiece.style.left = null;
+                draggingPiece.style.top = null;
+                draggingPieceParent.appendChild(draggingPiece); // 解决出身问题
+
+                const chessboardRect = document.getElementById("chessboard").getBoundingClientRect();
+
+                if (event.changedTouches[0].clientX >= chessboardRect.left && event.changedTouches[0].clientX <= chessboardRect.right && event.changedTouches[0].clientY >= chessboardRect.top && event.changedTouches[0].clientY <= chessboardRect.bottom) // 在棋盘范围内
+                {
+                    var targetCell = null;
+                    let min_d_sqr = 100000000;
+                    for (const cell of document.getElementsByClassName("cell"))
+                    {
+                        const { left, top, width, height } = cell.getBoundingClientRect()
+                        const centerX = left + width / 2
+                        const centerY = top + height / 2
+                        const d_sqr = Math.pow(event.changedTouches[0].clientX - centerX, 2) + Math.pow(event.changedTouches[0].clientY - centerY, 2)
+                        if (d_sqr < min_d_sqr)
+                        {
+                            min_d_sqr = d_sqr;
+                            targetCell = cell;
+                        }
+                    }
+                    leap(draggingPiece, targetCell);
+                    saveState();
+                }
+                else
+                { // 超出棋盘范围
+                    var grave = null;
+                    let min_d_sqr = 100000000;
+                    if (draggingPiece.classList.contains("red-piece"))
+                    {
+
+                        for (const red_grave of document.getElementsByClassName("grave Red"))
+                        {
+                            // 如果red_grave没有child
+                            if (red_grave.children.length === 0)
+                            {
+                                const { left, top, width, height } = red_grave.getBoundingClientRect()
+                                const centerX = left + width / 2
+                                const centerY = top + height / 2
+                                const d_sqr = Math.pow(event.changedTouches[0].clientX - centerX, 2) + Math.pow(event.changedTouches[0].clientY - centerY, 2)
+                                if (d_sqr < min_d_sqr)
+                                {
+                                    min_d_sqr = d_sqr;
+                                    grave = red_grave;
+                                }
+                            }
+                        }
+                    }
+                    else if (draggingPiece.classList.contains("blue-piece"))
+                    {
+                        for (const blue_grave of document.getElementsByClassName("grave Blue"))
+                        {
+                            if (blue_grave.children.length === 0)
+                            {
+                                const { left, top, width, height } = blue_grave.getBoundingClientRect()
+                                const centerX = left + width / 2
+                                const centerY = top + height / 2
+                                const d_sqr = Math.pow(event.changedTouches[0].clientX - centerX, 2) + Math.pow(event.changedTouches[0].clientY - centerY, 2)
+                                if (d_sqr < min_d_sqr)
+                                {
+                                    min_d_sqr = d_sqr;
+                                    grave = blue_grave;
+                                }
+                            }
+                        }
+                    }
+                    console.log(`${draggingPiece.name}死亡`);
+                    if (draggingPiece === redCarrier)
+                    {
+                        draggingPiece.parentElement.appendChild(redFlag);
+                        console.log(`${draggingPiece.name}掉落帅旗`);
+                        redCarrier = null;
+                    }
+                    else if (draggingPiece === blueCarrier)
+                    {
+                        draggingPiece.parentElement.appendChild(blueFlag);
+                        console.log(`${draggingPiece.name}掉落帅旗`);
+                        blueCarrier = null;
+                    }
+                    grave.appendChild(draggingPiece);
+                    saveState();
+                }
+                draggingPiece = null;
+                draggingPieceParent = null;
+            }
+        });
+    });
     piece.addEventListener("click", clickPiece);
     piece.addEventListener("mouseenter", onMouseEnterPiece);
     piece.addEventListener("mouseleave", onMouseLeavePiece);
