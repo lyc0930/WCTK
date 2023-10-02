@@ -264,7 +264,7 @@ function saveState()
     }
     stateHistory.updateHistory(state);
 }
-// TODO bug with equippment
+
 function recoverStatefrom(state)
 {
     for (const player of state.players)
@@ -1246,7 +1246,6 @@ function createPiece(color, name, index)
                         }
                     }
                     leap(draggingPiece, targetCell, event.button === 2);
-                    saveState();
                 }
                 else
                 { // 超出棋盘范围
@@ -1365,7 +1364,6 @@ function createPiece(color, name, index)
                         }
                     }
                     leap(draggingPiece, targetCell);
-                    saveState();
                 }
                 else
                 { // 超出棋盘范围
