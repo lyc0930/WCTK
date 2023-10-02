@@ -15,6 +15,19 @@ body {
     box-sizing: content-box;
     display: flex;
     flex-wrap: wrap;
+    z-index: 90;
+}
+
+#background {
+    width: 91vmin;
+    height: 91vmin;
+    position: absolute;
+    margin-top: 1vmin;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    display: flex;
     background-image: url('./assets/Map/野战.jpg');
     background-repeat: no-repeat;
     background-size: cover;
