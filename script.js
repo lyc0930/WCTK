@@ -333,7 +333,7 @@ function recoverStatefrom(state)
     }
     else
     {
-        const cell = document.getElementByClassName("cell")[state.blueFlagPosition[0] * 7 + state.blueFlagPosition[1]];
+        const cell = document.getElementsByClassName("cell")[state.blueFlagPosition[0] * 7 + state.blueFlagPosition[1]];
         cell.appendChild(blueFlag);
     }
 }
