@@ -398,14 +398,6 @@ function dropPiece(event)
     leap(draggingPiece, cell);
 }
 
-function dropPiece_onPiece(event)
-{
-    event.preventDefault();
-    const cell = event.target.closest(".cell");
-    // jump(jumpingPiece, cell);
-    leap(draggingPiece, cell);
-}
-
 
 // 棋子点击事件
 function clickPiece(event)
@@ -576,7 +568,6 @@ function highlightPieces(pieces, className, listener = null)
             piece.removeEventListener("mouseenter", onMouseEnterPiece);
             piece.removeEventListener("mouseleave", onMouseLeavePiece);
             piece.addEventListener("click", listener);
-            piece.addEventListener("drop", dropPiece_onPiece);
         }
     }
 }
