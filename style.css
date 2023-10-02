@@ -19,6 +19,22 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: local;
+    z-index: 80;
+}
+
+#canvas {
+    width: 91vmin;
+    height: 91vmin;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 1vmin;
+    left: 0;
+    right: 0;
+    opacity: 0.5;
+    z-index: 81;
+    pointer-events: none;
+    /* background-color: white; */
 }
 
 .menuList {
@@ -270,6 +286,7 @@ input[name="blueCheckbox"]::before {
     position: absolute;
     cursor: grab;
     border-style: outset;
+    z-index: 98;
 }
 
 .avatar {
@@ -359,11 +376,19 @@ input[name="blueCheckbox"]::before {
     border-color: rgba(255, 0, 0, 1);
 }
 
+.red-piece.selected {
+    border-color: rgba(255, 0, 0, 1);
+}
+
 .blue-piece {
     border-color: rgba(0, 0, 255, 0.4);
 }
 
 .blue-piece:hover {
+    border-color: rgba(0, 0, 255, 1);
+}
+
+.blue-piece.selected {
     border-color: rgba(0, 0, 255, 1);
 }
 

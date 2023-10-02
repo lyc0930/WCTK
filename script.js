@@ -146,6 +146,10 @@ var selectedPiece = null; // 选中的棋子
 
 var currentPlayer = null; // 当前回合玩家
 
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+
+
 class StateHistory
 {
     constructor()
@@ -411,6 +415,7 @@ function clickPiece(event)
     if (selectedPiece == null)
     {
         selectedPiece = this;
+        this.classList.add("selected");
         // currentPlayer = this;
     }
     else
@@ -418,6 +423,7 @@ function clickPiece(event)
         if (document.getElementsByClassName("reachable").length <= 0 && document.getElementsByClassName("landable").length <= 0 && document.getElementsByClassName("targetable").length <= 0)
         {
             selectedPiece = null;
+            this.classList.remove("selected");
             // currentPlayer = null;
         }
 
@@ -776,6 +782,17 @@ function leap(piece, cell)
 {
     const row = cell.row;
     const col = cell.col;
+
+    if (piece.classList.contains("red-piece"))
+    {
+        draw([[piece.parentElement.row, piece.parentElement.col], [row, col]], 'rgb(255,0,0)');
+
+    }
+    else
+    {
+        draw([[piece.parentElement.row, piece.parentElement.col], [row, col]], 'rgb(0,0,255)');
+    }
+
     if (piece)
     {
         // 复活逻辑
@@ -1057,6 +1074,8 @@ function baseOf(piece)
 }
 
 // 棋子悬浮提示
+// TODO touch
+// TODO canvas erase
 var hoverPiece = null;
 var attackableCells = [];
 
@@ -1082,6 +1101,56 @@ function onMouseEnterPiece(event)
 function onMouseLeavePiece(event)
 {
     removeHighlight("attackable");
+}
+
+function draw(line, color='rgba(50, 50, 50)', isArrow=true)
+{
+    var cellSize = canvas.width / 7; // 计算每个单元格的大小
+    const width = 10;
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = color;
+    for (var i = 1; i < line.length; i++)
+    {
+
+        const Px = line[i - 1][1] * cellSize + cellSize / 2;
+        const Py = line[i - 1][0] * cellSize + cellSize / 2;
+        const Qx = line[i][1] * cellSize + cellSize / 2;
+        const Qy = line[i][0] * cellSize + cellSize / 2;
+
+        ctx.moveTo(Px, Py);
+        ctx.lineTo(Qx, Qy);
+    }
+    ctx.stroke();
+    if (isArrow)
+    {
+        ctx.lineCap = "butt";
+        ctx.lineJoin = "miter";
+        for (var i = 1; i < line.length; i++)
+        {
+
+            const Px = line[i - 1][1] * cellSize + cellSize / 2;
+            const Py = line[i - 1][0] * cellSize + cellSize / 2;
+            const Qx = line[i][1] * cellSize + cellSize / 2;
+            const Qy = line[i][0] * cellSize + cellSize / 2;
+
+            ctx.moveTo(Px, Py);
+            ctx.lineTo(Qx, Qy);
+
+            var dx = Qx - Px;
+            var dy = Qy - Py;
+            var angle = Math.atan2(dy, dx);
+
+            ctx.beginPath();
+            ctx.moveTo((Px + (Qx - Px) * 0.55) - 0.5 * width * Math.cos(angle + Math.PI / 6), (Py + (Qy - Py) * 0.55) - 0.5 * width * Math.sin(angle + Math.PI / 6));
+            ctx.lineTo((Px + (Qx - Px) * 0.55), (Py + (Qy - Py) * 0.55));
+            ctx.lineTo((Px + (Qx - Px) * 0.55) - 0.5 * width * Math.cos(angle - Math.PI / 6), (Py + (Qy - Py) * 0.55) - 0.5 * width * Math.sin(angle - Math.PI / 6));
+            ctx.closePath();
+            ctx.stroke();
+        }
+    }
 }
 
 // 创建棋盘
@@ -1187,11 +1256,11 @@ function initializePieces()
 {
     const chessboard = document.getElementById("chessboard");
     const heroesList = Object.keys(heroes);
-    var selectedHeroes = [];
+    var initHeroes = [];
     for (var i = 0; i < 6; i++)
     {
         var index = Math.floor(Math.random() * (heroesList.length - i));
-        selectedHeroes.push(heroesList[index]);
+        initHeroes.push(heroesList[index]);
         heroesList[index] = heroesList[heroesList.length - 1 - i];
     }
     for (var i = 0; i < chessboard.children.length; i++)
@@ -1200,13 +1269,13 @@ function initializePieces()
         {
             if (chessboard.children[i].classList.contains("Red"))
             {
-                const redPiece = createPiece("red", selectedHeroes.pop(), 6 - selectedHeroes.length);
+                const redPiece = createPiece("red", initHeroes.pop(), 6 - initHeroes.length);
                 Pieces.push(redPiece);
                 chessboard.children[i].appendChild(redPiece);
                 if (chessboard.children[i].classList.contains("base"))
                 {
                     redPiece.carrier = true;
-                    const carrierCheckbox = document.getElementById("carrierCheckbox" + (6 - selectedHeroes.length));
+                    const carrierCheckbox = document.getElementById("carrierCheckbox" + (6 - initHeroes.length));
                     carrierCheckbox.checked = true;
                     redCarrier = redPiece;
                     console.log(`${redPiece.name}成为主帅`);
@@ -1222,13 +1291,13 @@ function initializePieces()
         {
             if (chessboard.children[i].classList.contains("Blue"))
             {
-                const bluePiece = createPiece("blue", selectedHeroes.pop(), 6 - selectedHeroes.length);
+                const bluePiece = createPiece("blue", initHeroes.pop(), 6 - initHeroes.length);
                 Pieces.push(bluePiece);
                 chessboard.children[i].appendChild(bluePiece);
                 if (chessboard.children[i].classList.contains("base"))
                 {
                     bluePiece.carrier = true;
-                    const carrierCheckbox = document.getElementById("carrierCheckbox" + (6 - selectedHeroes.length));
+                    const carrierCheckbox = document.getElementById("carrierCheckbox" + (6 - initHeroes.length));
                     carrierCheckbox.checked = true;
                     blueCarrier = bluePiece;
                     console.log(`${bluePiece.name}成为主帅`);
