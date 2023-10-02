@@ -684,6 +684,7 @@ function move(piece, cell, ifConsumeMovePoints = false)
 }
 
 // 移动一步
+// TODO 祖茂
 function step(piece, cell)
 {
     if (piece && isPassable(cell, piece) && adjacentCells(cell, piece).includes(piece.parentElement))
@@ -1201,7 +1202,6 @@ function createPiece(color, name, index)
         const shiftX = event.clientX - (rect.left + 0.5 * rect.width);
         const shiftY = event.clientY - (rect.top + 0.5 * rect.height);
 
-        // TODO 攻击范围的高亮显示
         function onMouseDragPiece(event)
         {
             if (draggingPiece === null)
@@ -1313,7 +1313,7 @@ function createPiece(color, name, index)
     });
 
     // 添加触摸事件
-    // TODO 屏幕抖动
+    // TODO 屏幕抖动？
     piece.addEventListener("touchstart", function (event)
     {
         const rect = piece.getBoundingClientRect();
@@ -1700,7 +1700,7 @@ function initializeGame()
 
     initializePieces();
 
-
+    // TODO 功能按钮
     // var buttonMovePhase = document.getElementById("movePhase");
     // buttonMovePhase.addEventListener("click", function (event)
     // {
