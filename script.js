@@ -137,6 +137,7 @@ var BlueCarrier = null;
 var Pieces = [];
 
 var draggingPiece = null; // 正在拖动的棋子
+var draggingPieceParent = null;
 
 var jumpingPiece = null; // 正在转移的棋子
 
@@ -364,38 +365,6 @@ function HPColor(HP, maxHP)
     }
 
     return 'rgb(' + result.r + ',' + result.g + ',' + result.b + ')';
-}
-
-
-// 棋子拖动事件
-function dragStart(event)
-{
-    draggingPiece = event.target.closest(".piece");
-    // jumpingPiece = event.target.closest(".piece");
-
-    // var landableCells = [];
-    // for (const cell of document.getElementsByClassName("cell"))
-    // {
-    //     if (isStayable(cell, this))
-    //     {
-    //         landableCells.push(cell);
-    //     }
-    // }
-    // highlightCells(landableCells, "landable");
-}
-
-function dragEnd()
-{
-    draggingPiece = null;
-    // removeHighlight("landable");
-}
-
-function dropPiece(event)
-{
-    event.preventDefault();
-    const cell = event.target.closest(".cell");
-    // jump(jumpingPiece, cell);
-    leap(draggingPiece, cell);
 }
 
 
@@ -769,19 +738,14 @@ function jump(piece, cell)
 }
 
 // 任意拖动
-function leap(piece, cell)
+function leap(piece, cell, isDraw=false)
 {
     const row = cell.row;
     const col = cell.col;
 
-    if (piece.classList.contains("red-piece"))
+    if (isDraw)
     {
-        draw([[piece.parentElement.row, piece.parentElement.col], [row, col]], 'rgb(255,0,0)');
-
-    }
-    else
-    {
-        draw([[piece.parentElement.row, piece.parentElement.col], [row, col]], 'rgb(0,0,255)');
+        draw([[piece.parentElement.row, piece.parentElement.col], [row, col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)': 'rgb(0,0,255)');
     }
 
     if (piece)
@@ -1198,12 +1162,12 @@ function createPiece(color, name, index)
     const piece = document.createElement("div");
     const avatar = document.createElement("img");
     avatar.src = "./assets/Avatar/active/" + heroes[name][0] + ".png";
+    avatar.draggable = false;
     avatar.className = "avatar";
     piece.appendChild(avatar);
     piece.className = "piece";
     piece.classList.add(color === "red" ? "red-piece" : "blue-piece");
     piece.title = name;
-    piece.draggable = true;
     piece.name = name;
     piece.maxHP = heroes[name][1];
     piece.HP = heroes[name][2];
@@ -1232,9 +1196,126 @@ function createPiece(color, name, index)
     labelMaxHP.textContent = piece.maxHP;
 
     // 添加鼠标事件
-    piece.addEventListener("dragstart", dragStart);
+    piece.addEventListener("mousedown", function (event)
+    {
+        const rect = piece.getBoundingClientRect();
+
+        const shiftX = event.clientX - (rect.left + 0.5 * rect.width);
+        const shiftY = event.clientY - (rect.top + 0.5 * rect.height);
+
+        function onDragPiece(event)
+        {
+            if (draggingPiece === null)
+            {
+                draggingPiece = piece;
+                draggingPieceParent = piece.parentElement;
+                document.body.append(piece);
+            }
+
+            draggingPiece.style.left = event.pageX - shiftX + 'px';
+            draggingPiece.style.top = event.pageY - shiftY + 'px';
+        }
+
+        document.addEventListener('mousemove', onDragPiece);
+
+        piece.addEventListener('mouseup', function (event)
+        {
+            event.stopPropagation();
+            document.removeEventListener('mousemove', onDragPiece);
+            if (draggingPiece != null)
+            {
+                draggingPiece.removeEventListener('mouseup', arguments.callee);
+                draggingPiece.style.left = null;
+                draggingPiece.style.top = null;
+                draggingPieceParent.appendChild(draggingPiece); // 解决出身问题
+
+                const chessboardRect = document.getElementById("chessboard").getBoundingClientRect();
+
+                if (event.clientX >= chessboardRect.left && event.clientX <= chessboardRect.right && event.clientY >= chessboardRect.top && event.clientY <= chessboardRect.bottom) // 在棋盘范围内
+                {
+                    var targetCell = null;
+                    let min_d_sqr = 100000000;
+                    for (const cell of document.getElementsByClassName("cell"))
+                    {
+                        const { left, top, width, height } = cell.getBoundingClientRect()
+                        const centerX = left + width / 2
+                        const centerY = top + height / 2
+                        const d_sqr = Math.pow(event.clientX - centerX, 2) + Math.pow(event.clientY - centerY, 2)
+                        if (d_sqr < min_d_sqr)
+                        {
+                            min_d_sqr = d_sqr;
+                            targetCell = cell;
+                        }
+                    }
+                    leap(draggingPiece, targetCell, event.button === 2);
+                    saveState();
+                }
+                else
+                { // 超出棋盘范围
+                    var grave = null;
+                    let min_d_sqr = 100000000;
+                    if (draggingPiece.classList.contains("red-piece"))
+                    {
+
+                        for (const red_grave of document.getElementsByClassName("grave Red"))
+                        {
+                            // 如果red_grave没有child
+                            if (red_grave.children.length === 0)
+                            {
+                                const { left, top, width, height } = red_grave.getBoundingClientRect()
+                                const centerX = left + width / 2
+                                const centerY = top + height / 2
+                                const d_sqr = Math.pow(event.clientX - centerX, 2) + Math.pow(event.clientY - centerY, 2)
+                                if (d_sqr < min_d_sqr)
+                                {
+                                    min_d_sqr = d_sqr;
+                                    grave = red_grave;
+                                }
+                            }
+                        }
+                    }
+                    else if (draggingPiece.classList.contains("blue-piece"))
+                    {
+                        for (const blue_grave of document.getElementsByClassName("grave Blue"))
+                        {
+                            if (blue_grave.children.length === 0)
+                            {
+                                const { left, top, width, height } = blue_grave.getBoundingClientRect()
+                                const centerX = left + width / 2
+                                const centerY = top + height / 2
+                                const d_sqr = Math.pow(event.clientX - centerX, 2) + Math.pow(event.clientY - centerY, 2)
+                                if (d_sqr < min_d_sqr)
+                                {
+                                    min_d_sqr = d_sqr;
+                                    grave = blue_grave;
+                                }
+                            }
+                        }
+                    }
+                    console.log(`${draggingPiece.name}死亡`);
+                    if (draggingPiece === redCarrier)
+                    {
+                        draggingPiece.parentElement.appendChild(redFlag);
+                        console.log(`${draggingPiece.name}掉落帅旗`);
+                        redCarrier = null;
+                    }
+                    else if (draggingPiece === blueCarrier)
+                    {
+                        draggingPiece.parentElement.appendChild(blueFlag);
+                        console.log(`${draggingPiece.name}掉落帅旗`);
+                        blueCarrier = null;
+                    }
+                    grave.appendChild(draggingPiece);
+                    saveState();
+                }
+                draggingPiece = null;
+                draggingPieceParent = null;
+            }
+        });
+
+    });
+
     // piece.addEventListener("touchstart", dragStart);
-    piece.addEventListener("dragend", dragEnd);
     // piece.addEventListener("touchend", dragEnd);
     piece.addEventListener("click", clickPiece);
     piece.addEventListener("mouseenter", onMouseEnterPiece);
@@ -1304,90 +1385,15 @@ function initializeGame()
 {
 
     createChessboard();
-
-    // 为body增加dragover事件监听以便全局拖动
-    document.body.addEventListener("dragover", function (event)
+    document.addEventListener('contextmenu', event => event.preventDefault()); // 禁用右键菜单
+    document.addEventListener('mouseup', function (event)
     {
-        event.preventDefault();
-    });
-
-    document.body.addEventListener("drop", function (event)
-    {
-        const chessboardRect = document.getElementById("chessboard").getBoundingClientRect();
-
-        if (event.clientX < chessboardRect.left || event.clientX > chessboardRect.right || event.clientY < chessboardRect.top || event.clientY > chessboardRect.bottom)
+        if (event.button === 2)
         {
-            event.preventDefault();
-            var grave = null;
-            let min_d_sqr = 100000000;
-            if (draggingPiece.classList.contains("red-piece"))
-            {
-
-                for (const red_grave of document.getElementsByClassName("grave Red"))
-                {
-                    // 如果red_grave没有child
-                    if (red_grave.children.length === 0)
-                    {
-                        const { left, top, width, height } = red_grave.getBoundingClientRect()
-                        const centerX = left + width / 2
-                        const centerY = top + height / 2
-                        const d_sqr = Math.pow(event.clientX - centerX, 2) + Math.pow(event.clientY - centerY, 2)
-                        if (d_sqr < min_d_sqr)
-                        {
-                            min_d_sqr = d_sqr;
-                            grave = red_grave;
-                        }
-                    }
-                }
-            }
-            else if (draggingPiece.classList.contains("blue-piece"))
-            {
-                for (const blue_grave of document.getElementsByClassName("grave Blue"))
-                {
-                    if (blue_grave.children.length === 0)
-                    {
-                        const { left, top, width, height } = blue_grave.getBoundingClientRect()
-                        const centerX = left + width / 2
-                        const centerY = top + height / 2
-                        const d_sqr = Math.pow(event.clientX - centerX, 2) + Math.pow(event.clientY - centerY, 2)
-                        if (d_sqr < min_d_sqr)
-                        {
-                            min_d_sqr = d_sqr;
-                            grave = blue_grave;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                return;
-            }
-            console.log(`${draggingPiece.name}死亡`);
-            if (draggingPiece === redCarrier)
-            {
-                draggingPiece.parentElement.appendChild(redFlag);
-                console.log(`${draggingPiece.name}掉落帅旗`);
-                redCarrier = null;
-            }
-            else if (draggingPiece === blueCarrier)
-            {
-                draggingPiece.parentElement.appendChild(blueFlag);
-                console.log(`${draggingPiece.name}掉落帅旗`);
-                blueCarrier = null;
-            }
-            grave.appendChild(draggingPiece);
-            saveState();
+            event.preventDefault()
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
     });
-
-    for (const cell of document.getElementsByClassName("cell"))
-    {
-        cell.addEventListener("dragover", function (event)
-        {
-            event.preventDefault();
-        });
-        cell.addEventListener("drop", dropPiece);
-    }
 
     for (var i = 1; i <= 6; i++)
     {
