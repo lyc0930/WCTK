@@ -1122,7 +1122,7 @@ function onMouseLeavePiece(event)
 function draw(line, color='rgba(50, 50, 50)', isArrow=true)
 {
     var cellSize = canvas.width / 7; // 计算每个单元格的大小
-    const width = 10;
+    const width = 20;
     ctx.beginPath();
     ctx.lineWidth = width;
     ctx.lineCap = "round";
@@ -1135,6 +1135,10 @@ function draw(line, color='rgba(50, 50, 50)', isArrow=true)
         const Py = line[i - 1][0] * cellSize + cellSize / 2;
         const Qx = line[i][1] * cellSize + cellSize / 2;
         const Qy = line[i][0] * cellSize + cellSize / 2;
+        if (Px === Qx && Py === Qy)
+        {
+            continue;
+        }
 
         ctx.moveTo(Px, Py);
         ctx.lineTo(Qx, Qy);
@@ -1151,6 +1155,11 @@ function draw(line, color='rgba(50, 50, 50)', isArrow=true)
             const Py = line[i - 1][0] * cellSize + cellSize / 2;
             const Qx = line[i][1] * cellSize + cellSize / 2;
             const Qy = line[i][0] * cellSize + cellSize / 2;
+
+            if (Px === Qx && Py === Qy)
+            {
+                continue;
+            }
 
             ctx.moveTo(Px, Py);
             ctx.lineTo(Qx, Qy);
@@ -1280,7 +1289,6 @@ function createPiece(color, name, index)
 
                 if (event.clientX >= chessboardRect.left && event.clientX <= chessboardRect.right && event.clientY >= chessboardRect.top && event.clientY <= chessboardRect.bottom) // 在棋盘范围内
                 {
-                    // TODO　原地不画画
                     var targetCell = null;
                     let min_d_sqr = 100000000;
                     for (const cell of document.getElementsByClassName("cell"))
