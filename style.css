@@ -68,6 +68,11 @@ body {
     z-index: 70;
 }
 
+.checkboxPanel {
+    margin-left: 0.3em;
+    margin-right: 0.3em;
+}
+
 #redMenuList>.menu {
     border-color: rgba(255, 0, 0, 0.35);
 }
@@ -142,24 +147,6 @@ input[name="blueCheckbox"]::before {
 }
 
 @media screen and (orientation:landscape) {
-    .graveyard {
-        width: 39vmin;
-        height: 13vmin;
-        position: absolute;
-        box-sizing: content-box;
-        display: flex;
-        flex-wrap: wrap;
-        top: 94vmin;
-    }
-
-    #redgraveyard {
-        left: calc(50vw - 45.5vmin);
-    }
-
-    #bluegraveyard {
-        right: calc(50vw - 45.5vmin);
-    }
-
     .menuList {
         width: 28vmin;
         height: 93vmin;
@@ -175,6 +162,7 @@ input[name="blueCheckbox"]::before {
 
     .menu {
         width: 28vmin;
+        height: 25vmin;
     }
 
     .menu>div {
@@ -207,24 +195,6 @@ input[name="blueCheckbox"]::before {
         right: 0;
         top: 0;
         bottom: 0;
-    }
-
-    .graveyard {
-        width: 39vmin;
-        height: 13vmin;
-        position: absolute;
-        box-sizing: content-box;
-        display: flex;
-        flex-wrap: wrap;
-        top: calc(49vmin - 2px);
-    }
-
-    #redgraveyard {
-        left: calc(50vw - 45.5vmin);
-    }
-
-    #bluegraveyard {
-        right: calc(50vw - 45.5vmin);
     }
 
     .menuList {
@@ -273,6 +243,12 @@ input[name="blueCheckbox"]::before {
     width: 13vmin;
     height: 13vmin;
     /* border: .1vmin solid purple; */
+    display: none;
+    margin-left: auto;
+    margin-right: auto;
+    top: 0.5em;
+    left: 0;
+    right: 0;
     border: 0;
     box-sizing: border-box;
     position: relative;

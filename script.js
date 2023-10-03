@@ -233,7 +233,6 @@ function saveState()
         if (piece.parentElement.classList.contains("grave"))
         {
             player.alive = false;
-            player.grave = piece.parentElement;
             player.carrier = false;
         }
         else
@@ -310,7 +309,7 @@ function recoverStatefrom(state)
         }
         else
         {
-            const grave = player.grave;
+            const grave = document.getElementById("grave" + index);
             grave.appendChild(player.piece);
         }
 
@@ -704,8 +703,8 @@ function piecePositionChange(piece, cell)
         redCarrier = piece;
         redCarrier.appendChild(redFlag);
         piece.carrier = true;
-        const oldCheckbox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(redCarrier) + 1));
-        oldCheckbox.checked = false;
+        const checkBox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(piece) + 1));
+        checkBox.checked = true;
         console.log(`${piece.name}成为主帅`);
     }
     if (blueFlag.parentElement === cell && blueCarrier === null && piece.classList.contains("blue-piece"))
@@ -713,8 +712,8 @@ function piecePositionChange(piece, cell)
         blueCarrier = piece;
         blueCarrier.appendChild(blueFlag);
         piece.carrier = true;
-        const oldCheckbox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(redCarrier) + 1));
-        oldCheckbox.checked = false;
+        const checkBox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(piece) + 1));
+        checkBox.checked = true;
         console.log(`${piece.name}成为主帅`);
     }
 
@@ -754,6 +753,24 @@ function leap(piece, cell, isDraw=false)
         // 复活逻辑
         if (piece.parentElement.classList.contains("grave"))
         {
+            const index = Pieces.indexOf(piece) + 1;
+            const grave = document.getElementById("grave" + index);
+            grave.style.display = "none";
+
+            const carrierCheckbox = document.getElementById("carrierCheckbox" + index);
+            const actedCheckbox = document.getElementById("actedCheckbox" + index);
+            carrierCheckbox.disabled = false;
+            actedCheckbox.disabled = false;
+
+            const HPPanel = document.getElementById("HPPanel" + index);
+            const weaponPanel = document.getElementById("weaponPanel" + index);
+            const armorPanel = document.getElementById("armorPanel" + index);
+            const horsePanel = document.getElementById("horsePanel" + index);
+            HPPanel.style.display = "block";
+            weaponPanel.style.display = "block";
+            armorPanel.style.display = "block";
+            horsePanel.style.display = "block";
+
             console.log(`${piece.name}登场于(${row + 1}, ${col + 1})`);
         }
         else
@@ -798,6 +815,51 @@ function swap(pieceP, pieceQ)
         cellP.appendChild(pieceP);
         cellQ.appendChild(pieceQ);
         return false;
+    }
+}
+
+// 死亡逻辑
+function bury(piece)
+{
+    if (!piece.parentElement.classList.contains("grave"))
+    {
+        const index = Pieces.indexOf(piece) + 1;
+        const grave = document.getElementById("grave" + index);
+        grave.style.display = "block";
+
+        const carrierCheckbox = document.getElementById("carrierCheckbox" + index);
+        carrierCheckbox.disabled = true;
+
+        console.log(`${piece.name}死亡`);
+        if (piece === redCarrier)
+        {
+            piece.parentElement.appendChild(redFlag);
+            console.log(`${piece.name}掉落帅旗`);
+            carrierCheckbox.checked = false;
+            redCarrier = null;
+        }
+        else if (piece === blueCarrier)
+        {
+            piece.parentElement.appendChild(blueFlag);
+            console.log(`${piece.name}掉落帅旗`);
+            carrierCheckbox.checked = false;
+            blueCarrier = null;
+        }
+
+        const actedCheckbox = document.getElementById("actedCheckbox" + index);
+        actedCheckbox.disabled = true;
+
+        const HPPanel = document.getElementById("HPPanel" + index);
+        const weaponPanel = document.getElementById("weaponPanel" + index);
+        const armorPanel = document.getElementById("armorPanel" + index);
+        const horsePanel = document.getElementById("horsePanel" + index);
+        HPPanel.style.display = "none";
+        weaponPanel.style.display = "none";
+        armorPanel.style.display = "none";
+        horsePanel.style.display = "none";
+
+        grave.appendChild(piece);
+        saveState();
     }
 }
 
@@ -1139,20 +1201,6 @@ function createChessboard()
             chessboard.appendChild(cell);
         }
     }
-    for (var i = 0; i < 3; i++)
-    {
-        const redGraveYard = document.getElementById("redgraveyard");
-        const grave = document.createElement("div");
-        grave.className = "grave Red";
-        redGraveYard.appendChild(grave);
-    }
-    for (var i = 0; i < 3; i++)
-    {
-        const blueGraveYard = document.getElementById("bluegraveyard");
-        const grave = document.createElement("div");
-        grave.className = "grave Blue";
-        blueGraveYard.appendChild(grave);
-    }
 }
 
 // 创建棋子
@@ -1251,62 +1299,7 @@ function createPiece(color, name, index)
                 }
                 else
                 { // 超出棋盘范围
-                    // TODO 将grave改为放入各自的menu
-                    var grave = null;
-                    let min_d_sqr = 100000000;
-                    if (draggingPiece.classList.contains("red-piece"))
-                    {
-
-                        for (const red_grave of document.getElementsByClassName("grave Red"))
-                        {
-                            // 如果red_grave没有child
-                            if (red_grave.children.length === 0)
-                            {
-                                const { left, top, width, height } = red_grave.getBoundingClientRect()
-                                const centerX = left + width / 2
-                                const centerY = top + height / 2
-                                const d_sqr = Math.pow(event.clientX - centerX, 2) + Math.pow(event.clientY - centerY, 2)
-                                if (d_sqr < min_d_sqr)
-                                {
-                                    min_d_sqr = d_sqr;
-                                    grave = red_grave;
-                                }
-                            }
-                        }
-                    }
-                    else if (draggingPiece.classList.contains("blue-piece"))
-                    {
-                        for (const blue_grave of document.getElementsByClassName("grave Blue"))
-                        {
-                            if (blue_grave.children.length === 0)
-                            {
-                                const { left, top, width, height } = blue_grave.getBoundingClientRect()
-                                const centerX = left + width / 2
-                                const centerY = top + height / 2
-                                const d_sqr = Math.pow(event.clientX - centerX, 2) + Math.pow(event.clientY - centerY, 2)
-                                if (d_sqr < min_d_sqr)
-                                {
-                                    min_d_sqr = d_sqr;
-                                    grave = blue_grave;
-                                }
-                            }
-                        }
-                    }
-                    console.log(`${draggingPiece.name}死亡`);
-                    if (draggingPiece === redCarrier)
-                    {
-                        draggingPiece.parentElement.appendChild(redFlag);
-                        console.log(`${draggingPiece.name}掉落帅旗`);
-                        redCarrier = null;
-                    }
-                    else if (draggingPiece === blueCarrier)
-                    {
-                        draggingPiece.parentElement.appendChild(blueFlag);
-                        console.log(`${draggingPiece.name}掉落帅旗`);
-                        blueCarrier = null;
-                    }
-                    grave.appendChild(draggingPiece);
-                    saveState();
+                    bury(draggingPiece);
                 }
                 draggingPiece = null;
                 draggingPieceParent = null;
@@ -1370,62 +1363,8 @@ function createPiece(color, name, index)
                     leap(draggingPiece, targetCell);
                 }
                 else
-                { // 超出棋盘范围
-                    var grave = null;
-                    let min_d_sqr = 100000000;
-                    if (draggingPiece.classList.contains("red-piece"))
-                    {
-
-                        for (const red_grave of document.getElementsByClassName("grave Red"))
-                        {
-                            // 如果red_grave没有child
-                            if (red_grave.children.length === 0)
-                            {
-                                const { left, top, width, height } = red_grave.getBoundingClientRect()
-                                const centerX = left + width / 2
-                                const centerY = top + height / 2
-                                const d_sqr = Math.pow(event.changedTouches[0].clientX - centerX, 2) + Math.pow(event.changedTouches[0].clientY - centerY, 2)
-                                if (d_sqr < min_d_sqr)
-                                {
-                                    min_d_sqr = d_sqr;
-                                    grave = red_grave;
-                                }
-                            }
-                        }
-                    }
-                    else if (draggingPiece.classList.contains("blue-piece"))
-                    {
-                        for (const blue_grave of document.getElementsByClassName("grave Blue"))
-                        {
-                            if (blue_grave.children.length === 0)
-                            {
-                                const { left, top, width, height } = blue_grave.getBoundingClientRect()
-                                const centerX = left + width / 2
-                                const centerY = top + height / 2
-                                const d_sqr = Math.pow(event.changedTouches[0].clientX - centerX, 2) + Math.pow(event.changedTouches[0].clientY - centerY, 2)
-                                if (d_sqr < min_d_sqr)
-                                {
-                                    min_d_sqr = d_sqr;
-                                    grave = blue_grave;
-                                }
-                            }
-                        }
-                    }
-                    console.log(`${draggingPiece.name}死亡`);
-                    if (draggingPiece === redCarrier)
-                    {
-                        draggingPiece.parentElement.appendChild(redFlag);
-                        console.log(`${draggingPiece.name}掉落帅旗`);
-                        redCarrier = null;
-                    }
-                    else if (draggingPiece === blueCarrier)
-                    {
-                        draggingPiece.parentElement.appendChild(blueFlag);
-                        console.log(`${draggingPiece.name}掉落帅旗`);
-                        blueCarrier = null;
-                    }
-                    grave.appendChild(draggingPiece);
-                    saveState();
+                {
+                    bury(draggingPiece);
                 }
                 draggingPiece = null;
                 draggingPieceParent = null;
