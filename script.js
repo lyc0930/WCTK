@@ -281,8 +281,21 @@ function recoverStatefrom(state)
         {
             avatar.src = "./assets/Avatar/active/" + heroes[player.piece.name][0] + ".png";
         }
+        const grave = document.getElementById("grave" + index);
         if (player.alive)
         {
+            grave.style.display = "none";
+            actedCheckbox.disabled = false;
+
+            const HPPanel = document.getElementById("HPPanel" + index);
+            const weaponPanel = document.getElementById("weaponPanel" + index);
+            const armorPanel = document.getElementById("armorPanel" + index);
+            const horsePanel = document.getElementById("horsePanel" + index);
+            HPPanel.style.display = "block";
+            weaponPanel.style.display = "block";
+            armorPanel.style.display = "block";
+            horsePanel.style.display = "block";
+
             player.piece.HP = player.HP;
             const labelHP = document.getElementById("HP" + index);
             labelHP.textContent = player.HP;
@@ -302,6 +315,7 @@ function recoverStatefrom(state)
 
             player.piece.carrier = player.carrier;
             const carrierCheckbox = document.getElementById("carrierCheckbox" + index);
+            carrierCheckbox.disabled = false;
             carrierCheckbox.checked = player.carrier;
 
             const cell = document.getElementsByClassName("cell")[player.position[0] * 7 + player.position[1]];
@@ -309,7 +323,18 @@ function recoverStatefrom(state)
         }
         else
         {
-            const grave = document.getElementById("grave" + index);
+            grave.style.display = "block";
+            actedCheckbox.disabled = true;
+
+            const HPPanel = document.getElementById("HPPanel" + index);
+            const weaponPanel = document.getElementById("weaponPanel" + index);
+            const armorPanel = document.getElementById("armorPanel" + index);
+            const horsePanel = document.getElementById("horsePanel" + index);
+            HPPanel.style.display = "none";
+            weaponPanel.style.display = "none";
+            armorPanel.style.display = "none";
+            horsePanel.style.display = "none";
+
             grave.appendChild(player.piece);
         }
 
@@ -390,127 +415,6 @@ function clickPiece(event)
     }
 }
 
-function moveSteps(piece, fixed = false, ifConsumeMovePoints = false)
-{
-    movingPiece = piece;
-    if (fixed)
-    {
-        removeHighlight("reachable", clickCell_moveSteps_fixed);
-    }
-    else
-    {
-        removeHighlight("reachable", clickCell_moveSteps);
-    }
-    if (movingPiece)
-    {
-        const distance = distanceMapOf(movingPiece);
-
-        var reachableCells = []
-        for (const cell of document.getElementsByClassName("cell"))
-        {
-            const row = cell.row;
-            const col = cell.col;
-            if (distance[row][col] > 0 && isStayable(cell, movingPiece))
-            {
-                if (!ifConsumeMovePoints && distance[row][col] <= movingPiece.moveSteps)
-                {
-                    reachableCells.push(cell);
-                }
-                if (ifConsumeMovePoints && distance[row][col] <= movingPiece.movePoints)
-                {
-                    reachableCells.push(cell);
-                }
-            }
-        }
-        if (fixed)
-        {
-            highlightCells(reachableCells, "reachable", clickCell_moveSteps_fixed);
-        }
-        else
-        {
-            highlightCells(reachableCells, "reachable", clickCell_moveSteps);
-            movingPiece.addEventListener("click", clickPiece_moveSteps);
-        }
-    }
-}
-
-function clickPiece_moveSteps(event)
-{
-    event.preventDefault();
-    // End moveSteps
-    movingPiece.removeEventListener("click", clickPiece_moveSteps);
-    removeHighlight("reachable", clickCell_moveSteps);
-    movingPiece = null;
-}
-
-function clickCell_moveSteps(event)
-{
-    event.preventDefault();
-    const cell = event.target.closest(".cell");
-    if (movingPiece)
-    {
-        if (move(movingPiece, cell, !(movingPiece.moveSteps && movingPiece.moveSteps > 0)))
-        {
-            moveSteps(movingPiece);
-        }
-    }
-}
-
-function clickCell_moveSteps_fixed(event)
-{
-    event.preventDefault();
-    const cell = event.target.closest(".cell");
-
-    if (movingPiece)
-    {
-        if (move(movingPiece, cell, !(movingPiece.moveSteps && movingPiece.moveSteps > 0)))
-        {
-            moveSteps(movingPiece, true);
-        }
-    }
-}
-
-function clickCell_jump(event)
-{
-    event.preventDefault();
-    const cell = event.target.closest(".cell");
-    if (jumpingPiece)
-    {
-        if (jump(jumpingPiece, cell))
-        {
-            removeHighlight("landable", clickCell_jump);
-            jumpingPiece = null;
-        }
-    }
-}
-
-function clickPiece_swap(event)
-{
-    event.preventDefault();
-    const piece = event.target.closest(".piece");
-    if (jumpingPiece)
-    {
-        if (swap(jumpingPiece, piece))
-        {
-            removeHighlight("targetable", clickPiece_swap);
-            jumpingPiece = null;
-        }
-    }
-}
-
-function clickPiece_control(event)
-{
-    event.preventDefault();
-    const piece = event.target.closest(".piece");
-    if (piece)
-    {
-        removeHighlight("targetable", clickPiece_control);
-        piece.moveSteps = 1;
-        moveSteps(piece, true);
-    }
-
-}
-
 
 // 高亮显示可放置位置
 function highlightCells(cells, className, listener = null)
@@ -563,138 +467,6 @@ function removeHighlight(className, listener = null)
     }
 }
 
-// 计算移动距离
-function distanceMapOf(piece)
-{
-    var distance = new Array(7)
-    for (var i = 0; i < 7; i++)
-    {
-        distance[i] = new Array(7)
-        for (var j = 0; j < 7; j++)
-        {
-            distance[i][j] = 50;
-        }
-    }
-
-    var queue = [];
-    queue.push(piece.parentElement);
-    const startRow = piece.parentElement.row;
-    const startCol = piece.parentElement.col;
-    distance[startRow][startCol] = 0;
-
-    while (queue.length)
-    {
-        const currentCell = queue.shift();
-        const row = currentCell.row;
-        const col = currentCell.col;
-        for (const cell of adjacentCells(currentCell, piece))
-        {
-            const nextRow = cell.row;
-            const nextCol = cell.col;
-            if (distance[nextRow][nextCol] >= 50)
-            {
-                distance[nextRow][nextCol] = distance[row][col] + 1;
-                queue.push(cell);
-            }
-        }
-    }
-
-    for (const cell of document.getElementsByClassName("cell"))
-    {
-        const row = cell.row;
-        const col = cell.col;
-        if (!isStayable(cell, piece))
-        {
-            distance[row][col] = 50;
-        }
-    }
-
-    // distance[startRow][startCol] = 2; // 从原地移动的距离为2
-
-    return distance;
-}
-
-//移动
-function move(piece, cell, ifConsumeMovePoints = false)
-{
-    const row = cell.row;
-    const col = cell.col;
-    const distance = distanceMapOf(piece);
-
-    if (piece && cell.classList.contains("reachable") && (distance[row][col] > 0) && isStayable(cell, piece))
-    {
-        var steps = distance[row][col];
-
-        if (ifConsumeMovePoints)
-        {
-            if (piece.movePoints >= distance[row][col])
-            {
-                piece.movePoints = piece.movePoints - distance[row][col];
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (piece.moveSteps >= distance[row][col])
-            {
-                piece.moveSteps = piece.moveSteps - distance[row][col];
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        // 步进
-        var moveLink = [cell];
-        var currentCell = cell;
-        for (var i = 0; i < steps; i++)
-        {
-            const currRow = currentCell.row;
-            const currCol = currentCell.col;
-            for (const adjacentCell of adjacentCells(currentCell, piece))
-            {
-                const prevRow = adjacentCell.row;
-                const prevCol = adjacentCell.col;
-                if (distance[prevRow][prevCol] === distance[currRow][currCol] - 1)
-                {
-                    moveLink.push(adjacentCell);
-                    currentCell = adjacentCell;
-                    break;
-                }
-            }
-        }
-        // moveLink.pop() // 移除起点
-        var moveLog = `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1})`;
-        for (var i = moveLink.length - 2; i >= 0; i--)
-        {
-            const currentCell = moveLink[i];
-            step(piece, currentCell);
-            moveLog += ` -> (${currentCell.row + 1}, ${currentCell.col + 1})`;
-        }
-        console.log(piece.name, moveLog);
-
-        return true;
-    }
-    return false;
-}
-
-// 移动一步
-// TODO 祖茂
-function step(piece, cell)
-{
-    if (piece && isPassable(cell, piece) && adjacentCells(cell, piece).includes(piece.parentElement))
-{
-        cell.appendChild(piece);
-        piecePositionChange(piece, cell);
-        return true;
-    }
-    return false;
-}
-
 function piecePositionChange(piece, cell)
 {
     // 帅旗逻辑
@@ -719,22 +491,6 @@ function piecePositionChange(piece, cell)
 
     // 保存状态
     saveState();
-}
-
-// 转移
-function jump(piece, cell)
-{
-    const row = cell.row;
-    const col = cell.col;
-    if (piece && cell.classList.contains("landable") && isStayable(cell, piece))
-    {
-        console.log(piece.name, `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) |> (${row + 1}, ${col + 1})`);
-        cell.appendChild(piece);
-        piecePositionChange(piece, cell);
-
-        return true;
-    }
-    return false;
 }
 
 // 任意拖动
@@ -786,38 +542,6 @@ function leap(piece, cell, isDraw=false)
     return false;
 }
 
-// 交换
-function swap(pieceP, pieceQ)
-{
-    const cellP = pieceP.parentElement;
-    const cellQ = pieceQ.parentElement;
-
-    // 临时存放于墓地
-    const grave = document.getElementsByClassName("grave")[0];
-    grave.appendChild(pieceP);
-    grave.appendChild(pieceQ);
-
-    // 交换
-    if ((pieceP && isStayable(cellQ, pieceP)) && pieceQ && isStayable(cellP, pieceQ))
-    {
-        console.log(pieceP.name, `(${cellP.row + 1}, ${cellP.col + 1}) |> (${cellQ.row + 1}, ${cellQ.col + 1})`);
-        cellQ.appendChild(pieceP);
-        piecePositionChange(pieceP, cellQ);
-
-        console.log(pieceQ.name, `(${cellQ.row + 1}, ${cellQ.col + 1}) |> (${cellP.row + 1}, ${cellP.col + 1})`);
-        cellP.appendChild(pieceQ);
-        piecePositionChange(pieceQ, cellP);
-
-        return true;
-    }
-    else
-    {
-        cellP.appendChild(pieceP);
-        cellQ.appendChild(pieceQ);
-        return false;
-    }
-}
-
 // 死亡逻辑
 function bury(piece)
 {
@@ -861,234 +585,6 @@ function bury(piece)
         grave.appendChild(piece);
         saveState();
     }
-}
-
-function AnDuChenCang(user, limit = 3)
-{
-    console.log(`${user.name}使用【暗度陈仓】`);
-    const userRow = user.parentElement.row;
-    const userCol = user.parentElement.col;
-    var landableCells = [];
-    landableCells.push(baseOf(user));
-    jumpingPiece = user;
-    for (const allyPiece of allyPiecesOf(user))
-    {
-        if (allyPiece != user)
-        {
-            for (const adjacentCell of adjacentCells(allyPiece.parentElement, user))
-            {
-                if (isStayable(adjacentCell, user) && (Math.abs(adjacentCell.row - userRow) + Math.abs(adjacentCell.col - userCol)) <= limit)
-                {
-                    landableCells.push(adjacentCell);
-                }
-            }
-        }
-    }
-    highlightCells(landableCells, "landable", clickCell_jump);
-}
-
-function BingGuiShenSu(user)
-{
-    console.log(`${user.name}使用【兵贵神速】`);
-    user.moveSteps = 2;
-    moveSteps(user, true);
-}
-
-function QiMenDunJia(user, limit = 2)
-{
-    console.log(`${user.name}使用【奇门遁甲】`);
-    const userRow = user.parentElement.row;
-    const userCol = user.parentElement.col;
-    var targetablePieces = [];
-    jumpingPiece = user;
-
-    for (const allPiece of allPiecesOf(user))
-    {
-        if (allPiece != user)
-        {
-            if (Math.abs(allPiece.parentElement.row - userRow) + Math.abs(allPiece.parentElement.col - userCol) <= limit)
-            {
-                targetablePieces.push(allPiece);
-            }
-        }
-    }
-    highlightPieces(targetablePieces, "targetable", clickPiece_swap);
-}
-
-function YouDiShenRu(user, limit = 4)
-{
-    console.log(`${user.name}使用【诱敌深入】`);
-    const userRow = user.parentElement.row;
-    const userCol = user.parentElement.col;
-    var targetablePieces = [];
-
-    for (const allPiece of allPiecesOf(user))
-    {
-        if (Math.abs(allPiece.parentElement.row - userRow) + Math.abs(allPiece.parentElement.col - userCol) <= limit)
-        {
-            targetablePieces.push(allPiece);
-        }
-    }
-    highlightPieces(targetablePieces, "targetable", clickPiece_control);
-}
-
-function isStayable(cell, piece = null)
-{
-    var hold_by_enemy = false;
-    for (const enemyPiece of enemyPiecesOf(piece))
-    {
-        if (cell.contains(enemyPiece))
-        {
-            hold_by_enemy = true;
-            break;
-        }
-    }
-    var hold_gucheng = false;
-
-    for (const enemyPiece of enemyPiecesOf(piece))
-    {
-        if (enemyPiece.name === "曹仁")
-        {
-            hold_gucheng = true;
-            break;
-        }
-    }
-
-    if (hold_by_enemy && hold_gucheng)
-    {
-        if (cell.classList.contains("base"))
-        {
-            if (piece.classList.contains("blue-piece") && !cell.classList.contains("Blue"))
-            {
-                return false;
-            }
-            if (piece.classList.contains("red-piece") && !cell.classList.contains("Red"))
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
-    if (cell.classList.contains("camp") || cell.classList.contains("base"))
-    {
-        return true;
-    }
-    if (cell === piece.parentElement)
-    {
-        return true;
-    }
-    for (const child of cell.children)
-    {
-        if (child.classList.contains("piece"))
-        {
-            return false;
-        }
-    }
-    if (cell.classList.contains("ridge"))
-    {
-        return false;
-    }
-    return true;
-}
-
-function isPassable(cell, piece = null)
-{
-    // TODO: 穿越马
-    // TODO: 张绣
-    return isStayable(cell, piece);
-}
-
-function adjacentCells(cell, piece = null)
-{
-    var adjCells = [];
-    const cells = document.getElementsByClassName("cell");
-    const row = cell.row;
-    const col = cell.col;
-    for (var i = 0; i < 4; i++)
-    {
-        // 下上右左
-        const nextRow = row + (i === 0 ? 1 : (i === 1 ? -1 : 0));
-        const nextCol = col + (i === 2 ? 1 : (i === 3 ? -1 : 0));
-        const nextCell = cells[nextRow * 7 + nextCol];
-        if (nextRow >= 0 && nextRow < 7 && nextCol >= 0 && nextCol < 7 && isPassable(nextCell, piece))
-        {
-            adjCells.push(nextCell);
-        }
-    }
-    if (piece === currentPlayer && piece.name === "吕蒙" && cell.classList.contains("lake"))
-    // if (piece.skills.contains("渡江"))
-    {
-        for (const lakeCell of document.getElementsByClassName("lake"))
-        {
-            adjCells.push(lakeCell);
-        }
-    }
-    return adjCells;
-}
-
-function allPiecesOf(piece)
-{
-    if (piece.classList.contains("piece"))
-    {
-        const allPieces = document.getElementsByClassName("piece");
-        return Array.from(allPieces).filter(piece => !piece.parentElement.classList.contains("grave"));
-    }
-    return null;
-}
-
-function allyPiecesOf(piece)
-{
-    if (piece.classList.contains("piece"))
-    {
-        if (piece.classList.contains("red-piece"))
-        {
-            const redPieces = document.getElementsByClassName("red-piece");
-            return Array.from(redPieces).filter(piece => !piece.parentElement.classList.contains("grave"));
-        }
-        else
-        {
-            const bluePieces = document.getElementsByClassName("blue-piece");
-            return Array.from(bluePieces).filter(piece => !piece.parentElement.classList.contains("grave"));
-        }
-    }
-    return null;
-}
-
-function enemyPiecesOf(piece)
-{
-    if (piece.classList.contains("piece"))
-    {
-        if (piece.classList.contains("red-piece"))
-        {
-            const bluePieces = document.getElementsByClassName("blue-piece");
-            return Array.from(bluePieces).filter(piece => !piece.parentElement.classList.contains("grave"));
-        }
-        else
-        {
-            const redPieces = document.getElementsByClassName("red-piece");
-            return Array.from(redPieces).filter(piece => !piece.parentElement.classList.contains("grave"));
-        }
-    }
-    return null;
-}
-
-function baseOf(piece)
-{
-    if (piece.classList.contains("piece"))
-    {
-        if (piece.classList.contains("red-piece"))
-        {
-            return document.getElementsByClassName("Red base")[0];
-        }
-        else
-        {
-            return document.getElementsByClassName("Blue base")[0];
-        }
-    }
-    return null;
 }
 
 // 棋子悬浮提示
@@ -1648,52 +1144,6 @@ function initializeGame()
     }
 
     initializePieces();
-
-    // TODO 功能按钮
-    // var buttonMovePhase = document.getElementById("movePhase");
-    // buttonMovePhase.addEventListener("click", function (event)
-    // {
-    //     if (selectedPiece.acted === false)
-    //     {
-    //         console.log("移动阶段开始");
-    //         // 移动阶段开始时
-
-    //         // 获得移动力
-    //         selectedPiece.movePoints = selectedPiece.HP;
-
-    //         // 移动阶段
-    //         moveSteps(selectedPiece, fixed = false, ifConsumeMovePoints = true);
-    //     }
-    // });
-    // var buttonXunShan = document.getElementById("XunShan");
-    // buttonXunShan.addEventListener("click", function (event)
-    // {
-    //     console.log("迅【闪】");
-    //     selectedPiece.moveSteps = 1;
-    //     moveSteps(selectedPiece, true);
-    // });
-    // var buttonAnDuChenCang = document.getElementById("AnDuChenCang");
-    // buttonAnDuChenCang.addEventListener("click", function (event)
-    // {
-    //     AnDuChenCang(selectedPiece)
-    // });
-    // var buttonBingGuiShenSu = document.getElementById("BingGuiShenSu");
-    // buttonBingGuiShenSu.addEventListener("click", function (event)
-    // {
-    //     BingGuiShenSu(selectedPiece)
-
-    // });
-    // var buttonQiMenDunJia = document.getElementById("QiMenDunJia");
-    // buttonQiMenDunJia.addEventListener("click", function (event)
-    // {
-    //     QiMenDunJia(selectedPiece);
-
-    // });
-    // var buttonYouDiShenRu = document.getElementById("YouDiShenRu");
-    // buttonYouDiShenRu.addEventListener("click", function (event)
-    // {
-    //     YouDiShenRu(selectedPiece);
-    // });
 
     // 撤销重做
     const chessboard = document.getElementById("chessboard");
