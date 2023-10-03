@@ -1232,6 +1232,7 @@ function createPiece(color, name, index)
 
                 if (event.clientX >= chessboardRect.left && event.clientX <= chessboardRect.right && event.clientY >= chessboardRect.top && event.clientY <= chessboardRect.bottom) // 在棋盘范围内
                 {
+                    // TODO　原地不画画
                     var targetCell = null;
                     let min_d_sqr = 100000000;
                     for (const cell of document.getElementsByClassName("cell"))
@@ -1250,6 +1251,7 @@ function createPiece(color, name, index)
                 }
                 else
                 { // 超出棋盘范围
+                    // TODO 将grave改为放入各自的menu
                     var grave = null;
                     let min_d_sqr = 100000000;
                     if (draggingPiece.classList.contains("red-piece"))
