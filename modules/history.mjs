@@ -134,14 +134,8 @@ function recoverStatefrom(state)
             grave.style.display = "none";
             actedCheckbox.disabled = false;
 
-            const HPPanel = document.getElementById("HPPanel" + index);
-            const weaponPanel = document.getElementById("weaponPanel" + index);
-            const armorPanel = document.getElementById("armorPanel" + index);
-            const horsePanel = document.getElementById("horsePanel" + index);
-            HPPanel.style.display = "block";
-            weaponPanel.style.display = "block";
-            armorPanel.style.display = "block";
-            horsePanel.style.display = "block";
+            const alivePanel = document.getElementById("alivePanel" + index);
+            alivePanel.style.display = "flex";
 
             player.piece.HP = player.HP;
             const labelHP = document.getElementById("HP" + index);
@@ -169,18 +163,11 @@ function recoverStatefrom(state)
         }
         else
         {
-            grave.style.display = "block";
+            grave.style.display = "flex";
             actedCheckbox.disabled = true;
 
-            const HPPanel = document.getElementById("HPPanel" + index);
-            const weaponPanel = document.getElementById("weaponPanel" + index);
-            const armorPanel = document.getElementById("armorPanel" + index);
-            const horsePanel = document.getElementById("horsePanel" + index);
-            HPPanel.style.display = "none";
-            weaponPanel.style.display = "none";
-            armorPanel.style.display = "none";
-            horsePanel.style.display = "none";
-
+            const alivePanel = document.getElementById("alivePanel" + index);
+            alivePanel.style.display = "none";
             grave.appendChild(player.piece);
         }
 

@@ -123,14 +123,8 @@ function leap(piece, cell, isDraw = false)
             carrierCheckbox.disabled = false;
             actedCheckbox.disabled = false;
 
-            const HPPanel = document.getElementById("HPPanel" + index);
-            const weaponPanel = document.getElementById("weaponPanel" + index);
-            const armorPanel = document.getElementById("armorPanel" + index);
-            const horsePanel = document.getElementById("horsePanel" + index);
-            HPPanel.style.display = "block";
-            weaponPanel.style.display = "block";
-            armorPanel.style.display = "block";
-            horsePanel.style.display = "block";
+            const alivePanel = document.getElementById("alivePanel" + index);
+            alivePanel.style.display = "flex";
 
             console.log(`${piece.name}登场于(${row + 1}, ${col + 1})`);
         }
@@ -186,7 +180,7 @@ function bury(piece)
     {
         const index = Pieces.indexOf(piece) + 1;
         const grave = document.getElementById("grave" + index);
-        grave.style.display = "block";
+        grave.style.display = "flex";
 
         const carrierCheckbox = document.getElementById("carrierCheckbox" + index);
         carrierCheckbox.disabled = true;
@@ -204,14 +198,8 @@ function bury(piece)
         const actedCheckbox = document.getElementById("actedCheckbox" + index);
         actedCheckbox.disabled = true;
 
-        const HPPanel = document.getElementById("HPPanel" + index);
-        const weaponPanel = document.getElementById("weaponPanel" + index);
-        const armorPanel = document.getElementById("armorPanel" + index);
-        const horsePanel = document.getElementById("horsePanel" + index);
-        HPPanel.style.display = "none";
-        weaponPanel.style.display = "none";
-        armorPanel.style.display = "none";
-        horsePanel.style.display = "none";
+        const alivePanel = document.getElementById("alivePanel" + index);
+        alivePanel.style.display = "none";
 
         grave.appendChild(piece);
         saveState();

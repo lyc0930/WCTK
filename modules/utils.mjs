@@ -219,21 +219,21 @@ function HPColor(HP, maxHP)
     var factor = HP / maxHP;
 
     var color1 = { r: 255, g: 50, b: 50 }; // 红色
-    var color2 = { r: 200, g: 100, b: 0 }; // 黄色
+    var color2 = { r: 255, g: 127, b: 0 }; // 橙色
     var color3 = { r: 50, g: 160, b: 50 }; // 绿色
 
     var result = {};
 
-    if (factor > 0.5)
+    if (factor >= 0.5)
     {
-        // 血量在一半以上，从黄色插值到绿色
+        // 血量在一半以上，从橙色插值到绿色
         factor = (factor - 0.5) * 2; // 调整因子，使其在0到1之间
         result.r = Math.round(color2.r + factor * (color3.r - color2.r));
         result.g = Math.round(color2.g + factor * (color3.g - color2.g));
         result.b = Math.round(color2.b + factor * (color3.b - color2.b));
     } else
     {
-        // 血量在一半以下，从红色插值到黄色
+        // 血量在一半以下，从红色插值到橙色
         factor = factor * 2; // 调整因子，使其在0到1之间
         result.r = Math.round(color1.r + factor * (color2.r - color1.r));
         result.g = Math.round(color1.g + factor * (color2.g - color1.g));

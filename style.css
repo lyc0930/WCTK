@@ -54,23 +54,50 @@ body {
     margin-left: auto;
     margin-right: auto;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: column;
+    flex-wrap: no-wrap;
+    justify-content: space-evenly;
     align-items: center;
     position: absolute;
 }
 
 .menu {
-    border: 2px solid gray;
+    border: 4px solid gray;
     background-color: rgba(255, 255, 255, 0.7);
     padding: 8px 8px 8px 8px;
     border-radius: 8px;
     z-index: 70;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: no-wrap;
+    justify-content: flex-start;
+}
+
+.menu>div {
+    margin-top: 0.16em;
+    margin-bottom: 0.16em;
+}
+
+.heroSelectPanel, .HPPanel, .weaponPanel, .armorPanel, .horsePanel {
+    display: flex;
+    justify-content: center;
 }
 
 .checkboxPanel {
-    margin-left: 0.3em;
-    margin-right: 0.3em;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.alivePanel {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: no-wrap;
+    justify-content: space-evenly;
+}
+
+.alivePanel > div {
+    margin-top: 0.16em;
+    margin-bottom: 0.16em;
 }
 
 #redMenuList>.menu {
@@ -85,26 +112,27 @@ input[type="checkbox"] {
     appearance: none;
     background-color: transparent;
     margin: 0;
-    width: 1.5em;
-    height: 1.5em;
-    border: 2px solid rgba(0, 0, 0, 0.35);
-    border-radius: 0.15em;
-    transform: translateY(-0.1em);
+    width: 2.0em;
+    height: 2.0em;
+    border: 4px solid rgba(0, 0, 0, 0.35);
+    border-radius: 6px;
+    transform: translateY(-0.18em);
     display: inline-flex;
     place-content: center;
 }
 
 input[type="checkbox"]::before {
     content: "";
-    width: 1.0em;
-    height: 1.0em;
-    transform: scale(0) translateY(0.1em);
+    width: 1.25em;
+    height: 1.25em;
+    transform: scale(0) translateY(0.00em);
     transition: 120ms transform ease-in-out;
     box-shadow: inset 2em 1em rgba(0, 0, 0, 0.35);
 }
 
 input[type="checkbox"]:checked::before {
-    transform: scale(1) translateY(0.1em);
+    border-radius: 3px;
+    transform: scale(1) translateY(0.05em);
 }
 
 input[name="redCheckbox"] {
@@ -117,16 +145,18 @@ input[name="blueCheckbox"] {
 
 input[name="redCheckbox"]::before {
     border-color: rgba(255, 0, 0, 0.35);
-    box-shadow: inset 1em 1em rgba(255, 0, 0, 0.60);
+    box-shadow: inset 1.25em 1.25em rgba(255, 0, 0, 0.60);
 }
 
 input[name="blueCheckbox"]::before {
     border-color: rgba(0, 0, 255, 0.35);
-    box-shadow: inset 1em 1em rgba(0, 0, 255, 0.60);
+    box-shadow: inset 1.5em 1.5em rgba(0, 0, 255, 0.60);
 }
 
 .numberButton {
     border-radius: 50%;
+    margin-left: 0.24em;
+    margin-right: 0.24em;
     padding: 0 0 0 0;
     text-align: center;
     align-content: center;
@@ -134,12 +164,17 @@ input[name="blueCheckbox"]::before {
     border: 1px outset gray;
 }
 
+.number {
+    margin-left: 0.24em;
+    margin-right: 0.24em;
+}
+
 
 .functionButton {
     width: 48%;
     border-radius: 8px;
     padding: 4px 4px 4px 4px;
-    font-size: 1em;
+    font-size: 1.6em;
     text-align: center;
     align-content: center;
     background-color: white;
@@ -153,22 +188,20 @@ input[name="blueCheckbox"]::before {
     }
 
     #redMenuList {
-        left: 5vmin;
+        left: 10vmin;
     }
 
     #blueMenuList {
-        right: 5vmin;
+        right: 10vmin;
     }
 
     .menu {
-        width: 28vmin;
-        height: 25vmin;
+        width: 16em;
+        height: 16em;
     }
 
     .menu>div {
-        margin-top: 0.2em;
-        margin-bottom: 0.2em;
-        font-size: 1.2em;
+        font-size: 1.6em;
     }
 
     .heroSelect {
@@ -176,14 +209,10 @@ input[name="blueCheckbox"]::before {
         font-size: 1.0em;
     }
 
-    .heroSelect option {
-        font-size: 1.0em;
-    }
-
     .numberButton {
-        width: 1.5em;
-        height: 1.5em;
-        transform: translate(0, -12%);
+        width: 2.0em;
+        height: 2.0em;
+        transform: translate(0, 16%);
     }
 
 }
@@ -216,8 +245,6 @@ input[name="blueCheckbox"]::before {
     }
 
     .menu>div {
-        margin-top: 3px;
-        margin-bottom: 3px;
         font-size: 36px;
     }
 
