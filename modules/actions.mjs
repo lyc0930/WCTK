@@ -1,4 +1,5 @@
-import { adjacentCells, distanceMapOf, isPassable, isStayable, draw } from "./utils.mjs";
+import { terrain, heroes, weapons, armors, horses } from './data.mjs';
+import { adjacentCells, distanceMapOf, isPassable, isStayable, HPColor, draw } from "./utils.mjs";
 import { saveState } from "./history.mjs";
 import { Pieces, redFlag, blueFlag, redCarrier, blueCarrier, setRedCarrier, setBlueCarrier } from "../script.js";
 
@@ -123,6 +124,19 @@ function leap(piece, cell, isDraw = false)
             carrierCheckbox.disabled = false;
             actedCheckbox.disabled = false;
 
+            const labelHP = document.getElementById("HP" + index);
+            labelHP.textContent = heroes[piece.name][1];
+            labelHP.style.color = HPColor(heroes[piece.name][1], heroes[piece.name][1]);
+
+            const weaponSelect = document.getElementById("weaponSelect" + index);
+            weaponSelect.value = "";
+
+            const armorSelect = document.getElementById("armorSelect" + index);
+            armorSelect.value = "";
+
+            const horseSelect = document.getElementById("horseSelect" + index);
+            horseSelect.value = "";
+
             const alivePanel = document.getElementById("alivePanel" + index);
             alivePanel.style.display = "flex";
 
@@ -197,6 +211,19 @@ function bury(piece)
 
         const actedCheckbox = document.getElementById("actedCheckbox" + index);
         actedCheckbox.disabled = true;
+
+        const labelHP = document.getElementById("HP" + index);
+        labelHP.textContent = 0;
+        labelHP.style.color = HPColor(0, heroes[piece.name][1]);
+
+        const weaponSelect = document.getElementById("weaponSelect" + index);
+        weaponSelect.value = "";
+
+        const armorSelect = document.getElementById("armorSelect" + index);
+        armorSelect.value = "";
+
+        const horseSelect = document.getElementById("horseSelect" + index);
+        horseSelect.value = "";
 
         const alivePanel = document.getElementById("alivePanel" + index);
         alivePanel.style.display = "none";

@@ -210,7 +210,7 @@ function createPiece(color, name, index)
     piece.classList.add(color === "red" ? "red-piece" : "blue-piece");
     piece.title = name;
     piece.name = name;
-    piece.maxHP = heroes[name][1];
+    // piece.maxHP = heroes[name][1];
     piece.HP = heroes[name][2];
     piece.weapons = [""];
     piece.armors = [""];
@@ -231,10 +231,10 @@ function createPiece(color, name, index)
 
     const labelHP = document.getElementById("HP" + index);
     labelHP.textContent = piece.HP;
-    labelHP.style.color = HPColor(piece.HP, piece.maxHP);
+    labelHP.style.color = HPColor(piece.HP, heroes[piece.name][1]);
 
     const labelMaxHP = document.getElementById("maxHP" + index);
-    labelMaxHP.textContent = piece.maxHP;
+    labelMaxHP.textContent = heroes[piece.name][1];
 
     // 添加鼠标事件
     piece.addEventListener("mousedown", function (event)
@@ -460,7 +460,7 @@ function initializeGame()
             piece.name = heroSelect.value;
             const avatar = piece.querySelector(".avatar");
             avatar.src = "./assets/Avatar/active/" + heroes[heroSelect.value][0] + ".png";
-            piece.maxHP = heroes[heroSelect.value][1];
+            // piece.maxHP = heroes[heroSelect.value][1];
             piece.HP = heroes[heroSelect.value][2];
             piece.range = heroes[heroSelect.value][3];
         }
@@ -533,10 +533,11 @@ function initializeGame()
             const piece = Pieces[index - 1];
             const labelHP = document.getElementById("HP" + index);
             var HP = piece.HP;
+            var MaxHP = heroes[piece.name][1];
             if (HP > 0)
             {
                 labelHP.textContent = HP - 1;
-                labelHP.style.color = HPColor(HP - 1, piece.maxHP);
+                labelHP.style.color = HPColor(HP - 1, MaxHP);
                 piece.HP = HP - 1;
 
             }
@@ -549,11 +550,11 @@ function initializeGame()
             const piece = Pieces[index - 1];
             const labelHP = document.getElementById("HP" + index);
             var HP = piece.HP;
-            var MaxHP = piece.maxHP;
+            var MaxHP = heroes[piece.name][1];
             if (HP < MaxHP)
             {
                 labelHP.textContent = HP + 1;
-                labelHP.style.color = HPColor(HP + 1, piece.maxHP);
+                labelHP.style.color = HPColor(HP + 1, MaxHP);
                 piece.HP = HP + 1;
             }
             saveState();
