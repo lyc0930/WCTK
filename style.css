@@ -1,6 +1,10 @@
-body {
+/* body {
     overflow: hidden;
     min-height: 100vh;
+} */
+
+label {
+    user-select: none;
 }
 
 #chessboard {
@@ -163,6 +167,7 @@ input[name="blueCheckbox"]::before {
     font-family: 'Courier New', Courier, monospace;
     background-color: white;
     border: 1px outset gray;
+    user-select: none;
 }
 
 .number {
@@ -170,6 +175,9 @@ input[name="blueCheckbox"]::before {
     margin-right: 0.24em;
 }
 
+.heroSelect {
+    user-select: none;
+}
 
 .functionButton {
     width: 48%;
@@ -321,6 +329,7 @@ input[name="blueCheckbox"]::before {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    user-select: none;
 }
 
 body > .piece {

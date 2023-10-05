@@ -288,7 +288,7 @@ function createPiece(color, name, index)
                             targetCell = cell;
                         }
                     }
-                    leap(draggingPiece, targetCell, event.button === 2);
+                    leap(draggingPiece, targetCell, (event.button === 2) || (event.altKey));
                 }
                 else
                 { // 超出棋盘范围
@@ -662,6 +662,29 @@ function initializeGame()
             {
                 recoverStatefrom(nextState);
             }
+        }
+        else if(event.key == 'z' && event.ctrlKey)
+        {
+            event.preventDefault();
+            const previousState = stateHistory.undo();
+            if (previousState)
+            {
+                recoverStatefrom(previousState);
+            }
+        }
+        else if (event.key == 'y' && event.ctrlKey)
+        {
+            event.preventDefault();
+            const nextState = stateHistory.redo();
+            if (nextState)
+            {
+                recoverStatefrom(nextState);
+            }
+        }
+        else if (event.key == 'l' && event.ctrlKey)
+        {
+            event.preventDefault()
+            cls();
         }
     });
 }
