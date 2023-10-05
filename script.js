@@ -460,9 +460,14 @@ function initializeGame()
             piece.name = heroSelect.value;
             const avatar = piece.querySelector(".avatar");
             avatar.src = "./assets/Avatar/active/" + heroes[heroSelect.value][0] + ".png";
-            // piece.maxHP = heroes[heroSelect.value][1];
             piece.HP = heroes[heroSelect.value][2];
-            piece.range = heroes[heroSelect.value][3];
+
+            const labelHP = document.getElementById("HP" + index);
+            labelHP.textContent = piece.HP;
+            labelHP.style.color = HPColor(piece.HP, heroes[piece.name][1]);
+            const labelMaxHP = document.getElementById("maxHP" + index);
+            labelMaxHP.textContent = heroes[piece.name][1];
+
         }
         );
 
