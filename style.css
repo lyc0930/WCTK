@@ -212,16 +212,16 @@ input[name="blueCheckbox"]::before {
     }
 
     .menu>div {
-        font-size: clamp(0.8em, 2.4vh, 1.6em);
+        font-size: clamp(0.8em, 2.5vh, 1.6em);
     }
 
     .heroSelect {
         width: 65%;
-        font-size: clamp(0.8em, 2.4vh, 1.6em);
+        font-size: clamp(0.8em, 2.5vh, 1.6em);
     }
 
     .heroSelect>option {
-        font-size: clamp(0.8em, 2.4vh, 1.6em);
+        font-size: clamp(0.8em, 2.5vh, 1.6em);
     }
 
     .numberButton {
