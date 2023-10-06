@@ -304,6 +304,10 @@ function createPiece(color, name, index)
     // TODO 屏幕抖动？
     piece.addEventListener("touchstart", function (event)
     {
+        if (event.touches.length > 1)
+        {
+            return;
+        }
         const rect = piece.getBoundingClientRect();
 
         const shiftX = event.touches[0].clientX - (rect.left + 0.5 * rect.width);
@@ -311,6 +315,11 @@ function createPiece(color, name, index)
 
         function onTouchDragPiece(event)
         {
+            event.preventDefault();
+            if (event.touches.length > 1)
+            {
+                return;
+            }
             if (draggingPiece === null)
             {
                 draggingPiece = piece;
@@ -326,6 +335,10 @@ function createPiece(color, name, index)
 
         piece.addEventListener('touchend', function (event)
         {
+            if (event.changedTouches.length > 1)
+            {
+                return;
+            }
             event.stopPropagation();
             piece.removeEventListener('touchmove', onTouchDragPiece);
             if (draggingPiece != null)
