@@ -4,6 +4,8 @@
 } */
 
 label {
+    text-wrap: nowrap;
+    text-overflow: clip;
     user-select: none;
 }
 
@@ -210,16 +212,16 @@ input[name="blueCheckbox"]::before {
     }
 
     .menu>div {
-        font-size: clamp(12px, 3vh, 24px);
+        font-size: clamp(0.8em, 2.4vh, 1.6em);
     }
 
     .heroSelect {
         width: 65%;
-        font-size: clamp(12px, 3vh, 24px);
+        font-size: clamp(0.8em, 2.4vh, 1.6em);
     }
 
     .heroSelect>option {
-        font-size: clamp(12px, 3vh, 24px);
+        font-size: clamp(0.8em, 2.4vh, 1.6em);
     }
 
     .numberButton {
