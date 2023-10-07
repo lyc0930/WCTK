@@ -77,14 +77,14 @@ function step(piece, cell)
     if (piece && isPassable(cell, piece) && adjacentCells(cell, piece).includes(piece.parentElement))
     {
         cell.appendChild(piece);
-        piecePositionChange(piece, cell);
+        afterPositionChange(piece, cell);
         return true;
     }
     return false;
 }
 
 // 转移
-function jump(piece, cell)
+function leap(piece, cell)
 {
     const row = cell.row;
     const col = cell.col;
@@ -92,7 +92,7 @@ function jump(piece, cell)
     {
         console.log(piece.name, `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) |> (${row + 1}, ${col + 1})`);
         cell.appendChild(piece);
-        piecePositionChange(piece, cell);
+        afterPositionChange(piece, cell);
 
         return true;
     }
@@ -100,7 +100,7 @@ function jump(piece, cell)
 }
 
 // 任意拖动
-function leap(piece, cell, isDraw = false)
+function slot(piece, cell, isDraw = false)
 {
     const row = cell.row;
     const col = cell.col;
@@ -148,7 +148,7 @@ function leap(piece, cell, isDraw = false)
         }
 
         cell.appendChild(piece);
-        piecePositionChange(piece, cell);
+        afterPositionChange(piece, cell);
 
         return true;
     }
@@ -171,11 +171,11 @@ function swap(pieceP, pieceQ)
     {
         console.log(pieceP.name, `(${cellP.row + 1}, ${cellP.col + 1}) |> (${cellQ.row + 1}, ${cellQ.col + 1})`);
         cellQ.appendChild(pieceP);
-        piecePositionChange(pieceP, cellQ);
+        afterPositionChange(pieceP, cellQ);
 
         console.log(pieceQ.name, `(${cellQ.row + 1}, ${cellQ.col + 1}) |> (${cellP.row + 1}, ${cellP.col + 1})`);
         cellP.appendChild(pieceQ);
-        piecePositionChange(pieceQ, cellP);
+        afterPositionChange(pieceQ, cellP);
 
         return true;
     }
@@ -233,7 +233,7 @@ function bury(piece)
     }
 }
 
-function piecePositionChange(piece, cell)
+function afterPositionChange(piece, cell)
 {
     // 帅旗逻辑
     if (redFlag.parentElement === cell && redCarrier === null && piece.classList.contains("red-piece"))
@@ -247,4 +247,4 @@ function piecePositionChange(piece, cell)
     saveState();
 }
 
-export { move, step, jump, swap, leap, bury };
+export { move, step, leap, swap, slot, bury };

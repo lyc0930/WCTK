@@ -8,7 +8,7 @@ function AnDuChenCang(user, limit = 3)
     const userCol = user.parentElement.col;
     var landableCells = [];
     landableCells.push(baseOf(user));
-    jumpingPiece = user;
+    leapingPiece = user;
     for (const allyPiece of allyPiecesOf(user))
     {
         if (allyPiece != user)
@@ -22,7 +22,7 @@ function AnDuChenCang(user, limit = 3)
             }
         }
     }
-    highlightCells(landableCells, "landable", clickCell_jump);
+    highlightCells(landableCells, "landable", clickCell_leap);
 }
 
 function BingGuiShenSu(user)
@@ -38,7 +38,7 @@ function QiMenDunJia(user, limit = 2)
     const userRow = user.parentElement.row;
     const userCol = user.parentElement.col;
     var targetablePieces = [];
-    jumpingPiece = user;
+    leapingPiece = user;
 
     for (const allPiece of allPiecesOf(user))
     {

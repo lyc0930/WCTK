@@ -1,4 +1,4 @@
-import { leap, bury } from './modules/actions.mjs';
+import { slot, bury } from './modules/actions.mjs';
 import { terrain, heroes, weapons, armors, horses } from './modules/data.mjs';
 import { highlightCells, highlightPieces, removeHighlight } from './modules/highlight.mjs';
 import { stateHistory, saveState, recoverStatefrom } from './modules/history.mjs';
@@ -107,7 +107,7 @@ export var Pieces = [];
 var draggingPiece = null; // 正在拖动的棋子
 var draggingPieceParent = null;
 
-var jumpingPiece = null; // 正在转移的棋子
+var leapingPiece = null; // 正在转移的棋子
 
 var movingPiece = null; // 正在移动的棋子
 
@@ -288,7 +288,7 @@ function createPiece(color, name, index)
                             targetCell = cell;
                         }
                     }
-                    leap(draggingPiece, targetCell, (event.button === 2) || (event.altKey));
+                    slot(draggingPiece, targetCell, (event.button === 2) || (event.altKey));
                 }
                 else
                 { // 超出棋盘范围
@@ -366,7 +366,7 @@ function createPiece(color, name, index)
                             targetCell = cell;
                         }
                     }
-                    leap(draggingPiece, targetCell);
+                    slot(draggingPiece, targetCell);
                 }
                 else
                 {
