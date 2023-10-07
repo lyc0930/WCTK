@@ -1,4 +1,5 @@
 import { Pieces } from "../script.js";
+import { baseOf, enemyBaseOf, piecesIn } from "./utils.mjs";
 
 const redFlag = document.createElement("img");
 var redCarrier = null;
@@ -60,6 +61,24 @@ function setRedCarrier(piece, log = true)
         {
             console.log(`${piece.name}成为主帅`);
         }
+
+        if (piece.parentElement === enemyBaseOf(piece)) // 在敌方大本营获得帅旗
+        {
+            var score = 5;
+            const base = baseOf(piece);
+            console.log(`${piece.name}送至帅旗, 红方+${score}分`);
+            const alliesInBase = Array.from(piecesIn(base)).filter(piece => piece.classList.contains("red-piece"));
+            if (alliesInBase.length === 1)
+            {
+                const allyPiece = alliesInBase[0];
+                setCarrier("Red", allyPiece);
+            }
+            else // 大本营 没有己方棋子 或者 有多个己方棋子
+            {
+                setCarrier("Red", null);
+                base.appendChild(redFlag);
+            }
+        }
     }
     else
     {
@@ -101,6 +120,24 @@ function setBlueCarrier(piece, log = true)
         if (log)
         {
             console.log(`${piece.name}成为主帅`);
+        }
+
+        if (piece.parentElement === enemyBaseOf(piece)) // 在敌方大本营获得帅旗
+        {
+            var score = 5;
+            const base = baseOf(piece);
+            console.log(`${piece.name}送至帅旗, 蓝方+${score}分`);
+            const alliesInBase = Array.from(piecesIn(base)).filter(piece => piece.classList.contains("blue-piece"));
+            if (alliesInBase.length === 1)
+            {
+                const allyPiece = alliesInBase[0];
+                setCarrier("Blue", allyPiece);
+            }
+            else // 大本营 没有己方棋子 或者 有多个己方棋子
+            {
+                setCarrier("Blue", null);
+                base.appendChild(blueFlag);
+            }
         }
     }
     else
