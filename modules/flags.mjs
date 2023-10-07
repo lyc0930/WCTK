@@ -65,6 +65,7 @@ function setRedCarrier(piece, log = true)
     {
         if (redCarrier)
         {
+            redCarrier.carrier = false;
             redCarrier.parentElement.appendChild(redFlag);
             const oldCheckbox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(redCarrier) + 1));
             oldCheckbox.checked = false;
@@ -106,6 +107,7 @@ function setBlueCarrier(piece, log = true)
     {
         if (blueCarrier)
         {
+            blueCarrier.carrier = false;
             blueCarrier.parentElement.appendChild(blueFlag);
             const oldCheckbox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(blueCarrier) + 1));
             oldCheckbox.checked = false;
