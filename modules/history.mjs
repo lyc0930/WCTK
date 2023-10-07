@@ -1,5 +1,6 @@
 import { terrain, heroes, weapons, armors, horses } from './data.mjs';
-import { Pieces, redFlag, blueFlag, redCarrier, blueCarrier, setRedCarrier, setBlueCarrier } from "../script.js";
+import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
+import { Pieces } from "../script.js";
 import { HPColor } from './utils.mjs';
 
 class StateHistory
@@ -175,7 +176,7 @@ function recoverStatefrom(state)
 
     if (state.redCarrier)
     {
-        setRedCarrier(state.redCarrier, false);
+        setCarrier("Red", state.redCarrier, false);
     }
     else
     {
@@ -184,7 +185,7 @@ function recoverStatefrom(state)
     }
     if (state.blueCarrier)
     {
-        setBlueCarrier(state.blueCarrier, false);
+        setCarrier("Blue", state.blueCarrier, false);
     }
     else
     {

@@ -1,7 +1,8 @@
 import { terrain, heroes, weapons, armors, horses } from './data.mjs';
-import { adjacentCells, distanceMapOf, isPassable, isStayable, HPColor, draw } from "./utils.mjs";
+import { adjacentCells, distanceMapOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn, HPColor, draw } from "./utils.mjs";
 import { saveState } from "./history.mjs";
-import { Pieces, redFlag, blueFlag, redCarrier, blueCarrier, setRedCarrier, setBlueCarrier } from "../script.js";
+import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
+import { Pieces } from "../script.js";
 
 //移动
 function move(piece, cell, ifConsumeMovePoints = false)
@@ -199,14 +200,15 @@ function bury(piece)
         const carrierCheckbox = document.getElementById("carrierCheckbox" + index);
         carrierCheckbox.disabled = true;
 
-        console.log(`${piece.name}死亡`);
+        var score = 3;
+        console.log(`${piece.name}死亡, ${piece.classList.contains("red-piece") ? '蓝方' : '红方'}+${score}分`);
         if (piece === redCarrier)
         {
-            setRedCarrier(null);
+            setCarrier("Red", null);
         }
         else if (piece === blueCarrier)
         {
-            setBlueCarrier(null);
+            setCarrier("Blue", null);
         }
 
         const actedCheckbox = document.getElementById("actedCheckbox" + index);
@@ -235,15 +237,57 @@ function bury(piece)
 
 function afterPositionChange(piece, cell)
 {
-    // 帅旗逻辑
+    // 捡起帅旗逻辑
     if (redFlag.parentElement === cell && redCarrier === null && piece.classList.contains("red-piece"))
     {
-        setRedCarrier(piece);
+        setCarrier("Red", piece);
     }
     if (blueFlag.parentElement === cell && blueCarrier === null && piece.classList.contains("blue-piece"))
     {
-        setBlueCarrier(piece);
+        setCarrier("Blue", piece);
     }
+
+    // 运送帅旗逻辑
+    if (piece.carrier && cell === enemyBaseOf(piece))
+    {
+        var score = 5;
+        const base = baseOf(piece);
+        if (piece.classList.contains("red-piece"))
+        {
+            const alliesInBase = Array.from(piecesIn(base)).filter(piece => piece.classList.contains("red-piece"));
+            if (alliesInBase.length === 1)
+            {
+                const allyPiece = alliesInBase[0];
+                setCarrier("Red", allyPiece);
+            }
+            else // 大本营 没有己方棋子 或者 有多个己方棋子
+            {
+                setCarrier("Red", null);
+                base.appendChild(redFlag);
+            }
+            console.log(`${piece.name}送至帅旗, 红方+${score}分`);
+        }
+        else if (piece.classList.contains("blue-piece"))
+        {
+            const alliesInBase = Array.from(piecesIn(base)).filter(piece => piece.classList.contains("blue-piece"));
+            if (alliesInBase.length === 1)
+            {
+                const allyPiece = alliesInBase[0];
+                setCarrier("Blue", allyPiece);
+            }
+            else // 大本营 没有己方棋子 或者 有多个己方棋子
+            {
+                setCarrier("Blue", null);
+                base.appendChild(blueFlag);
+            }
+            console.log(`${piece.name}送至帅旗, 蓝方+${score}分`);
+        }
+        else
+        {
+            throw new Error("Invalid faction");
+        }
+    }
+
     saveState();
 }
 

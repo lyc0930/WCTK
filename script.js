@@ -2,105 +2,9 @@ import { slot, bury } from './modules/actions.mjs';
 import { terrain, heroes, weapons, armors, horses } from './modules/data.mjs';
 import { highlightCells, highlightPieces, removeHighlight } from './modules/highlight.mjs';
 import { stateHistory, saveState, recoverStatefrom } from './modules/history.mjs';
+import { generateFlags, setCarrier } from './modules/flags.mjs';
 import { HPColor, draw, cls } from './modules/utils.mjs';
 
-
-export const redFlag = document.createElement("img");
-redFlag.inert = "true";
-redFlag.title = "红方帅旗";
-redFlag.className = "flag";
-redFlag.src = "./assets/Flag/red.png";
-export var redCarrier = null;
-
-export function setRedCarrier(piece, log=true)
-{
-    if (piece === redCarrier)
-    {
-        return;
-    }
-    if (piece)
-    {
-        if (redCarrier)
-        {
-            redCarrier.parentElement.appendChild(redFlag);
-            const oldCheckbox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(redCarrier) + 1));
-            oldCheckbox.checked = false;
-        }
-
-        redCarrier = piece;
-        redCarrier.appendChild(redFlag);
-        piece.carrier = true;
-        const checkBox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(piece) + 1));
-        checkBox.checked = true;
-
-        if (log)
-        {
-            console.log(`${piece.name}成为主帅`);
-        }
-    }
-    else
-    {
-        if (redCarrier)
-        {
-            redCarrier.parentElement.appendChild(redFlag);
-            const oldCheckbox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(redCarrier) + 1));
-            oldCheckbox.checked = false;
-            if (log)
-            {
-                console.log(`${redCarrier.name}掉落帅旗`);
-            }
-            redCarrier = null;
-        }
-    }
-}
-
-export const blueFlag = document.createElement("img");
-blueFlag.inert = "true";
-blueFlag.title = "蓝方帅旗";
-blueFlag.className = "flag";
-blueFlag.src = "./assets/Flag/blue.png";
-export var blueCarrier = null;
-
-export function setBlueCarrier(piece, log=true)
-{
-    if (piece === blueCarrier)
-    {
-        return;
-    }
-    if (piece)
-    {
-        if (blueCarrier)
-        {
-            blueCarrier.parentElement.appendChild(blueFlag);
-            const oldCheckbox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(blueCarrier) + 1));
-            oldCheckbox.checked = false;
-        }
-
-        blueCarrier = piece;
-        blueCarrier.appendChild(blueFlag);
-        piece.carrier = true;
-        const checkBox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(piece) + 1));
-        checkBox.checked = true;
-        if (log)
-        {
-            console.log(`${piece.name}成为主帅`);
-        }
-    }
-    else
-    {
-        if (blueCarrier)
-        {
-            blueCarrier.parentElement.appendChild(blueFlag);
-            const oldCheckbox = document.getElementById("carrierCheckbox" + (Pieces.indexOf(blueCarrier) + 1));
-            oldCheckbox.checked = false;
-            if (log)
-            {
-                console.log(`${blueCarrier.name}掉落帅旗`);
-            }
-            blueCarrier = null;
-        }
-    }
-}
 
 export var Pieces = [];
 
@@ -406,12 +310,7 @@ function initializePieces()
                 chessboard.children[i].appendChild(redPiece);
                 if (chessboard.children[i].classList.contains("base"))
                 {
-                    redPiece.carrier = true;
-                    const carrierCheckbox = document.getElementById("carrierCheckbox" + (6 - initHeroes.length));
-                    carrierCheckbox.checked = true;
-                    redCarrier = redPiece;
-                    console.log(`${redPiece.name}成为主帅`);
-                    redCarrier.appendChild(redFlag);
+                    setCarrier("Red", redPiece);
                 }
 
             }
@@ -428,12 +327,7 @@ function initializePieces()
                 chessboard.children[i].appendChild(bluePiece);
                 if (chessboard.children[i].classList.contains("base"))
                 {
-                    bluePiece.carrier = true;
-                    const carrierCheckbox = document.getElementById("carrierCheckbox" + (6 - initHeroes.length));
-                    carrierCheckbox.checked = true;
-                    blueCarrier = bluePiece;
-                    console.log(`${bluePiece.name}成为主帅`);
-                    blueCarrier.appendChild(blueFlag);
+                    setCarrier("Blue", bluePiece);
                 }
             }
         }
@@ -445,6 +339,8 @@ function initializeGame()
 {
 
     createChessboard();
+    generateFlags();
+
     document.addEventListener('contextmenu', event => event.preventDefault()); // 禁用右键菜单
     document.addEventListener('mouseup', function (event)
     {
@@ -490,28 +386,7 @@ function initializeGame()
             const index = event.target.id.slice(-1);
             const piece = Pieces[index - 1];
             piece.carrier = this.checked;
-            if (piece.classList.contains("red-piece"))
-            {
-                if (this.checked)
-                {
-                    setRedCarrier(piece);
-                }
-                else
-                {
-                    setRedCarrier(null);
-                }
-            }
-            else
-            {
-                if (this.checked)
-                {
-                    setBlueCarrier(piece);
-                }
-                else
-                {
-                    setBlueCarrier(null);
-                }
-            }
+            setCarrier(piece.classList.contains("red-piece") ? "Red" : "Blue", this.checked ? piece : null);
             saveState();
         }
         );

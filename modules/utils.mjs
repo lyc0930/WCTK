@@ -96,12 +96,9 @@ function isStayable(cell, piece = null)
     {
         return true;
     }
-    for (const child of cell.children)
+    if (piecesIn(cell).length > 0)
     {
-        if (child.classList.contains("piece"))
-        {
-            return false;
-        }
+        return false;
     }
     if (cell.classList.contains("ridge"))
     {
@@ -168,10 +165,14 @@ function allyPiecesOf(piece)
             const redPieces = document.getElementsByClassName("red-piece");
             return Array.from(redPieces).filter(piece => !piece.parentElement.classList.contains("grave"));
         }
-        else
+        else if (piece.classList.contains("blue-piece"))
         {
             const bluePieces = document.getElementsByClassName("blue-piece");
             return Array.from(bluePieces).filter(piece => !piece.parentElement.classList.contains("grave"));
+        }
+        else
+        {
+            throw new Error("Invalid faction");
         }
     }
     return null;
@@ -187,10 +188,14 @@ function enemyPiecesOf(piece)
             const bluePieces = document.getElementsByClassName("blue-piece");
             return Array.from(bluePieces).filter(piece => !piece.parentElement.classList.contains("grave"));
         }
-        else
+        else if (piece.classList.contains("blue-piece"))
         {
             const redPieces = document.getElementsByClassName("red-piece");
             return Array.from(redPieces).filter(piece => !piece.parentElement.classList.contains("grave"));
+        }
+        else
+        {
+            throw new Error("Invalid faction");
         }
     }
     return null;
@@ -205,12 +210,51 @@ function baseOf(piece)
         {
             return document.getElementsByClassName("Red base")[0];
         }
-        else
+        else if (piece.classList.contains("blue-piece"))
         {
             return document.getElementsByClassName("Blue base")[0];
         }
+        else
+        {
+            throw new Error("Invalid faction");
+        }
     }
     return null;
+}
+
+// 敌方大本营
+function enemyBaseOf(piece)
+{
+    if (piece.classList.contains("piece"))
+    {
+        if (piece.classList.contains("red-piece"))
+        {
+            return document.getElementsByClassName("Blue base")[0];
+        }
+        else if (piece.classList.contains("blue-piece"))
+        {
+            return document.getElementsByClassName("Red base")[0];
+        }
+        else
+        {
+            throw new Error("Invalid faction");
+        }
+    }
+    return null;
+}
+
+// 区域中的棋子
+function piecesIn(cell)
+{
+    var pieces = [];
+    for (const child of cell.children)
+    {
+        if (child.classList.contains("piece"))
+        {
+            pieces.push(child);
+        }
+    }
+    return pieces;
 }
 
 // 血量颜色
@@ -310,4 +354,4 @@ function cls()
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-export { distanceMapOf, isStayable, isPassable, adjacentCells, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, HPColor, draw, cls};
+export { distanceMapOf, isStayable, isPassable, adjacentCells, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, draw, cls};
