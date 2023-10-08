@@ -101,6 +101,25 @@ function createChessboard()
     }
 }
 
+function nearestCellOf(X, Y)
+{
+    var nearestCell = null;
+    let min_d_sqr = 100000000;
+    for (const cell of document.getElementsByClassName("cell"))
+    {
+        const { left, top, width, height } = cell.getBoundingClientRect()
+        const centerX = left + width / 2
+        const centerY = top + height / 2
+        const d_sqr = Math.pow(X - centerX, 2) + Math.pow(Y - centerY, 2)
+        if (d_sqr < min_d_sqr)
+        {
+            min_d_sqr = d_sqr;
+            nearestCell = cell;
+        }
+    }
+    return nearestCell;
+}
+
 // 创建棋子
 function createPiece(color, name, index)
 {
@@ -148,6 +167,10 @@ function createPiece(color, name, index)
         const shiftX = event.clientX - (rect.left + 0.5 * rect.width);
         const shiftY = event.clientY - (rect.top + 0.5 * rect.height);
 
+        const phantomPiece = document.createElement("div");
+        phantomPiece.className = "phantom piece";
+        phantomPiece.id = "phantomPiece";
+
         function onMouseDragPiece(event)
         {
             if (draggingPiece === null)
@@ -159,6 +182,9 @@ function createPiece(color, name, index)
 
             draggingPiece.style.left = event.clientX - shiftX + 'px';
             draggingPiece.style.top = event.clientY - shiftY + 'px';
+
+            const nearestCell = nearestCellOf(event.clientX, event.clientY);
+            nearestCell.appendChild(phantomPiece);
         }
 
         document.addEventListener('mousemove', onMouseDragPiece);
@@ -167,6 +193,9 @@ function createPiece(color, name, index)
         {
             event.stopPropagation();
             document.removeEventListener('mousemove', onMouseDragPiece);
+
+            phantomPiece.remove();
+
             if (draggingPiece != null)
             {
                 draggingPiece.onmouseup = null;
@@ -178,21 +207,8 @@ function createPiece(color, name, index)
 
                 if (event.clientX >= chessboardRect.left && event.clientX <= chessboardRect.right && event.clientY >= chessboardRect.top && event.clientY <= chessboardRect.bottom) // 在棋盘范围内
                 {
-                    var targetCell = null;
-                    let min_d_sqr = 100000000;
-                    for (const cell of document.getElementsByClassName("cell"))
-                    {
-                        const { left, top, width, height } = cell.getBoundingClientRect()
-                        const centerX = left + width / 2
-                        const centerY = top + height / 2
-                        const d_sqr = Math.pow(event.clientX - centerX, 2) + Math.pow(event.clientY - centerY, 2)
-                        if (d_sqr < min_d_sqr)
-                        {
-                            min_d_sqr = d_sqr;
-                            targetCell = cell;
-                        }
-                    }
-                    slot(draggingPiece, targetCell, (event.button === 2) || (event.altKey));
+                    const nearestCell = nearestCellOf(event.clientX, event.clientY);
+                    slot(draggingPiece, nearestCell, (event.button === 2) || (event.altKey));
                 }
                 else
                 { // 超出棋盘范围
@@ -205,7 +221,6 @@ function createPiece(color, name, index)
     });
 
     // 添加触摸事件
-    // TODO 屏幕抖动？
     piece.addEventListener("touchstart", function (event)
     {
         if (event.touches.length > 1)
@@ -216,6 +231,10 @@ function createPiece(color, name, index)
 
         const shiftX = event.touches[0].clientX - (rect.left + 0.5 * rect.width);
         const shiftY = event.touches[0].clientY - (rect.top + 0.5 * rect.height);
+
+        const phantomPiece = document.createElement("div");
+        phantomPiece.className = "phantom piece";
+        phantomPiece.id = "phantomPiece";
 
         function onTouchDragPiece(event)
         {
@@ -233,6 +252,9 @@ function createPiece(color, name, index)
 
             draggingPiece.style.left = event.touches[0].clientX - shiftX + 'px';
             draggingPiece.style.top = event.touches[0].clientY - shiftY + 'px';
+
+            const nearestCell = nearestCellOf(event.touches[0].clientX, event.touches[0].clientY);
+            nearestCell.appendChild(phantomPiece);
         }
 
         piece.addEventListener('touchmove', onTouchDragPiece);
@@ -245,6 +267,9 @@ function createPiece(color, name, index)
             }
             event.stopPropagation();
             piece.removeEventListener('touchmove', onTouchDragPiece);
+
+            phantomPiece.remove();
+
             if (draggingPiece != null)
             {
                 draggingPiece.ontouchend = null;
@@ -256,21 +281,8 @@ function createPiece(color, name, index)
 
                 if (event.changedTouches[0].clientX >= chessboardRect.left && event.changedTouches[0].clientX <= chessboardRect.right && event.changedTouches[0].clientY >= chessboardRect.top && event.changedTouches[0].clientY <= chessboardRect.bottom) // 在棋盘范围内
                 {
-                    var targetCell = null;
-                    let min_d_sqr = 100000000;
-                    for (const cell of document.getElementsByClassName("cell"))
-                    {
-                        const { left, top, width, height } = cell.getBoundingClientRect()
-                        const centerX = left + width / 2
-                        const centerY = top + height / 2
-                        const d_sqr = Math.pow(event.changedTouches[0].clientX - centerX, 2) + Math.pow(event.changedTouches[0].clientY - centerY, 2)
-                        if (d_sqr < min_d_sqr)
-                        {
-                            min_d_sqr = d_sqr;
-                            targetCell = cell;
-                        }
-                    }
-                    slot(draggingPiece, targetCell);
+                    const nearestCell = nearestCellOf(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+                    slot(draggingPiece, nearestCell);
                 }
                 else
                 {

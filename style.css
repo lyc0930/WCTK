@@ -331,6 +331,10 @@ input[name="blueCheckbox"]::before {
     transition: height 100ms ease-out;
 }
 
+.phantom {
+    border: none;
+}
+
 .avatar {
     width: 100%;
     height: 100%;
