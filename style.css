@@ -327,6 +327,8 @@ input[name="blueCheckbox"]::before {
     cursor: grab;
     border-style: outset;
     z-index: 98;
+    transition: width 100ms ease-out;
+    transition: height 100ms ease-out;
 }
 
 .avatar {
@@ -496,12 +498,16 @@ body > .piece {
     opacity: 0.75;
 }
 
+.cell>.flag {
+    opacity: 1;
+}
+
 .cell>.flag:first-of-type:last-of-type {
     width: 70%;
     height: 70%;
-    left: 15%;
-    top: 15%;
-    opacity: 1;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .cell>.flag:nth-of-type(1):nth-last-of-type(2) {
@@ -509,7 +515,6 @@ body > .piece {
     height: 60%;
     left: -5%;
     top: 35%;
-    opacity: 1;
 }
 
 .cell>.flag:nth-of-type(2):nth-last-of-type(1) {
@@ -517,5 +522,4 @@ body > .piece {
     height: 60%;
     left: 45%;
     top: 5%;
-    opacity: 1;
 }
