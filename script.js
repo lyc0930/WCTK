@@ -227,6 +227,7 @@ function createPiece(color, name, index)
         {
             return;
         }
+        event.stopPropagation();
         const rect = piece.getBoundingClientRect();
 
         const shiftX = event.touches[0].clientX - (rect.left + 0.5 * rect.width);
@@ -499,7 +500,7 @@ function initializeGame()
             piece.armors[0] = armorSelect.value;
             saveState();
         });
-
+        // TODO 庞统展骥
         const horseSelect = document.getElementById("horseSelect" + i);
         for (var name in horses)
         {

@@ -1,7 +1,7 @@
 import { terrain, heroes, weapons, armors, horses } from './data.mjs';
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
 import { Pieces } from "../script.js";
-import { HPColor } from './utils.mjs';
+import { piecesIn, HPColor } from './utils.mjs';
 
 class StateHistory
 {
@@ -71,7 +71,7 @@ function saveState()
     {
         state.blueFlagPosition = [blueFlag.parentElement.row, blueFlag.parentElement.col];
     }
-
+    var overlaps = {};
     for (const piece of Pieces)
     {
         let player = {
@@ -106,9 +106,18 @@ function saveState()
             {
                 player.horses.push(horse);
             }
+
+            const overlapPieces = piecesIn(piece.parentElement);
+            if (overlapPieces.length > 1)
+            {
+                const index = Pieces.indexOf(piece) + 1;
+                const order = overlapPieces.indexOf(piece);
+                overlaps[index] = order;
+            }
         }
         state.players.push(player);
     }
+    state.overlaps = overlaps;
     stateHistory.updateHistory(state);
 }
 
@@ -191,6 +200,24 @@ function recoverStatefrom(state)
     {
         const cell = document.getElementsByClassName("cell")[state.blueFlagPosition[0] * 7 + state.blueFlagPosition[1]];
         cell.appendChild(blueFlag);
+    }
+
+
+    var overlaps = JSON.parse(JSON.stringify(state.overlaps));
+    for (var index in overlaps)
+    {
+        if (overlaps[index] !== -1)
+        {
+            const piece = Pieces[index - 1];
+            const cell = piece.parentElement;
+            let overlapPieces = piecesIn(piece.parentElement);
+            overlapPieces.sort((a, b) => overlaps[Pieces.indexOf(a) + 1] - overlaps[Pieces.indexOf(b) + 1]);
+            for (const overlapPiece of overlapPieces)
+            {
+                cell.appendChild(overlapPiece);
+                overlaps[Pieces.indexOf(overlapPiece) + 1] = -1;
+            }
+        }
     }
 }
 
