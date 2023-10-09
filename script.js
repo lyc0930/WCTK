@@ -4,6 +4,7 @@ import { highlightCells, highlightPieces, removeHighlight } from './modules/high
 import { stateHistory, saveState, recoverStatefrom } from './modules/history.mjs';
 import { generateFlags, setCarrier } from './modules/flags.mjs';
 import { HPColor, draw, cls } from './modules/utils.mjs';
+import { skill_zhanji, skill_zhanji_undo } from './modules/skills.mjs';
 
 
 export var Pieces = [];
@@ -136,8 +137,8 @@ function createPiece(color, name, index)
     // piece.maxHP = heroes[name][1];
     piece.HP = heroes[name][2];
     piece.weapons = [""];
-    piece.armors = [""];
-    piece.horses = [""];
+    piece.armors = ["", ""];
+    piece.horses = ["", ""];
     piece.carrier = false;
     piece.acted = false;
 
@@ -158,6 +159,11 @@ function createPiece(color, name, index)
 
     const labelMaxHP = document.getElementById("maxHP" + index);
     labelMaxHP.textContent = heroes[piece.name][1];
+
+    if (name == "庞统")
+    {
+        skill_zhanji(piece, index);
+    }
 
     // 添加鼠标事件
     piece.addEventListener("mousedown", function (event)
@@ -390,8 +396,25 @@ function initializeGame()
             const labelMaxHP = document.getElementById("maxHP" + index);
             labelMaxHP.textContent = heroes[piece.name][1];
 
-        }
-        );
+            const weaponSelect = document.getElementById("weaponSelect" + index);
+            weaponSelect.value = "";
+
+            const armorSelect = document.getElementById("armorSelect" + index);
+            armorSelect.value = "";
+
+            const horseSelect = document.getElementById("horseSelect" + index);
+            horseSelect.value = "";
+
+            if (piece.name == "庞统")
+            {
+                skill_zhanji(piece);
+            }
+            else
+            {
+                skill_zhanji_undo(piece);
+            }
+            saveState();
+        });
 
         const carrierCheckbox = document.getElementById("carrierCheckbox" + i);
         carrierCheckbox.addEventListener("change", function (event)
@@ -500,7 +523,7 @@ function initializeGame()
             piece.armors[0] = armorSelect.value;
             saveState();
         });
-        // TODO 庞统展骥
+
         const horseSelect = document.getElementById("horseSelect" + i);
         for (var name in horses)
         {

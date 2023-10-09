@@ -138,6 +138,15 @@ function slot(piece, cell, isDraw = false)
             const horseSelect = document.getElementById("horseSelect" + index);
             horseSelect.value = "";
 
+            if (piece.name == "庞统")
+            {
+                const armorSelect_zhanji = document.getElementById("armorSelect" + "_zhanji" + index);
+                armorSelect_zhanji.value = "";
+
+                const horseSelect_zhanji = document.getElementById("horseSelect" + "_zhanji" + index);
+                horseSelect_zhanji.value = "";
+            }
+
             const alivePanel = document.getElementById("alivePanel" + index);
             alivePanel.style.display = "flex";
 
@@ -226,6 +235,15 @@ function bury(piece)
 
         const horseSelect = document.getElementById("horseSelect" + index);
         horseSelect.value = "";
+
+        if (piece.name == "庞统")
+        {
+            const armorSelect_zhanji = document.getElementById("armorSelect" + "_zhanji" + index);
+            armorSelect_zhanji.value = "";
+
+            const horseSelect_zhanji = document.getElementById("horseSelect" + "_zhanji" + index);
+            horseSelect_zhanji.value = "";
+        }
 
         const alivePanel = document.getElementById("alivePanel" + index);
         alivePanel.style.display = "none";

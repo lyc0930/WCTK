@@ -75,6 +75,7 @@ function saveState()
     for (const piece of Pieces)
     {
         let player = {
+            name: piece.name,
             piece: piece,
             acted: piece.acted,
         };
@@ -107,6 +108,12 @@ function saveState()
                 player.horses.push(horse);
             }
 
+            if (player.piece.name != "庞统")
+            {
+                player.armors.push("");
+                player.horses.push("");
+            }
+
             const overlapPieces = piecesIn(piece.parentElement);
             if (overlapPieces.length > 1)
             {
@@ -125,6 +132,10 @@ function recoverStatefrom(state)
 {
     for (const player of state.players)
     {
+        if (player.name != player.piece.name)
+        {
+            continue;
+        }
         const index = Pieces.indexOf(player.piece) + 1;
         player.piece.acted = player.acted;
         const actedCheckbox = document.getElementById("actedCheckbox" + index);
@@ -163,6 +174,15 @@ function recoverStatefrom(state)
             player.piece.horses = player.horses;
             const horseSelect = document.getElementById("horseSelect" + index);
             horseSelect.value = player.horses[0];
+
+            if (player.piece.name == "庞统")
+            {
+                const armorSelect_zhanji = document.getElementById("armorSelect" + "_zhanji" + index);
+                armorSelect_zhanji.value = player.armors[1];
+
+                const horseSelect_zhanji = document.getElementById("horseSelect" + "_zhanji" + index);
+                horseSelect_zhanji.value = player.horses[1];
+            }
 
             player.piece.carrier = player.carrier;
             const carrierCheckbox = document.getElementById("carrierCheckbox" + index);
