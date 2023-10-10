@@ -326,8 +326,9 @@ input[name="blueCheckbox"]::before {
     cursor: grab;
     border-style: outset;
     z-index: 98;
-    transition: width 100ms ease-out;
-    transition: height 100ms ease-out;
+    transition-property: width, height, left, top;
+    transition-duration: 100ms;
+    transition-timing-function: ease-out;
 }
 
 .phantom {
