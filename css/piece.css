@@ -1,0 +1,135 @@
+.piece {
+    border-radius: 50%;
+    position: absolute;
+    cursor: grab;
+    border-style: outset;
+    z-index: 98;
+    transition: width 100ms ease-out,
+        height 100ms ease-out,
+        left 70ms ease-out,
+        top 70ms ease-out;
+}
+
+.phantom {
+    border: none;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    user-select: none;
+}
+
+body>.piece {
+    width: 10dvmin;
+    height: 10dvmin;
+    transform: translate(-50%, -50%);
+    border-width: .8dvmin;
+}
+
+.cell>.piece:only-of-type {
+    width: 10dvmin;
+    height: 10dvmin;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-width: .8dvmin;
+}
+
+.grave>.piece {
+    width: 10dvmin;
+    height: 10dvmin;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-width: .8dvmin;
+}
+
+.cell>.piece:nth-of-type(2):nth-last-of-type(1) {
+    width: 7.5dvmin;
+    height: 7.5dvmin;
+    top: 0%;
+    left: 0%;
+    border-width: .60dvmin;
+}
+
+.cell>.piece:nth-of-type(1):nth-last-of-type(2) {
+    width: 5.6dvmin;
+    height: 5.6dvmin;
+    bottom: 0%;
+    right: 0%;
+    border-width: .448dvmin;
+}
+
+.cell>.piece:nth-of-type(n+3):nth-last-of-type(1) {
+    width: 66%;
+    height: 66%;
+    top: 0%;
+    left: 0%;
+    border-width: 5.28%;
+}
+
+.cell>.piece:nth-of-type(1):nth-last-of-type(n+3) {
+    width: 30%;
+    height: 30%;
+    bottom: 0%;
+    right: 0%;
+    border-width: 2.40%;
+}
+
+.cell>.piece:nth-of-type(2):nth-last-of-type(n+2) {
+    width: 30%;
+    height: 30%;
+    bottom: 33.333%;
+    right: 0%;
+    border-width: 2.40%;
+}
+
+.cell>.piece:nth-of-type(3):nth-last-of-type(n+2) {
+    width: 30%;
+    height: 30%;
+    top: 0%;
+    right: 0%;
+    border-width: 2.40%;
+}
+
+.cell>.piece:nth-of-type(4):nth-last-of-type(n+2) {
+    width: 30%;
+    height: 30%;
+    bottom: 0%;
+    right: 33.333%;
+    border-width: 2.40%;
+}
+
+.cell>.piece:nth-of-type(5):nth-last-of-type(n+2) {
+    width: 30%;
+    height: 30%;
+    bottom: 0%;
+    left: 0%;
+    border-width: 2.40%;
+}
+
+.red-piece {
+    border-color: rgba(255, 0, 0, 0.4);
+}
+
+.red-piece:hover {
+    border-color: rgba(255, 0, 0, 1);
+}
+
+.red-piece.selected {
+    border-color: rgba(255, 0, 0, 1);
+}
+
+.blue-piece {
+    border-color: rgba(0, 0, 255, 0.4);
+}
+
+.blue-piece:hover {
+    border-color: rgba(0, 0, 255, 1);
+}
+
+.blue-piece.selected {
+    border-color: rgba(0, 0, 255, 1);
+}

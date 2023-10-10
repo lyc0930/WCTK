@@ -183,7 +183,6 @@ function createPiece(color, name, index)
             {
                 draggingPiece = piece;
                 draggingPieceParent = piece.parentElement;
-                piece.style.transitionProperty = "width, height";
                 document.body.append(piece);
             }
 
@@ -208,7 +207,6 @@ function createPiece(color, name, index)
                 draggingPiece.onmouseup = null;
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
-                draggingPiece.style.transitionProperty = "width, height, left, top";
                 draggingPieceParent.appendChild(draggingPiece); // 解决出身问题
 
                 const chessboardRect = document.getElementById("chessboard").getBoundingClientRect();

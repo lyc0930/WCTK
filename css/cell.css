@@ -1,0 +1,29 @@
+.grave {
+    width: 13dvmin;
+    height: 65%;
+    /* border: .1dvmin solid purple; */
+    border: 0;
+    display: none;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.cell {
+    width: 13dvmin;
+    height: 13dvmin;
+    border: .1dvmin solid gray;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/* .plain {
+            background-color: rgb(255, 255, 255);
+        } */
+
+.ridge {
+    border: .3dvmin outset rgba(255, 255, 255, 0.8);
+}

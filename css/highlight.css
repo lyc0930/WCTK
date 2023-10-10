@@ -1,0 +1,31 @@
+.reachable {
+    background-color: rgba(255, 255, 0, 0.2);
+}
+
+.reachable:hover {
+    background-color: rgba(255, 255, 0, 0.4);
+}
+
+.landable {
+    background-color: rgba(0, 255, 0, 0.1);
+}
+
+.landable:hover {
+    background-color: rgba(0, 255, 0, 0.2);
+}
+
+.targetable {
+    background-color: rgba(0, 0, 255, 0.15);
+}
+
+.targetable:hover {
+    background-color: rgba(0, 0, 255, 0.3);
+}
+
+.attackable {
+    background-color: rgba(255, 36, 0, 0.1);
+}
+
+.attackable:hover {
+    background-color: rgba(255, 36, 0, 0.2);
+}
