@@ -15,14 +15,13 @@
 .cell {
     width: 13dvmin;
     height: 13dvmin;
-    border: .1dvmin solid gray;
     box-sizing: border-box;
     position: relative;
 }
 
-/* .plain {
-            background-color: rgb(255, 255, 255);
-        } */
+.plain {
+    border: .15dvmin solid gray;
+}
 
 .ridge {
     border: .3dvmin outset rgba(255, 255, 255, 0.8);

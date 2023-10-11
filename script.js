@@ -10,7 +10,6 @@ import { skill_zhanji, skill_zhanji_undo } from './modules/skills.mjs';
 export var Pieces = [];
 
 var draggingPiece = null; // 正在拖动的棋子
-var draggingPieceParent = null;
 
 var leapingPiece = null; // 正在转移的棋子
 
@@ -182,12 +181,13 @@ function createPiece(color, name, index)
             if (draggingPiece === null)
             {
                 draggingPiece = piece;
-                draggingPieceParent = piece.parentElement;
+                draggingPiece.old_parent = piece.parentElement;
+                draggingPiece.style.transition = "width 100ms ease-out, height 100ms ease-out";
                 document.body.append(piece);
             }
 
-            draggingPiece.style.left = event.clientX - shiftX + 'px';
-            draggingPiece.style.top = event.clientY - shiftY + 'px';
+            draggingPiece.style.left = event.clientX - shiftX + window.scrollX  + 'px';
+            draggingPiece.style.top = event.clientY - shiftY + window.scrollY  + 'px';
 
             const nearestCell = nearestCellOf(event.clientX, event.clientY);
             nearestCell.appendChild(phantomPiece);
@@ -207,7 +207,8 @@ function createPiece(color, name, index)
                 draggingPiece.onmouseup = null;
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
-                draggingPieceParent.appendChild(draggingPiece); // 解决出身问题
+                draggingPiece.old_parent.appendChild(draggingPiece); // 解决出身问题
+                draggingPiece.style.transition = "width 100ms ease-out, height 100ms ease-out, left 70ms ease-out, top 70ms ease-out";
 
                 const chessboardRect = document.getElementById("chessboard").getBoundingClientRect();
 
@@ -221,7 +222,7 @@ function createPiece(color, name, index)
                     bury(draggingPiece);
                 }
                 draggingPiece = null;
-                draggingPieceParent = null;
+                draggingPiece.old_parent = null;
             }
         });
     });
@@ -253,12 +254,12 @@ function createPiece(color, name, index)
             if (draggingPiece === null)
             {
                 draggingPiece = piece;
-                draggingPieceParent = piece.parentElement;
+                draggingPiece.old_parent = piece.parentElement;
                 document.body.append(piece);
             }
 
-            draggingPiece.style.left = event.touches[0].clientX - shiftX + 'px';
-            draggingPiece.style.top = event.touches[0].clientY - shiftY + 'px';
+            draggingPiece.style.left = event.touches[0].clientX - shiftX + window.scrollX  + 'px';
+            draggingPiece.style.top = event.touches[0].clientY - shiftY + window.scrollY  + 'px';
 
             const nearestCell = nearestCellOf(event.touches[0].clientX, event.touches[0].clientY);
             nearestCell.appendChild(phantomPiece);
@@ -282,7 +283,7 @@ function createPiece(color, name, index)
                 draggingPiece.ontouchend = null;
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
-                draggingPieceParent.appendChild(draggingPiece); // 解决出身问题
+                draggingPiece.old_parent.appendChild(draggingPiece); // 解决出身问题
 
                 const chessboardRect = document.getElementById("chessboard").getBoundingClientRect();
 
@@ -296,7 +297,7 @@ function createPiece(color, name, index)
                     bury(draggingPiece);
                 }
                 draggingPiece = null;
-                draggingPieceParent = null;
+                draggingPiece.old_parent = null;
             }
         });
     });
