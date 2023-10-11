@@ -1,7 +1,7 @@
 import { heroes } from '../modules/data.mjs';
 
-var pick1st = "red";
-var pick2nd = pick1st == "red" ? "blue" : "red";
+var side1st = "red";
+var side2nd = side1st == "red" ? "blue" : "red";
 var INDEX = 0;
 
 function createHeroBoard(number = 16)
@@ -27,15 +27,14 @@ function createHeroBoard(number = 16)
         heroBoard.appendChild(candidate);
     }
 
-    // pick1st = window.confirm("红方是否先选？") ? "red" : "blue";
-    // pick2nd = pick1st == "red" ? "blue" : "red";
+    // side1st = window.confirm("红方是否先选？") ? "red" : "blue";
+    // side2nd = side1st == "red" ? "blue" : "red";
 
-    const board1st = document.getElementById(pick1st + 'Board');
-    const board2nd = document.getElementById(pick2nd + 'Board');
+    const board1st = document.getElementById(side1st + 'Board');
+    const board2nd = document.getElementById(side2nd + 'Board');
 
     for (let i = 0; i < number; i++)
     {
-        const pick = (i % 4 == 0 || i % 4 == 3) ?  pick1st :  pick2nd;
         const board = (i % 4 == 0 || i % 4 == 3) ? board1st : board2nd;
 
         const candidate = document.createElement('div');
@@ -54,6 +53,20 @@ function createHeroBoard(number = 16)
         candidate.appendChild(nameTag);
         board.appendChild(candidate);
     }
+}
+
+function pick(piece)
+{
+    const side = (INDEX % 4 == 0 || INDEX % 4 == 3) ? side1st : side2nd;
+    const cell = document.getElementById("cell" + INDEX);
+    const name = document.getElementById("name" + INDEX);
+
+    cell.appendChild(piece);
+    piece.classList.add(side + "-piece");
+    name.innerHTML = piece.name;
+    saveBPState();
+    INDEX++;
+    highlightCandidate();
 }
 
 function createHeroCandidate(name, index)
@@ -154,20 +167,13 @@ function createHeroCandidate(name, index)
 
                 if (candidate.id.slice(0, 6) == "unpick")
                 {
-                    const pick = (INDEX % 4 == 0 || INDEX % 4 == 3) ? pick1st : pick2nd;
-                    const cell = document.getElementById("cell" + INDEX);
-                    const name = document.getElementById("name" + INDEX);
-                    const board = document.getElementById(pick + "Board");
+                    const side = (INDEX % 4 == 0 || INDEX % 4 == 3) ? side1st : side2nd;
+                    const board = document.getElementById(side + "Board");
                     const boardRect = board.getBoundingClientRect();
 
                     if (event.clientX >= boardRect.left && event.clientX <= boardRect.right && event.clientY >= boardRect.top && event.clientY <= boardRect.bottom) // 在看板范围内
                     {
-                        cell.appendChild(draggingPiece);
-                        draggingPiece.classList.add(pick + "-piece");
-                        name.innerHTML = draggingPiece.name;
-                        saveBPState();
-                        INDEX++;
-                        highlightCandidateOf();
+                        pick(draggingPiece);
                     }
                     else
                     {
@@ -260,20 +266,13 @@ function createHeroCandidate(name, index)
 
                 if (candidate.id.slice(0, 6) == "unpick")
                 {
-                    const pick = (INDEX % 4 == 0 || INDEX % 4 == 3) ? pick1st : pick2nd;
-                    const cell = document.getElementById("cell" + INDEX);
-                    const name = document.getElementById("name" + INDEX);
-                    const board = document.getElementById(pick + "Board");
+                    const side = (INDEX % 4 == 0 || INDEX % 4 == 3) ? side1st : side2nd;
+                    const board = document.getElementById(side + "Board");
                     const boardRect = board.getBoundingClientRect();
 
                     if (event.changedTouches[0].clientX >= boardRect.left && event.changedTouches[0].clientX <= boardRect.right && event.changedTouches[0].clientY >= boardRect.top && event.changedTouches[0].clientY <= boardRect.bottom) // 在看板范围内
                     {
-                        cell.appendChild(draggingPiece);
-                        draggingPiece.classList.add(pick + "-piece");
-                        name.innerHTML = draggingPiece.name;
-                        saveBPState();
-                        INDEX++;
-                        highlightCandidateOf();
+                        pick(draggingPiece);
                     }
                     else
                     {
@@ -289,7 +288,12 @@ function createHeroCandidate(name, index)
         });
     });
 
-
+    piece.addEventListener("click", function (event)
+    {
+        pick(piece);
+        piece.style.width = "10dvmin";
+        piece.style.height = "10dvmin";
+    });
 
 }
 
@@ -309,18 +313,18 @@ function initializeHeroCandidates(number = 16)
     }
 }
 
-function highlightCandidateOf(index = INDEX)
+function highlightCandidate(index = INDEX)
 {
     if (index < 16)
     {
-        const pick = (index % 4 == 0 || index % 4 == 3) ? pick1st : pick2nd;
+        const side = (index % 4 == 0 || index % 4 == 3) ? side1st : side2nd;
 
         for (let i = 0; i < 16; i++)
         {
             const candidate = document.getElementById("candidate" + i);
             if (i == (index - (index % 2 == 0 ? 1 : 0)) || i == (index - (index % 2 == 0 ? 1 : 0) + 1))
             {
-                candidate.style.border = "3px solid " + ((pick == "red") ? "rgb(255, 0, 0, 0.3)" : "rgb(0, 0, 255, 0.3)");
+                candidate.style.border = "3px solid " + ((side == "red") ? "rgb(255, 0, 0, 0.3)" : "rgb(0, 0, 255, 0.3)");
             }
             else
             {
@@ -420,7 +424,7 @@ function recoverBPStatefrom(state)
             piece.classList.add(cell.parentElement.parentElement.id.slice(0, -5) + "-piece");
         }
     }
-    highlightCandidateOf();
+    highlightCandidate();
 }
 
 function initializeHistory()
@@ -490,5 +494,5 @@ const history = new BPHistory();
 initializeHistory();
 createHeroBoard();
 initializeHeroCandidates();
-highlightCandidateOf(0);
+highlightCandidate(0);
 saveBPState();
