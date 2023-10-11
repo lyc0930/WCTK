@@ -2,7 +2,7 @@ import { heroes } from '../modules/data.mjs';
 
 var pick1st = "red";
 var pick2nd = pick1st == "red" ? "blue" : "red";
-var nextIndex = -1;
+var INDEX = 0;
 
 function createHeroBoard(number = 16)
 {
@@ -76,6 +76,7 @@ function createHeroCandidate(name, index)
 
     piece.title = name;
     piece.name = name;
+    piece.id = "hero" + index;
 
     const cell = document.getElementById("unpickedCell" + index);
     const nameTag = document.getElementById("unpickedName" + index);
@@ -118,7 +119,6 @@ function createHeroCandidate(name, index)
                 nameTag.innerHTML = "";
 
                 draggingPiece = piece;
-                draggingPiece.old_parent = cell;
 
                 draggingPiece.style.transition = "width 100ms ease-out, height 100ms ease-out";
                 document.body.append(piece);
@@ -150,13 +150,13 @@ function createHeroCandidate(name, index)
                 draggingPiece.style.height = "10dvmin";
                 draggingPiece.style.transition = "width 100ms ease-out, height 100ms ease-out, left 70ms ease-out, top 70ms ease-out";
 
-                const candidate = draggingPiece.old_parent.parentElement;
+                const candidate = document.getElementById("unpickedCandidate" + index);
 
                 if (candidate.id.slice(0, 6) == "unpick")
                 {
-                    const pick = (nextIndex % 4 == 0 || nextIndex % 4 == 3) ? pick1st : pick2nd;
-                    const cell = document.getElementById("cell" + nextIndex);
-                    const name = document.getElementById("name" + nextIndex);
+                    const pick = (INDEX % 4 == 0 || INDEX % 4 == 3) ? pick1st : pick2nd;
+                    const cell = document.getElementById("cell" + INDEX);
+                    const name = document.getElementById("name" + INDEX);
                     const board = document.getElementById(pick + "Board");
                     const boardRect = board.getBoundingClientRect();
 
@@ -165,13 +165,16 @@ function createHeroCandidate(name, index)
                         cell.appendChild(draggingPiece);
                         draggingPiece.classList.add(pick + "-piece");
                         name.innerHTML = draggingPiece.name;
-                        updateNextCandidate();
+                        saveBPState();
+                        INDEX++;
+                        highlightCandidateOf();
                     }
                     else
                     {
-                        const cell = draggingPiece.old_parent;
-                        cell.appendChild(draggingPiece);
-                        const nameTag = document.getElementById("unpickedName" + cell.id.slice(12));
+                        const index = draggingPiece.id.slice(4);
+                        const oldCell = document.getElementById("unpickedCell" + index);
+                        oldCell.appendChild(draggingPiece);
+                        const nameTag = document.getElementById("unpickedName" + oldCell.id.slice(12));
                         nameTag.innerHTML = draggingPiece.name;
                     }
                 }
@@ -220,7 +223,6 @@ function createHeroCandidate(name, index)
                 nameTag.innerHTML = "";
 
                 draggingPiece = piece;
-                draggingPiece.old_parent = cell;
 
                 document.body.append(piece);
             }
@@ -254,13 +256,13 @@ function createHeroCandidate(name, index)
                 draggingPiece.style.width = "10dvmin";
                 draggingPiece.style.height = "10dvmin";
 
-                const candidate = draggingPiece.old_parent.parentElement;
+                const candidate = document.getElementById("unpickedCandidate" + index);
 
                 if (candidate.id.slice(0, 6) == "unpick")
                 {
-                    const pick = (nextIndex % 4 == 0 || nextIndex % 4 == 3) ? pick1st : pick2nd;
-                    const cell = document.getElementById("cell" + nextIndex);
-                    const name = document.getElementById("name" + nextIndex);
+                    const pick = (INDEX % 4 == 0 || INDEX % 4 == 3) ? pick1st : pick2nd;
+                    const cell = document.getElementById("cell" + INDEX);
+                    const name = document.getElementById("name" + INDEX);
                     const board = document.getElementById(pick + "Board");
                     const boardRect = board.getBoundingClientRect();
 
@@ -269,11 +271,14 @@ function createHeroCandidate(name, index)
                         cell.appendChild(draggingPiece);
                         draggingPiece.classList.add(pick + "-piece");
                         name.innerHTML = draggingPiece.name;
-                        updateNextCandidate();
+                        saveBPState();
+                        INDEX++;
+                        highlightCandidateOf();
                     }
                     else
                     {
-                        const cell = draggingPiece.old_parent;
+                        const index = draggingPiece.id.slice(4);
+                        const cell = document.getElementById("unpickedCell" + index);
                         cell.appendChild(draggingPiece);
                         const nameTag = document.getElementById("unpickedName" + cell.id.slice(12));
                         nameTag.innerHTML = draggingPiece.name;
@@ -304,47 +309,186 @@ function initializeHeroCandidates(number = 16)
     }
 }
 
-function updateNextCandidate()
+function highlightCandidateOf(index = INDEX)
 {
-    nextIndex++;
-
-    const pick = (nextIndex % 4 == 0 || nextIndex % 4 == 3) ? pick1st : pick2nd;
-
-    // const board = document.getElementById(pick + "Board");
-    // board.style.backgroundColor = (pick == "red") ? "rgb(255, 0, 0, 0.3)" : "rgb(0, 0, 255, 0.3)";
-
-    // const otherBoard = document.getElementById((pick == "red") ? "blueBoard" : "redBoard");
-    // otherBoard.style.backgroundColor = (pick == "red") ? "rgb(0, 0, 255, 0.3)" : "rgb(255, 0, 0, 0.3)";
-
-    if (nextIndex == 0 || nextIndex == 16)
+    if (index < 16)
     {
-        const nextCandidate = document.getElementById("candidate" + nextIndex);
-        nextCandidate.style.border = "3px solid " + ((pick == "red") ? "rgb(255, 0, 0, 0.3)" : "rgb(0, 0, 255, 0.3)");
+        const pick = (index % 4 == 0 || index % 4 == 3) ? pick1st : pick2nd;
+
+        for (let i = 0; i < 16; i++)
+        {
+            const candidate = document.getElementById("candidate" + i);
+            if (i == (index - (index % 2 == 0 ? 1 : 0)) || i == (index - (index % 2 == 0 ? 1 : 0) + 1))
+            {
+                candidate.style.border = "3px solid " + ((pick == "red") ? "rgb(255, 0, 0, 0.3)" : "rgb(0, 0, 255, 0.3)");
+            }
+            else
+            {
+                candidate.style.border = "none";
+            }
+        }
     }
     else
     {
-        const index1 = nextIndex - (nextIndex % 2 == 0 ? 1 : 0);
-        const index2 = index1 + 1;
-        const nextCandidate1 = document.getElementById("candidate" + index1);
-        const nextCandidate2 = document.getElementById("candidate" + index2);
-        nextCandidate1.style.border = "3px solid " + ((pick == "red") ? "rgb(255, 0, 0, 0.3)" : "rgb(0, 0, 255, 0.3)");
-        nextCandidate2.style.border = "3px solid " + ((pick == "red") ? "rgb(255, 0, 0, 0.3)" : "rgb(0, 0, 255, 0.3)");
-
-        if (nextIndex == 1)
+        for (let i = 0; i < 16; i++)
         {
-            const candidate = document.getElementById("candidate0");
+            const candidate = document.getElementById("candidate" + i);
             candidate.style.border = "none";
         }
-        else if (nextIndex % 2 == 1)
+    }
+
+}
+
+class BPHistory
+{
+    constructor()
+    {
+        this.history = []; // 用于保存状态历史记录的数组
+        this.currentIndex = -1; // 当前状态的索引
+    }
+
+    // 更新状态
+    updateHistory(newState)
+    {
+        // 截断历史记录，删除当前状态之后的记录
+        this.history = this.history.slice(0, this.currentIndex + 1);
+        // 添加新状态到历史记录
+        this.history.push(newState);
+        this.currentIndex++;
+    }
+
+    // 撤销操作
+    undo()
+    {
+        if (this.currentIndex > 0 && INDEX > 0)
         {
-            const candidate1 = document.getElementById("candidate" + (nextIndex - 2));
-            const candidate2 = document.getElementById("candidate" + (nextIndex - 1));
-            candidate1.style.border = "none";
-            candidate2.style.border = "none";
+            this.currentIndex--;
+            INDEX--;
+            return this.history[this.currentIndex];
         }
+        return null; // 没有可以撤销的状态
+    }
+
+    // 重做操作
+    redo()
+    {
+        if (this.currentIndex < this.history.length - 1 && INDEX < 16)
+        {
+            this.currentIndex++;
+            INDEX++;
+            return this.history[this.currentIndex];
+        }
+        return null; // 没有可以重做的状态
+    }
+
+    // 获取当前状态
+    getCurrentState()
+    {
+        return this.history[this.currentIndex];
     }
 }
 
+function saveBPState()
+{
+    const state = {};
+    const pieces = document.getElementsByClassName("piece");
+    for (const piece of pieces)
+    {
+        state[piece.id] = piece.parentElement.id;
+    }
+    history.updateHistory(state);
+}
+
+function recoverBPStatefrom(state)
+{
+    const pieces = document.getElementsByClassName("piece");
+    for (const piece of pieces)
+    {
+        const oldNameTag = piece.parentElement.parentElement.lastChild;
+        oldNameTag.innerHTML = "";
+        const cell = document.getElementById(state[piece.id]);
+        cell.appendChild(piece);
+        const nameTag = cell.parentElement.lastChild;
+        nameTag.innerHTML = piece.name;
+        if (cell.id.slice(0, 6) == "unpick")
+        {
+            piece.classList.remove("red-piece");
+            piece.classList.remove("blue-piece");
+        }
+        else
+        {
+            piece.classList.add(cell.parentElement.parentElement.id.slice(0, -5) + "-piece");
+        }
+    }
+    highlightCandidateOf();
+}
+
+function initializeHistory()
+{
+    document.addEventListener("wheel", function (event)
+    {
+        event.preventDefault();
+        if (event.deltaY < 0)
+        {
+            const previousState = history.undo();
+            if (previousState)
+            {
+                recoverBPStatefrom(previousState);
+            }
+        } else if (event.deltaY > 0)
+        {
+            const nextState = history.redo();
+            if (nextState)
+            {
+                recoverBPStatefrom(nextState);
+            }
+        }
+    }, { passive: false });
+
+    document.addEventListener("keydown", function (event)
+    {
+        if (event.key == 'ArrowUp')
+        {
+            event.preventDefault();
+            const previousState = history.undo();
+            if (previousState)
+            {
+                recoverBPStatefrom(previousState);
+            }
+        }
+        else if (event.key == 'ArrowDown')
+        {
+            event.preventDefault();
+            const nextState = history.redo();
+            if (nextState)
+            {
+                recoverBPStatefrom(nextState);
+            }
+        }
+        else if (event.key == 'z' && event.ctrlKey)
+        {
+            event.preventDefault();
+            const previousState = history.undo();
+            if (previousState)
+            {
+                recoverBPStatefrom(previousState);
+            }
+        }
+        else if (event.key == 'y' && event.ctrlKey)
+        {
+            event.preventDefault();
+            const nextState = history.redo();
+            if (nextState)
+            {
+                recoverBPStatefrom(nextState);
+            }
+        }
+    });
+}
+
+const history = new BPHistory();
+initializeHistory();
 createHeroBoard();
 initializeHeroCandidates();
-updateNextCandidate();
+highlightCandidateOf(0);
+saveBPState();
