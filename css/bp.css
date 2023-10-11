@@ -1,0 +1,99 @@
+@import "./cell.css";
+@import "./piece.css";
+
+body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: space-around;
+    align-items: center;
+}
+
+.board {
+    backdrop-filter: blur(3px);
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-content: space-evenly;
+}
+
+#heroBoard {
+    aspect-ratio: 1;
+    border-radius: 2%;
+    background-image: url('../assets/Map/野战.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: local;
+}
+
+.factionBoard {
+    aspect-ratio: 0.5;
+    border-radius: 2dvmin;
+}
+
+#redBoard {
+    background-color: rgb(255, 0, 0, 0.3);
+}
+
+#blueBoard {
+    background-color: rgb(0, 0, 255, 0.3);
+}
+
+.candidate {
+    border-radius: 7.5%;
+    background-color: rgb(255, 255, 255, 0.5);
+    backdrop-filter: blur(3px);
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+@media screen and (orientation:landscape) {
+    #heroBoard {
+        width: 48%;
+    }
+
+    .factionBoard {
+        width: 24%;
+    }
+
+    .candidate {
+        width: 16dvh;
+        height: 16dvh;
+    }
+
+    #redBoard {
+        order: -1;
+    }
+
+    #blueBoard {
+        order: 1;
+    }
+}
+
+@media screen and (orientation:portrait) {
+    #heroBoard {
+        width: 100%;
+    }
+
+    .factionBoard {
+        width: 48%;
+    }
+
+    .candidate {
+        width: 20dvw;
+        height: 20dvw;
+    }
+
+    #redBoard {
+        order: 1;
+    }
+
+    #blueBoard {
+        order: 2;
+    }
+}
