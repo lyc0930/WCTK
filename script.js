@@ -1,5 +1,5 @@
 import { slot, bury } from './modules/actions.mjs';
-import { terrain, heroes, weapons, armors, horses } from './modules/data.mjs';
+import { terrain, HERO_DATA, weapons, armors, horses } from './modules/data.mjs';
 import { highlightCells, highlightPieces, removeHighlight } from './modules/highlight.mjs';
 import { stateHistory, saveState, recoverStatefrom } from './modules/history.mjs';
 import { generateFlags, setCarrier } from './modules/flags.mjs';
@@ -125,7 +125,7 @@ function createPiece(color, name, index)
 {
     const piece = document.createElement("div");
     const avatar = document.createElement("img");
-    avatar.src = "./assets/Avatar/active/" + heroes[name][0] + ".png";
+    avatar.src = "./assets/Avatar/active/" + HERO_DATA[name]["拼音"] + ".png";
     avatar.draggable = false;
     avatar.className = "avatar";
     piece.appendChild(avatar);
@@ -133,8 +133,7 @@ function createPiece(color, name, index)
     piece.classList.add(color === "red" ? "red-piece" : "blue-piece");
     piece.title = name;
     piece.name = name;
-    // piece.maxHP = heroes[name][1];
-    piece.HP = heroes[name][2];
+    piece.HP = HERO_DATA[name]["体力上限"];
     piece.weapons = [""];
     piece.armors = ["", ""];
     piece.horses = ["", ""];
@@ -154,10 +153,10 @@ function createPiece(color, name, index)
 
     const labelHP = document.getElementById("HP" + index);
     labelHP.textContent = piece.HP;
-    labelHP.style.color = HPColor(piece.HP, heroes[piece.name][1]);
+    labelHP.style.color = HPColor(piece.HP, HERO_DATA[piece.name]["体力上限"]);
 
     const labelMaxHP = document.getElementById("maxHP" + index);
-    labelMaxHP.textContent = heroes[piece.name][1];
+    labelMaxHP.textContent = HERO_DATA[piece.name]["体力上限"];
 
     if (name == "庞统")
     {
@@ -221,8 +220,8 @@ function createPiece(color, name, index)
                 { // 超出棋盘范围
                     bury(draggingPiece);
                 }
-                draggingPiece = null;
                 draggingPiece.old_parent = null;
+                draggingPiece = null;
             }
         });
     });
@@ -296,8 +295,8 @@ function createPiece(color, name, index)
                 {
                     bury(draggingPiece);
                 }
-                draggingPiece = null;
                 draggingPiece.old_parent = null;
+                draggingPiece = null;
             }
         });
     });
@@ -311,13 +310,13 @@ function createPiece(color, name, index)
 function initializePieces()
 {
     const chessboard = document.getElementById("chessboard");
-    const heroesList = Object.keys(heroes);
+    const HERO_DATAList = Object.keys(HERO_DATA);
     var initHeroes = [];
     for (var i = 0; i < 6; i++)
     {
-        var index = Math.floor(Math.random() * (heroesList.length - i));
-        initHeroes.push(heroesList[index]);
-        heroesList[index] = heroesList[heroesList.length - 1 - i];
+        var index = Math.floor(Math.random() * (HERO_DATAList.length - i));
+        initHeroes.push(HERO_DATAList[index]);
+        HERO_DATAList[index] = HERO_DATAList[HERO_DATAList.length - 1 - i];
     }
     for (var i = 0; i < chessboard.children.length; i++)
     {
@@ -374,7 +373,7 @@ function initializeGame()
     for (var i = 1; i <= 6; i++)
     {
         const heroSelect = document.getElementById("heroSelect" + i);
-        for (var name in heroes)
+        for (var name in HERO_DATA)
         {
             const option = document.createElement("option");
             option.id = name + i;
@@ -388,14 +387,14 @@ function initializeGame()
             const piece = Pieces[index - 1];
             piece.name = heroSelect.value;
             const avatar = piece.querySelector(".avatar");
-            avatar.src = "./assets/Avatar/active/" + heroes[heroSelect.value][0] + ".png";
-            piece.HP = heroes[heroSelect.value][2];
+            avatar.src = "./assets/Avatar/active/" + HERO_DATA[heroSelect.value]["拼音"] + ".png";
+            piece.HP = HERO_DATA[heroSelect.value]["体力上限"];
 
             const labelHP = document.getElementById("HP" + index);
             labelHP.textContent = piece.HP;
-            labelHP.style.color = HPColor(piece.HP, heroes[piece.name][1]);
+            labelHP.style.color = HPColor(piece.HP, HERO_DATA[piece.name]["体力上限"]);
             const labelMaxHP = document.getElementById("maxHP" + index);
-            labelMaxHP.textContent = heroes[piece.name][1];
+            labelMaxHP.textContent = HERO_DATA[piece.name]["体力上限"];
 
             const weaponSelect = document.getElementById("weaponSelect" + index);
             weaponSelect.value = "";
@@ -441,7 +440,7 @@ function initializeGame()
                     const checkBox = document.getElementById("actedCheckbox" + (Pieces.indexOf(piece) + 1));
                     checkBox.checked = false;
                     const avatar = piece.querySelector(".avatar");
-                    avatar.src = "./assets/Avatar/active/" + heroes[piece.name][0] + ".png";
+                    avatar.src = "./assets/Avatar/active/" + HERO_DATA[piece.name]["拼音"] + ".png";
                 }
                 console.log(`新轮次开始`);
             }
@@ -449,7 +448,7 @@ function initializeGame()
             {
                 piece.acted = true;
                 const avatar = piece.querySelector(".avatar");
-                avatar.src = "./assets/Avatar/inactive/" + heroes[piece.name][0] + ".png";
+                avatar.src = "./assets/Avatar/inactive/" + HERO_DATA[piece.name]["拼音"] + ".png";
                 console.log(`${piece.name}回合结束`);
             }
             saveState();
@@ -463,7 +462,7 @@ function initializeGame()
             const piece = Pieces[index - 1];
             const labelHP = document.getElementById("HP" + index);
             var HP = piece.HP;
-            var MaxHP = heroes[piece.name][1];
+            var MaxHP = HERO_DATA[piece.name]["体力上限"];
             if (HP > 0)
             {
                 labelHP.textContent = HP - 1;
@@ -480,7 +479,7 @@ function initializeGame()
             const piece = Pieces[index - 1];
             const labelHP = document.getElementById("HP" + index);
             var HP = piece.HP;
-            var MaxHP = heroes[piece.name][1];
+            var MaxHP = HERO_DATA[piece.name]["体力上限"];
             if (HP < MaxHP)
             {
                 labelHP.textContent = HP + 1;
@@ -613,7 +612,6 @@ function initializeGame()
         }
     });
 }
-
 // 启动游戏
 initializeGame();
 saveState();

@@ -1,4 +1,4 @@
-import { terrain, heroes, weapons, armors, horses } from './data.mjs';
+import { terrain, HERO_DATA, weapons, armors, horses } from './data.mjs';
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
 import { Pieces } from "../script.js";
 import { piecesIn, HPColor } from './utils.mjs';
@@ -143,11 +143,11 @@ function recoverStatefrom(state)
         const avatar = player.piece.querySelector(".avatar");
         if (player.acted)
         {
-            avatar.src = "./assets/Avatar/inactive/" + heroes[player.piece.name][0] + ".png";
+            avatar.src = "./assets/Avatar/inactive/" + HERO_DATA[player.piece.name]["拼音"] + ".png";
         }
         else
         {
-            avatar.src = "./assets/Avatar/active/" + heroes[player.piece.name][0] + ".png";
+            avatar.src = "./assets/Avatar/active/" + HERO_DATA[player.piece.name]["拼音"] + ".png";
         }
         const grave = document.getElementById("grave" + index);
         if (player.alive)
@@ -161,7 +161,7 @@ function recoverStatefrom(state)
             player.piece.HP = player.HP;
             const labelHP = document.getElementById("HP" + index);
             labelHP.textContent = player.HP;
-            labelHP.style.color = HPColor(player.HP, heroes[player.piece.name][1]);
+            labelHP.style.color = HPColor(player.HP, HERO_DATA[player.piece.name]["体力上限"]);
 
             player.piece.weapons = player.weapons;
             const weaponSelect = document.getElementById("weaponSelect" + index);

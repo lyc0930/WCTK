@@ -1,4 +1,4 @@
-import { terrain, heroes, weapons, armors, horses } from './data.mjs';
+import { terrain, HERO_DATA, weapons, armors, horses } from './data.mjs';
 import { adjacentCells, distanceMapOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn, HPColor, draw } from "./utils.mjs";
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
@@ -126,8 +126,8 @@ function slot(piece, cell, isDraw = false)
             actedCheckbox.disabled = false;
 
             const labelHP = document.getElementById("HP" + index);
-            labelHP.textContent = heroes[piece.name][1];
-            labelHP.style.color = HPColor(heroes[piece.name][1], heroes[piece.name][1]);
+            labelHP.textContent = HERO_DATA[piece.name]["体力上限"];
+            labelHP.style.color = HPColor(HERO_DATA[piece.name]["体力上限"], HERO_DATA[piece.name]["体力上限"]);
 
             const weaponSelect = document.getElementById("weaponSelect" + index);
             weaponSelect.value = "";
@@ -225,7 +225,7 @@ function bury(piece)
 
         const labelHP = document.getElementById("HP" + index);
         labelHP.textContent = 0;
-        labelHP.style.color = HPColor(0, heroes[piece.name][1]);
+        labelHP.style.color = HPColor(0, HERO_DATA[piece.name]["体力上限"]);
 
         const weaponSelect = document.getElementById("weaponSelect" + index);
         weaponSelect.value = "";

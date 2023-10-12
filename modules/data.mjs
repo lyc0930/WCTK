@@ -1,3 +1,5 @@
+import hero_data from "../assets/hero-data.json" assert { type: 'json' };
+
 // 地形
 const terrain = [
     ["post", "plain", "grove", "ridge", "plain", "Bcamp", "Bbase"],
@@ -9,79 +11,7 @@ const terrain = [
     ["Rbase", "Rcamp", "plain", "ridge", "plain", "grove", "post"]
 ];
 
-const heroes = {
-    // pinyin, MaxHP, HP
-    "曹操": ["caocao", 4, 4],
-    "司马懿": ["simayi", 3, 3],
-    "夏侯惇": ["xiahoudun", 4, 4],
-    "张辽": ["zhangliao", 4, 4],
-    "许褚": ["xuchu", 4, 4],
-    "郭嘉": ["guojia", 3, 3],
-    "甄姬": ["zhenji", 3, 3],
-    "曹纯": ["caochun", 4, 4],
-    "典韦": ["dianwei", 4, 4],
-    "刘备": ["liubei", 4, 4],
-    "关羽": ["guanyu", 4, 4],
-    "张飞": ["zhangfei", 4, 4],
-    "诸葛亮": ["zhugeliang", 3, 3],
-    "赵云": ["zhaoyun", 4, 4],
-    "马超": ["machao", 4, 4],
-    "黄月英": ["huangyueying", 3, 3],
-    "黄忠": ["huangzhong", 4, 4],
-    "孙乾": ["sunqian", 3, 3],
-    "孙权": ["sunquan", 4, 4],
-    "甘宁": ["ganning", 4, 4],
-    "吕蒙": ["lvmeng", 4, 4],
-    "黄盖": ["huanggai", 4, 4],
-    "周瑜": ["zhouyu", 3, 3],
-    "大乔": ["daqiao", 3, 3],
-    "陆逊": ["luxun", 3, 3],
-    "孙尚香": ["sunshangxiang", 3, 3],
-    "祖茂": ["zumao", 4, 4],
-    "华佗": ["huatuo", 3, 3],
-    "吕布": ["lvbu", 4, 4],
-    "貂蝉": ["diaochan", 3, 3],
-    "董卓": ["dongzhuo", 4, 4],
-    "张绣": ["zhangxiu", 4, 4],
-    "刘表": ["liubiao", 4, 4],
-    "曹仁": ["caoren", 4, 4],
-    "魏延": ["weiyan", 4, 4],
-    "祝融": ["zhurong", 4, 4],
-    "孙坚": ["sunjian", 4, 4],
-    "鲁肃": ["lusu", 3, 3],
-    "张角": ["zhangjiao", 3, 3],
-    "陈宫": ["chengong", 3, 3],
-    "邓艾": ["dengai", 4, 4],
-    "荀彧": ["xunyu", 3, 3],
-    "孟获": ["menghuo", 4, 4],
-    "法正": ["fazheng", 3, 3],
-    "孙策": ["sunce", 4, 4],
-    "贾诩": ["jiaxu", 3, 3],
-    "庞德": ["pangde", 4, 4],
-    "高顺": ["gaoshun", 4, 4],
-    "华雄": ["huaxiong", 4, 4],
-    "夏侯渊": ["xiahouyuan", 4, 4],
-    "姜维": ["jiangwei", 4, 4],
-    "小乔": ["xiaoqiao", 3, 3],
-    "乐进&李典": ["yuejin&lidian", 4, 4],
-    "关兴&张苞": ["guanxing&zhangbao", 4, 4],
-    "张昭&张纮": ["zhangzhao&zhanghong", 4, 4],
-    "颜良&文丑": ["yanliang&wenchou", 4, 4],
-    "程普": ["chengpu", 4, 4],
-    "张郃": ["zhanghe", 4, 4],
-    "徐晃": ["xuhuang", 4, 4],
-    "于禁": ["yujin", 4, 4],
-    "庞统": ["pangtong", 3, 3],
-    "太史慈": ["taishici", 4, 4],
-    "周泰": ["zhoutai", 4, 4],
-    "韩当": ["handang", 4, 4],
-    "程昱": ["chengyu", 3, 3],
-    "袁绍": ["yuanshao", 4, 4],
-    "刘协": ["liuxie", 3, 3],
-    "卑弥呼": ["beimihu", 3, 3],
-    "王异": ["wangyi", 3, 3],
-    "左慈": ["zuoci", 3, 3],
-}
+const HERO_DATA = hero_data;
 
 const weapons = {
     "": 1,
@@ -120,4 +50,4 @@ const horses = {
     "燎原火": "still",
 }
 
-export { terrain, heroes, weapons, armors, horses };
+export { terrain, HERO_DATA, weapons, armors, horses };
