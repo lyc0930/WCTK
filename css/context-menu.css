@@ -43,7 +43,6 @@
 }
 
 .skill-panel {
-    max-width: 40dvmin;
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
@@ -52,18 +51,19 @@
     visibility: hidden;
     opacity: 0;
     position: absolute;
-    z-index: 99;
+    z-index: 98;
     border-radius: 0.5em;
     background-color: rgb(255, 255, 255, 0.5);
     backdrop-filter: blur(3px);
-    transition: visibility 150ms,
+    transition: visibility 150ms ease-out,
         opacity 150ms ease-out;
     box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 0, 0.15);
+    pointer-events: none;
 }
 
 .skill-item {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: flex-start;
     align-items: center;
     padding: 0 0.5em 0 0.5em;
     border-radius: 0.5em;
@@ -74,11 +74,23 @@
     margin: 0.5em;
     text-wrap: nowrap;
     user-select: none;
-    font-size: large;
-    font-weight: bold;
 }
 
 .skill-text {
     margin: 0.5em;
     user-select: none;
+    text-align: justify;
+}
+
+@media screen and (orientation:landscape) {
+.skill-panel {
+    max-width: 45dvmin;
+}
+}
+
+@media screen and (orientation:portrait) {
+.skill-panel {
+    max-width: 80dvw;
+    top: 100dvw;
+}
 }

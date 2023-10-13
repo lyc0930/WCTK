@@ -1,0 +1,99 @@
+@font-face {
+    font-family: 'fzlbjt';
+    src: url("../assets/Fonts/方正隶变简体.ttf");
+}
+
+@font-face {
+    font-family: 'fzlbft';
+    src: url("../assets/Fonts/方正隶变繁体.ttf");
+}
+
+@font-face {
+    font-family: 'fzlsjt';
+    src: url("../assets/Fonts/方正隶书简体.ttf");
+}
+
+@font-face {
+    font-family: 'fzlsft';
+    src: url("../assets/Fonts/方正隶书繁体.ttf");
+}
+
+@font-face {
+    font-family: 'fzzyjt';
+    src: url("../assets/Fonts/方正准圆简体.ttf");
+}
+
+@font-face {
+    font-family: 'hyzyj';
+    src: url("../assets/Fonts/汉仪中圆简.ttf");
+}
+
+.skill-name {
+    font-family: 'fzlbjt';
+    font-size: 1.6em;
+    text-wrap: nowrap;
+}
+
+.skill-text {
+    font-family: 'fzzyjt';
+    line-height: 1.5em;
+}
+
+.skill-label {
+    font-weight: bold;
+}
+
+.skill-range {
+    text-decoration: underline;
+}
+
+.skill-term {
+    font-weight: bold;
+}
+
+.skill-ref {
+    font-weight: bold;
+}
+
+.skill-side {
+    color: rgb(100, 100, 100);
+    font-weight: italic;
+}
+
+.skill-suit {
+    font-weight: bold;
+}
+
+.spade, .club {
+    color: rgb(0, 0, 0);
+}
+
+.heart, .diamond {
+    color: rgb(255, 0, 0);
+}
+
+.skill-color-black {
+    font-weight: bold;
+    color: rgb(0, 0, 0);
+}
+
+.skill-color-red {
+    font-weight: bold;
+    color: rgb(255, 0, 0);
+}
+
+.wei {
+    color: rgb(52, 70, 214);
+}
+
+.shu {
+    color: rgb(195, 10, 35);
+}
+
+.wu {
+    color: rgb(80, 150, 0);
+}
+
+.qun {
+    color: rgb(90, 90, 76);
+}

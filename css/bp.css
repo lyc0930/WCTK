@@ -1,6 +1,7 @@
 @import "./cell.css";
 @import "./piece.css";
 @import "./context-menu.css";
+@import "./text.css";
 
 body {
     display: flex;
@@ -56,6 +57,12 @@ label {
     flex-direction: column;
     box-sizing: border-box;
     box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 0, 0.15);
+}
+
+.candidate label {
+    font-family: 'fzlbjt';
+    font-size: 1.8cqi;
+    text-wrap: nowrap;
 }
 
 @media screen and (orientation:landscape) {
