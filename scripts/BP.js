@@ -58,7 +58,8 @@ function createHeroBoard(number = 16)
 
 function pick(piece)
 {
-    const oldNameTag = piece.parentElement.parentElement.lastChild;
+    const oldNameTag = document.getElementById("unpickedName" + piece.id.slice(4));
+
     oldNameTag.innerHTML = "";
 
     const side = (INDEX % 4 == 0 || INDEX % 4 == 3) ? side1st : side2nd;
