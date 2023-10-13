@@ -1,5 +1,6 @@
 @import "./cell.css";
 @import "./piece.css";
+@import "./context-menu.css";
 
 body {
     display: flex;
@@ -50,10 +51,11 @@ label {
     backdrop-filter: blur(3px);
     display: flex;
     flex-wrap: nowrap;
-    justify-content: flex-start;
+    justify-content: space-evenly;
     align-items: center;
     flex-direction: column;
     box-sizing: border-box;
+    box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 0, 0.15);
 }
 
 @media screen and (orientation:landscape) {

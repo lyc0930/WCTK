@@ -131,7 +131,6 @@ function createPiece(color, name, index)
     piece.appendChild(avatar);
     piece.className = "piece";
     piece.classList.add(color === "red" ? "red-piece" : "blue-piece");
-    piece.title = name;
     piece.name = name;
     piece.HP = HERO_DATA[name]["体力上限"];
     piece.weapons = [""];

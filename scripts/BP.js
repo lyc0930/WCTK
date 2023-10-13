@@ -1,4 +1,5 @@
-import { heroes } from '../modules/data.mjs';
+import { HERO_DATA } from '../modules/data.mjs';
+import { addContextMenu, removeContextMenu, addSkillPanel } from '../modules/context-menu.mjs';
 
 var side1st = "red";
 var side2nd = side1st == "red" ? "blue" : "red";
@@ -57,9 +58,14 @@ function createHeroBoard(number = 16)
 
 function pick(piece)
 {
+    const oldNameTag = piece.parentElement.parentElement.lastChild;
+    oldNameTag.innerHTML = "";
+
     const side = (INDEX % 4 == 0 || INDEX % 4 == 3) ? side1st : side2nd;
     const cell = document.getElementById("cell" + INDEX);
     const name = document.getElementById("name" + INDEX);
+
+    removeContextMenu(piece);
 
     cell.appendChild(piece);
     piece.classList.add(side + "-piece");
@@ -73,7 +79,7 @@ function createHeroCandidate(name, index)
 {
     const piece = document.createElement("div");
     const avatar = document.createElement("img");
-    avatar.src = "./assets/Avatar/active/" + heroes[name][0] + ".png";
+    avatar.src = "./assets/Avatar/active/" + HERO_DATA[name]["拼音"] + ".png";
     avatar.draggable = false;
     avatar.className = "avatar";
     piece.appendChild(avatar);
@@ -87,7 +93,6 @@ function createHeroCandidate(name, index)
 
     piece.className = "piece";
 
-    piece.title = name;
     piece.name = name;
     piece.id = "hero" + index;
 
@@ -295,17 +300,24 @@ function createHeroCandidate(name, index)
         piece.style.height = "10dvmin";
     });
 
+    addContextMenu(piece, {
+        "更换武将": function () { console.log("test"); }, // TODO
+        "选择": function () { pick(piece); }
+    });
+
+    addSkillPanel(piece);
+
 }
 
 function initializeHeroCandidates(number = 16)
 {
-    const heroesList = Object.keys(heroes);
+    const HERO_DATAList = Object.keys(HERO_DATA);
     var initHeroes = [];
     for (var i = 0; i < number; i++)
     {
-        var index = Math.floor(Math.random() * (heroesList.length - i));
-        initHeroes.push(heroesList[index]);
-        heroesList[index] = heroesList[heroesList.length - 1 - i];
+        var index = Math.floor(Math.random() * (HERO_DATAList.length - i));
+        initHeroes.push(HERO_DATAList[index]);
+        HERO_DATAList[index] = HERO_DATAList[HERO_DATAList.length - 1 - i];
     }
     for (var i = 0; i < number; i++)
     {

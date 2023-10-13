@@ -1,0 +1,84 @@
+.context-menu {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    z-index: 99;
+    border-radius: 0.5em;
+    background-color: rgb(255, 255, 255, 0.5);
+    backdrop-filter: blur(3px);
+    transition: visibility 150ms,
+        opacity 150ms ease-out;
+    box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 0, 0.15);
+}
+
+.context-menu-item {
+    display: flex;
+    padding: 0 0.5em 0 0.5em;
+    border-radius: 0.5em;
+    transition: all 25ms ease-out;
+}
+
+.context-menu-item:hover {
+    background-color: rgb(255, 255, 255, 0.05);
+    backdrop-filter: blur(3px);
+    box-shadow: 0 0 0.1em 0.1em rgb(0, 0, 0, 0.15);
+}
+
+.context-menu-item:active {
+    background-color: rgb(255, 255, 255, 0.6);
+    backdrop-filter: blur(3px);
+    box-shadow: 0 0 0.25em 0.25em rgb(0, 0, 0, 0.15);
+}
+
+.context-menu label {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    text-wrap: nowrap;
+    user-select: none;
+}
+
+.skill-panel {
+    max-width: 40dvmin;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    z-index: 99;
+    border-radius: 0.5em;
+    background-color: rgb(255, 255, 255, 0.5);
+    backdrop-filter: blur(3px);
+    transition: visibility 150ms,
+        opacity 150ms ease-out;
+    box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 0, 0.15);
+}
+
+.skill-item {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0 0.5em 0 0.5em;
+    border-radius: 0.5em;
+    transition: all 75ms ease-out;
+}
+
+.skill-name {
+    margin: 0.5em;
+    text-wrap: nowrap;
+    user-select: none;
+    font-size: large;
+    font-weight: bold;
+}
+
+.skill-text {
+    margin: 0.5em;
+    user-select: none;
+}
