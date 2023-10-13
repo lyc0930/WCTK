@@ -59,11 +59,12 @@ function addContextMenu(element, items = {})
         {
             if (menu.style.visibility != 'visible')
             {
+                hideAllSuspension();
                 menu.style.visibility = 'visible';
                 menu.style.opacity = 1;
             }
             positionMenu(menu, event);
-        }, 500);
+        }, 1000);
 
         element.addEventListener("touchend", function (event)
         {
@@ -102,17 +103,34 @@ function addSkillPanel(piece)
     document.body.appendChild(skillPanel);
 
     const skills = HERO_DATA[piece.name]["技能"];
+    const faction = HERO_DATA[piece.name]["势力"];
     for (let skill in skills)
     {
         const skillItem = document.createElement("div");
         skillItem.classList.add("skill-item");
+
         const skillName = document.createElement("label");
         skillName.classList.add("skill-name");
-        skillName.textContent = skill;
+        skillName.innerHTML = skill;
+
+        if (faction == "魏")
+        {
+            skillName.classList.add("wei");
+        } else if (faction == "蜀")
+        {
+            skillName.classList.add("shu");
+        } else if (faction == "吴")
+        {
+            skillName.classList.add("wu");
+        } else if (faction == "群")
+        {
+            skillName.classList.add("qun");
+        }
+
         skillItem.appendChild(skillName);
         const skillText = document.createElement("label");
         skillText.classList.add("skill-text");
-        skillText.textContent = skills[skill];
+        skillText.innerHTML = skills[skill];
         skillItem.appendChild(skillText);
         skillPanel.appendChild(skillItem);
     }
@@ -125,7 +143,7 @@ function addSkillPanel(piece)
         {
             skillPanel.style.visibility = 'visible';
             skillPanel.style.opacity = 1;
-        }, 1000);
+        }, 500);
 
         piece.addEventListener("mouseout", function (event)
         {
@@ -142,20 +160,39 @@ function addSkillPanel(piece)
     {
         event.preventDefault();
         event.stopPropagation();
-        const timeoutId = setTimeout(function ()
-        {
-            skillPanel.style.visibility = 'visible';
-            skillPanel.style.opacity = 1;
-        }, 1000);
+
+        hideAllSuspension();
+        skillPanel.style.visibility = 'visible';
+        skillPanel.style.opacity = 1;
 
         piece.addEventListener("touchend", function (event)
         {
-            clearTimeout(timeoutId);
-            skillPanel.style.visibility = 'hidden';
-            skillPanel.style.opacity = 0;
-            piece.ontouchend = null;
+            document.addEventListener("click", function (event)
+            {
+                skillPanel.style.visibility = 'hidden';
+                skillPanel.style.opacity = 0;
+                piece.ontouchend = null;
+
+            });
         });
     });
+}
+
+function hideAllSuspension()
+{
+    const contextMenus = document.getElementsByClassName("context-menu");
+    for (let i = 0; i < contextMenus.length; i++)
+    {
+        contextMenus[i].style.visibility = 'hidden';
+        contextMenus[i].style.opacity = 0;
+    }
+
+    const skillPanels = document.getElementsByClassName("skill-panel");
+    for (let i = 0; i < skillPanels.length; i++)
+    {
+        skillPanels[i].style.visibility = 'hidden';
+        skillPanels[i].style.opacity = 0;
+    }
 }
 
 function getPosition(event)
@@ -181,8 +218,8 @@ function getPosition(event)
     }
 
     return {
-        x: posX,
-        y: posY
+        x: posX + window.scrollX,
+        y: posY + window.scrollY
     };
 }
 

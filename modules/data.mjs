@@ -13,6 +13,47 @@ const terrain = [
 
 const HERO_DATA = hero_data;
 
+function formatSkill(text)
+{
+    const skillLabels = ["锁定技", "限定技"];
+    for (let label of skillLabels)
+    {
+        text = text.replace(label, "<span class='skill-label'>" + label + "</span>");
+    }
+
+    text = text.replace(/<(\d+)>/g, "＜<span class='skill-range'>$1</span>＞");
+
+    text = text.replace(/“([\u4e00-\u9fa5]+)”/g, "“<span class='skill-term'>$1</span>”");
+
+    text = text.replace(/〖([\u4e00-\u9fa5]+)〗/g, "〖<span class='skill-ref'>$1</span>〗");
+
+    text = text.replace(/(（[\u4e00-\u9fa5]+面技能）)/g, "<span class='skill-side'>$1</span>");
+
+    // text = text.replace(/\d/g, function(match) {
+    //     return String.fromCharCode(match.charCodeAt(0) + 0xFEE0);
+    // });
+
+    text = text.replace("黑桃", "<span class='skill-suit spade'>♠</span>");
+    text = text.replace("红桃", "<span class='skill-suit heart'>♥</span>");
+    text = text.replace("方块", "<span class='skill-suit diamond'>♦</span>");
+    text = text.replace("梅花", "<span class='skill-suit club'>♣</span>");
+
+    text = text.replace("若结果为黑色", "若结果为<span class='skill-color-black'>黑色</span>");
+    text = text.replace("若结果为红色", "若结果为<span class='skill-color-red'>红色</span>");
+
+    return text;
+}
+
+// format every skill
+for (let name in HERO_DATA)
+{
+    for (let skillName in HERO_DATA[name]["技能"])
+    {
+        HERO_DATA[name]["技能"][skillName] = formatSkill(HERO_DATA[name]["技能"][skillName]);
+    }
+}
+
+
 const weapons = {
     "": 1,
     "诸葛连弩": 1,
