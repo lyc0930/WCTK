@@ -151,7 +151,7 @@
 
 @media screen and (orientation:landscape) {
 .skill-panel {
-    max-width: 45dvmin;
+    width: clamp(360px, 45dvh, 800px);
 }
 }
 

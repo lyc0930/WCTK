@@ -45,6 +45,12 @@ function addContextMenu(element, items = {})
         event.preventDefault();
         event.stopPropagation();
 
+        if (menu.style.visibility != 'hidden')
+        {
+            menu.style.visibility = 'hidden';
+            menu.style.opacity = 0;
+        }
+
         // 记录初始位置
         const startX = event.touches[0].clientX + window.scrollX;
         const startY = event.touches[0].clientY + window.scrollY;
