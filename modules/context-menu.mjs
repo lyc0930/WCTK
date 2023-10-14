@@ -1,5 +1,10 @@
 import { HERO_DATA } from './data.mjs';
 
+const MENU_LOGO = {
+    "更换武将": "fa-users",
+    "选择": "fa-user-check"
+}
+
 function addContextMenu(element, items = {})
 {
     const menu = document.getElementById("context-menu");
@@ -257,7 +262,7 @@ function updateContextMenu(menu, items = {})
         const menuItem = document.createElement("div");
         menuItem.classList.add("context-menu-item");
         const itemLabel = document.createElement("label");
-        itemLabel.textContent = item;
+        itemLabel.innerHTML = `<i class="fas ${MENU_LOGO[item]}" style="color: #333333;"></i> ${item}`;
         menuItem.appendChild(itemLabel);
         menuItem.addEventListener("click", items[item]);
         menu.appendChild(menuItem);
