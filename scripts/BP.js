@@ -28,8 +28,8 @@ function createHeroBoard(number = 16)
         heroBoard.appendChild(candidate);
     }
 
-    // side1st = window.confirm("红方是否先选？") ? "red" : "blue";
-    // side2nd = side1st == "red" ? "blue" : "red";
+    side1st = window.confirm("红方是否先选？") ? "red" : "blue";
+    side2nd = side1st == "red" ? "blue" : "red";
 
     const board1st = document.getElementById(side1st + 'Board');
     const board2nd = document.getElementById(side2nd + 'Board');

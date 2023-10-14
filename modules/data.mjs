@@ -33,10 +33,15 @@ function formatSkill(text)
     //     return String.fromCharCode(match.charCodeAt(0) + 0xFEE0);
     // });
 
-    text = text.replace("黑桃", "<span class='skill-suit spade'>♠</span>");
-    text = text.replace("红桃", "<span class='skill-suit heart'>♥</span>");
-    text = text.replace("方块", "<span class='skill-suit diamond'>♦</span>");
-    text = text.replace("梅花", "<span class='skill-suit club'>♣</span>");
+    // text = text.replace("黑桃", "<span class='skill-suit spade'>♠</span>");
+    // text = text.replace("红桃", "<span class='skill-suit heart'>♥</span>");
+    // text = text.replace("方块", "<span class='skill-suit diamond'>♦</span>");
+    // text = text.replace("梅花", "<span class='skill-suit club'>♣</span>");
+
+    text = text.replace("黑桃", '<i class="fa-solid fa-spade" style="color: #000000;"></i>');
+    text = text.replace("红桃", '<i class="fa-solid fa-heart" style="color: #ff2e2e;"></i>');
+    text = text.replace("梅花", '<i class="fa-solid fa-club" style="color: #000000;"></i>');
+    text = text.replace("方块", '<i class="fa-solid fa-diamond" style="color: #ff2e2e;"></i>');
 
     text = text.replace("若结果为黑色", "若结果为<span class='skill-color-black'>黑色</span>");
     text = text.replace("若结果为红色", "若结果为<span class='skill-color-red'>红色</span>");
