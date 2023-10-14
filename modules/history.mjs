@@ -1,6 +1,6 @@
 import { terrain, HERO_DATA, weapons, armors, horses } from './data.mjs';
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
-import { Pieces } from "../script.js";
+import { Pieces } from "../scripts/main.js";
 import { piecesIn, HPColor } from './utils.mjs';
 
 class StateHistory

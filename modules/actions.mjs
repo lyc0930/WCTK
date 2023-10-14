@@ -2,7 +2,7 @@ import { terrain, HERO_DATA, weapons, armors, horses } from './data.mjs';
 import { adjacentCells, distanceMapOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn, HPColor, draw } from "./utils.mjs";
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
-import { Pieces } from "../script.js";
+import { Pieces } from "../scripts/main.js";
 
 //移动
 function move(piece, cell, ifConsumeMovePoints = false)

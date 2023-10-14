@@ -73,6 +73,7 @@ label {
     }
 
     #mainboard {
-        width: 98%;
+        width: 91vw;
+        height: 91vw;
     }
 }

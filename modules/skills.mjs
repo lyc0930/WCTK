@@ -1,4 +1,4 @@
-import { Pieces } from "../script.js";
+import { Pieces } from "../scripts/main.js";
 import { armors, horses } from "./data.mjs";
 import { saveState } from "./history.mjs";
 
