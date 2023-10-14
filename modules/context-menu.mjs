@@ -158,9 +158,36 @@ function addSkillPanel(piece)
         event.preventDefault();
         event.stopPropagation();
 
+        // 记录初始位置
+        const startX = event.touches[0].clientX + window.scrollX;
+        const startY = event.touches[0].clientY + window.scrollY;
+
         updateSkillPanel(skillPanel, piece.name);
         skillPanel.style.visibility = 'visible';
         skillPanel.style.opacity = 1;
+
+        piece.addEventListener("touchmove", function (event)
+        {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // 计算移动距离
+            const moveX = event.touches[0].clientX + window.scrollX - startX;
+            const moveY = event.touches[0].clientY + window.scrollY - startY;
+
+            // 移动距离大于10px则取消长按
+            if (Math.abs(moveX) > 10 || Math.abs(moveY) > 10)
+            {
+                skillPanel.style.visibility = 'hidden';
+                skillPanel.style.opacity = 0;
+                skillPanel.ontrasitionend = function () {
+                    skillPanel.innerHTML = "";
+                    skillPanel.ontrasitionend = null;
+                }
+                piece.ontouchmove = null;
+                piece.ontouchend = null;
+            }
+        });
 
         piece.addEventListener("touchend", function (event)
         {
@@ -173,7 +200,7 @@ function addSkillPanel(piece)
                     skillPanel.ontrasitionend = null;
                 }
                 piece.ontouchend = null;
-
+                piece.ontouchmove = null;
             });
         });
     });
