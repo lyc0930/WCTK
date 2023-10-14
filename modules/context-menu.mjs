@@ -337,7 +337,7 @@ function createHeroTable()
         {
             const heroName = document.createElement("div");
             heroName.classList.add("hero-name");
-            heroName.innerHTML = hero;
+            heroName.textContent = hero;
             heroName.id = hero + "-hero-name";
             factionHeroes.appendChild(heroName);
         }
@@ -356,7 +356,7 @@ function showHeroTable(piece)
     const heroNames = heroTable.getElementsByClassName("hero-name");
     for (const heroName of heroNames)
     {
-        if (heroNames_existed.includes(heroName.innerHTML))
+        if (heroNames_existed.includes(heroName.textContent))
         {
             heroName.style.opacity = 0.4;
             heroName.style.pointerEvents = 'none';
@@ -368,9 +368,10 @@ function showHeroTable(piece)
             heroName.onclick = function (event)
             {
                 event.preventDefault();
-                piece.name = heroName.innerHTML;
+                piece.name = heroName.textContent;
 
                 const avatar = piece.getElementsByClassName("avatar")[0];
+                console.log(piece.name);
                 avatar.src = "./assets/Avatar/active/" + HERO_DATA[piece.name]["拼音"] + ".png";
 
                 const nameTag = document.getElementById("unpickedName" + piece.id.slice(4));

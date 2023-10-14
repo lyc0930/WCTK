@@ -117,6 +117,11 @@ function createHeroCandidate(name, index)
 
     piece.addEventListener("mousedown", function (event)
     {
+        if (piece.picked)
+        {
+            return;
+        }
+
         const rect = piece.getBoundingClientRect();
 
         const shiftX = event.clientX - (rect.left + 0.5 * rect.width);
@@ -126,7 +131,7 @@ function createHeroCandidate(name, index)
 
         function onMouseDragPiece(event)
         {
-            if (draggingPiece === null && piece.picked === false)
+            if (draggingPiece === null)
             {
                 const nameTag = document.getElementById("unpickedName" + index);
                 nameTag.innerHTML = "";
@@ -149,6 +154,11 @@ function createHeroCandidate(name, index)
 
         piece.addEventListener('mouseup', function (event)
         {
+            if (piece.picked)
+            {
+                return;
+            }
+
             document.removeEventListener('mousemove', onMouseDragPiece);
 
             if (draggingPiece != null)
@@ -194,6 +204,12 @@ function createHeroCandidate(name, index)
         {
             return;
         }
+
+        if (piece.picked)
+        {
+            return;
+        }
+
         event.stopPropagation();
 
         piece.style.width = "12dvmin";
@@ -214,7 +230,7 @@ function createHeroCandidate(name, index)
                 return;
             }
 
-            if (draggingPiece === null && piece.picked === false)
+            if (draggingPiece === null)
             {
                 const nameTag = document.getElementById("unpickedName" + index);
                 nameTag.innerHTML = "";
@@ -234,6 +250,11 @@ function createHeroCandidate(name, index)
         piece.addEventListener('touchend', function (event)
         {
             if (event.changedTouches.length > 1)
+            {
+                return;
+            }
+
+            if (piece.picked)
             {
                 return;
             }
@@ -279,6 +300,11 @@ function createHeroCandidate(name, index)
 
     piece.addEventListener("click", function (event)
     {
+        if (piece.picked)
+        {
+            return;
+        }
+
         pick(piece);
         piece.style.width = "10dvmin";
         piece.style.height = "10dvmin";
@@ -320,11 +346,12 @@ function highlightCandidate(index = INDEX)
             const candidate = document.getElementById("candidate" + i);
             if (i == (index - (index % 2 == 0 ? 1 : 0)) || i == (index - (index % 2 == 0 ? 1 : 0) + 1))
             {
-                candidate.style.border = "3px solid " + ((side == "red") ? "rgb(255, 0, 0, 0.3)" : "rgb(0, 0, 255, 0.3)");
+                candidate.classList.add("waiting-" + side);
             }
             else
             {
-                candidate.style.border = "none";
+                candidate.classList.remove("waiting-red");
+                candidate.classList.remove("waiting-blue");
             }
         }
     }
@@ -333,7 +360,8 @@ function highlightCandidate(index = INDEX)
         for (let i = 0; i < 16; i++)
         {
             const candidate = document.getElementById("candidate" + i);
-            candidate.style.border = "none";
+            candidate.classList.remove("waiting-red");
+            candidate.classList.remove("waiting-blue");
         }
     }
 
