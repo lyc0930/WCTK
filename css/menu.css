@@ -22,8 +22,8 @@ label {
     border: 4px solid gray;
     background-color: rgba(255, 255, 255, 0.7);
     padding: 8px 8px 8px 8px;
-    margin-top: 1dvmin;
-    margin-bottom: 1dvmin;
+    margin-top: 1vmin;
+    margin-bottom: 1vmin;
     border-radius: 8px;
     z-index: 70;
     display: flex;
@@ -76,8 +76,8 @@ input[type="checkbox"] {
     margin: 0;
     height: 85%;
     aspect-ratio: 1;
-    border: clamp(0.4px, 0.4dvmin, 4px) solid rgba(0, 0, 0, 0.35);
-    border-radius: clamp(0.6px, 0.6dvmin, 6px);
+    border: clamp(0.4px, 0.4vmin, 4px) solid rgba(0, 0, 0, 0.35);
+    border-radius: clamp(0.6px, 0.6vmin, 6px);
     transform: translateY(10%);
     display: inline-flex;
     place-content: center;
@@ -93,7 +93,7 @@ input[type="checkbox"]::before {
 }
 
 input[type="checkbox"]:checked::before {
-    border-radius: clamp(0.3px, 0.3dvmin, 3px);
+    border-radius: clamp(0.3px, 0.3vmin, 3px);
     transform: scale(1) translateY(5%);
 }
 
@@ -146,16 +146,16 @@ input[name="blueCheckbox"]::before {
 
 @media screen and (orientation:landscape) {
     .menuList {
-        width: clamp(160px, (100dvw - 93dvmin) / 2, 35dvmin);
+        width: clamp(160px, (100vw - 93vmin) / 2, 35vmin);
         height: 100svh;
     }
 
     #redMenuList {
-        right: calc(50dvw + 46.5dvmin);
+        right: calc(50vw + 46.5vmin);
     }
 
     #blueMenuList {
-        left: calc(50dvw + 46.5dvmin);
+        left: calc(50vw + 46.5vmin);
     }
 
     .menu {
@@ -164,31 +164,31 @@ input[name="blueCheckbox"]::before {
     }
 
     .menu>div {
-        font-size: clamp(0.8em, 2.5dvh, 1.6em);
+        font-size: clamp(0.8em, 2.5vh, 1.6em);
     }
 
     .heroSelect {
-        font-size: clamp(0.8em, 2.5dvh, 1.6em);
+        font-size: clamp(0.8em, 2.5vh, 1.6em);
     }
 
     .heroSelect>option {
-        font-size: clamp(0.8em, 2.5dvh, 1.6em);
+        font-size: clamp(0.8em, 2.5vh, 1.6em);
     }
 
     .numberButton {
-        width: clamp(12px, 3dvh, 24px);
-        height: clamp(12px, 3dvh, 24px);
-        line-height: clamp(12px, 3dvh, 24px);
-        font-size: clamp(12px, 4dvh, 30px);
+        width: clamp(12px, 3vh, 24px);
+        height: clamp(12px, 3vh, 24px);
+        line-height: clamp(12px, 3vh, 24px);
+        font-size: clamp(12px, 4vh, 30px);
         transform: translateY(16%)
     }
 }
 
 @media screen and (orientation:portrait) {
     .menuList {
-        width: 45dvmin;
+        width: 45vmin;
         height: 60svh;
-        top: 95dvmin;
+        top: 95vmin;
     }
 
     #redMenuList {
@@ -205,22 +205,22 @@ input[name="blueCheckbox"]::before {
     }
 
     .menu>div {
-        font-size: clamp(12px, 3.0dvw, 20px);
+        font-size: clamp(12px, 3.0vw, 20px);
     }
 
     .heroSelect {
-        font-size: clamp(12px, 3.0dvw, 20px);
+        font-size: clamp(12px, 3.0vw, 20px);
     }
 
     .heroSelect>option {
-        font-size: clamp(12px, 3.0dvw, 20px);
+        font-size: clamp(12px, 3.0vw, 20px);
     }
 
     .numberButton {
-        width: clamp(12px, 3.0dvw, 20px);
-        height: clamp(12px, 3.0dvw, 20px);
-        line-height: clamp(12px, 3.0dvw, 20px);
-        font-size: clamp(12px, 3.0dvh, 20px);
+        width: clamp(12px, 3.0vw, 20px);
+        height: clamp(12px, 3.0vw, 20px);
+        line-height: clamp(12px, 3.0vw, 20px);
+        font-size: clamp(12px, 3.0vh, 20px);
         /* transform: translate(0, 16%); */
     }
 }

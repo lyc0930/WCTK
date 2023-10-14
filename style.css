@@ -6,9 +6,9 @@
 @import "./css/menu.css";
 
 #chessboard {
-    width: 91dvmin;
-    height: 91dvmin;
-    border: 1dvmin outset gray;
+    width: 91vmin;
+    height: 91vmin;
+    border: 1vmin outset gray;
     position: absolute;
     margin-left: auto;
     margin-right: auto;
@@ -21,10 +21,10 @@
 }
 
 #background {
-    width: 91dvmin;
-    height: 91dvmin;
+    width: 91vmin;
+    height: 91vmin;
     position: absolute;
-    margin-top: 1dvmin;
+    margin-top: 1vmin;
     margin-left: auto;
     margin-right: auto;
     left: 0;
@@ -38,12 +38,12 @@
 }
 
 #canvas {
-    width: 91dvmin;
-    height: 91dvmin;
+    width: 91vmin;
+    height: 91vmin;
     position: absolute;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 1dvmin;
+    margin-top: 1vmin;
     left: 0;
     right: 0;
     opacity: 0.5;
@@ -53,14 +53,14 @@
 
 @media screen and (orientation:portrait) {
     #chessboard {
-        top: 1dvmin;
+        top: 1vmin;
     }
 
     #background {
-        top: 1dvmin;
+        top: 1vmin;
     }
 
     #canvas {
-        top: 1dvmin;
+        top: 1vmin;
     }
 }

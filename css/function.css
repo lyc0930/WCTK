@@ -2,7 +2,7 @@
     width: 48%;
     border-radius: 8px;
     padding: 4px 4px 4px 4px;
-    font-size: clamp(16px, 1.5dvw, 30px);
+    font-size: clamp(16px, 1.5vw, 30px);
     text-align: center;
     align-content: center;
     background-color: white;

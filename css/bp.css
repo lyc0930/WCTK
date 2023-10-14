@@ -21,7 +21,7 @@ label {
 .board {
     -webkit-backdrop-filter: blur(3px);
             backdrop-filter: blur(3px);
-    margin: 0.5dvmin;
+    margin: 0.5vmin;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
@@ -39,7 +39,7 @@ label {
 
 .factionBoard {
     aspect-ratio: 0.5;
-    border-radius: 2dvmin;
+    border-radius: 2vmin;
 }
 
 #redBoard {
@@ -85,7 +85,7 @@ label {
     }
 
     .candidate {
-        width: 18dvh;
+        width: 18vh;
     }
 
     #redBoard {
@@ -97,7 +97,7 @@ label {
     }
 
     .hero-name {
-        font-size: 3dvh;
+        font-size: 3vh;
     }
 }
 
@@ -111,7 +111,7 @@ label {
     }
 
     .candidate {
-        width: 20dvw;
+        width: 20vw;
     }
 
     #redBoard {
@@ -123,6 +123,6 @@ label {
     }
 
     .hero-name {
-        font-size: 3.6dvw;
+        font-size: 3.6vw;
     }
 }

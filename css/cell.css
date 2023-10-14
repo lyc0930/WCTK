@@ -1,7 +1,7 @@
 .grave {
-    width: 13dvmin;
+    width: 13vmin;
     height: 65%;
-    /* border: .1dvmin solid purple; */
+    /* border: .1vmin solid purple; */
     border: 0;
     display: none;
     margin-left: auto;
@@ -13,16 +13,16 @@
 }
 
 .cell {
-    width: 13dvmin;
-    height: 13dvmin;
+    width: 13vmin;
+    height: 13vmin;
     box-sizing: border-box;
     position: relative;
 }
 
 .plain {
-    border: .15dvmin solid gray;
+    border: .15vmin solid gray;
 }
 
 .ridge {
-    border: .3dvmin outset rgba(255, 255, 255, 0.8);
+    border: .3vmin outset rgba(255, 255, 255, 0.8);
 }

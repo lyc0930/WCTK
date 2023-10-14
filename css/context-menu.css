@@ -174,13 +174,13 @@
 
 @media screen and (orientation:landscape) {
 .skill-panel {
-    width: clamp(360px, 45dvh, 800px);
+    width: clamp(360px, 45vh, 800px);
 }
 }
 
 @media screen and (orientation:portrait) {
 .skill-panel {
-    max-width: 80dvw;
-    top: 100dvw;
+    max-width: 80vw;
+    top: 100vw;
 }
 }
