@@ -1,13 +1,8 @@
 @import "./all.min.css";
 
 @font-face {
-    font-family: 'fzlbjt';
-    src: url("../assets/Fonts/方正隶变简体.ttf");
-}
-
-@font-face {
-    font-family: 'fzlbft';
-    src: url("../assets/Fonts/方正隶变繁体.ttf");
+    font-family: 'fzlb';
+    src: url("../assets/Fonts/方正隶变_GBK.ttf");
 }
 
 @font-face {
@@ -31,7 +26,7 @@
 }
 
 .skill-name {
-    font-family: 'fzlbjt';
+    font-family: 'fzlb';
     font-size: 1.6em;
     text-wrap: nowrap;
 }
@@ -117,6 +112,6 @@
 }
 
 .hero-name {
-    font-family: 'fzlbjt';
+    font-family: 'fzlb';
     text-wrap: nowrap;
 }
