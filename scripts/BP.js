@@ -28,8 +28,8 @@ function createHeroBoard(number = 16)
         heroBoard.appendChild(candidate);
     }
 
-    side1st = window.confirm("红方是否先选？") ? "red" : "blue";
-    side2nd = side1st == "red" ? "blue" : "red";
+    // side1st = window.confirm("红方是否先选？") ? "red" : "blue";
+    // side2nd = side1st == "red" ? "blue" : "red";
 
     const board1st = document.getElementById(side1st + 'Board');
     const board2nd = document.getElementById(side2nd + 'Board');
@@ -106,13 +106,13 @@ function createHeroCandidate(name, index)
 
     piece.addEventListener("mouseenter", function (event)
     {
-        piece.style.width = "12dvmin";
-        piece.style.height = "12dvmin";
+        piece.style.width = "12vmin";
+        piece.style.height = "12vmin";
     });
     piece.addEventListener("mouseleave", function (event)
     {
-        piece.style.width = "10dvmin";
-        piece.style.height = "10dvmin";
+        piece.style.width = "10vmin";
+        piece.style.height = "10vmin";
     });
 
     piece.addEventListener("mousedown", function (event)
@@ -169,8 +169,8 @@ function createHeroCandidate(name, index)
                 draggingPiece.onmouseup = null;
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
-                draggingPiece.style.width = "10dvmin";
-                draggingPiece.style.height = "10dvmin";
+                draggingPiece.style.width = "10vmin";
+                draggingPiece.style.height = "10vmin";
                 draggingPiece.style.transition = "width 100ms ease-out, height 100ms ease-out, left 70ms ease-out, top 70ms ease-out";
 
 
@@ -212,8 +212,8 @@ function createHeroCandidate(name, index)
 
         event.stopPropagation();
 
-        piece.style.width = "12dvmin";
-        piece.style.height = "12dvmin";
+        piece.style.width = "12vmin";
+        piece.style.height = "12vmin";
 
         const rect = piece.getBoundingClientRect();
 
@@ -259,8 +259,8 @@ function createHeroCandidate(name, index)
                 return;
             }
 
-            piece.style.width = "10dvmin";
-            piece.style.height = "10dvmin";
+            piece.style.width = "10vmin";
+            piece.style.height = "10vmin";
 
             piece.removeEventListener('touchmove', onTouchDragPiece);
 
@@ -271,8 +271,8 @@ function createHeroCandidate(name, index)
                 draggingPiece.ontouchend = null;
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
-                draggingPiece.style.width = "10dvmin";
-                draggingPiece.style.height = "10dvmin";
+                draggingPiece.style.width = "10vmin";
+                draggingPiece.style.height = "10vmin";
 
                 if (draggingPiece.picked === false)
                 {
@@ -306,8 +306,8 @@ function createHeroCandidate(name, index)
         }
 
         pick(piece);
-        piece.style.width = "10dvmin";
-        piece.style.height = "10dvmin";
+        piece.style.width = "10vmin";
+        piece.style.height = "10vmin";
     });
 
     addContextMenu(piece, {
