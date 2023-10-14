@@ -1,10 +1,10 @@
-import { slot, bury } from './modules/actions.mjs';
-import { terrain, HERO_DATA, weapons, armors, horses } from './modules/data.mjs';
-import { highlightCells, highlightPieces, removeHighlight } from './modules/highlight.mjs';
-import { stateHistory, saveState, recoverStatefrom } from './modules/history.mjs';
-import { generateFlags, setCarrier } from './modules/flags.mjs';
-import { HPColor, draw, cls } from './modules/utils.mjs';
-import { skill_zhanji, skill_zhanji_undo } from './modules/skills.mjs';
+import { slot, bury } from '../modules/actions.mjs';
+import { terrain, HERO_DATA, weapons, armors, horses } from '../modules/data.mjs';
+import { highlightCells, highlightPieces, removeHighlight } from '../modules/highlight.mjs';
+import { stateHistory, saveState, recoverStatefrom } from '../modules/history.mjs';
+import { generateFlags, setCarrier } from '../modules/flags.mjs';
+import { HPColor, draw, cls } from '../modules/utils.mjs';
+import { skill_zhanji, skill_zhanji_undo } from '../modules/skills.mjs';
 
 
 export var Pieces = [];
@@ -369,10 +369,36 @@ function initializeGame()
         }
     });
 
+    const redMenuList = document.createElement("div");
+    redMenuList.className = "menu-list";
+    redMenuList.id = "redMenuList";
+
+    const blueMenuList = document.createElement("div");
+    blueMenuList.className = "menu-list";
+    blueMenuList.id = "blueMenuList";
+
     for (var i = 1; i <= 6; i++)
     {
-        const heroSelect = document.getElementById("heroSelect" + i);
-        for (var name in HERO_DATA)
+        const menu = document.createElement("div");
+        menu.className = "menu";
+        menu.id = "menu" + i;
+
+        const selectBlock = document.createElement("div");
+        selectBlock.className = "select-block";
+        selectBlock.classList.add("block");
+
+        const heroLabel = document.createElement("label");
+        heroLabel.innerHTML = "武将：";
+        heroLabel.htmlFor = "heroSelect" + i;
+
+        const heroSelect = document.createElement("select");
+        heroSelect.className = "hero-select";
+        heroSelect.id = "heroSelect" + i;
+
+        selectBlock.appendChild(heroLabel);
+        selectBlock.appendChild(heroSelect);
+
+        for (const name in HERO_DATA)
         {
             const option = document.createElement("option");
             option.id = name + i;
@@ -415,7 +441,21 @@ function initializeGame()
             saveState();
         });
 
-        const carrierCheckbox = document.getElementById("carrierCheckbox" + i);
+        const checkBlock = document.createElement("div");
+        checkBlock.className = "check-block";
+        checkBlock.classList.add("block");
+        checkBlock.id = "checkBlock" + i;
+
+        const carrierLabel = document.createElement("label");
+        carrierLabel.innerHTML = "主帅";
+        carrierLabel.htmlFor = "carrierCheckbox" + i;
+
+        const carrierCheckbox = document.createElement("input");
+        carrierCheckbox.type = "checkbox";
+        carrierCheckbox.className = "checkbox";
+        carrierCheckbox.id = "carrierCheckbox" + i;
+        carrierCheckbox.name = (i<=3 ? 'red' : 'blue') + "Checkbox";
+
         carrierCheckbox.addEventListener("change", function (event)
         {
             const index = event.target.id.slice(-1);
@@ -426,7 +466,15 @@ function initializeGame()
         }
         );
 
-        const actedCheckbox = document.getElementById("actedCheckbox" + i);
+        const actedLabel = document.createElement("label");
+        actedLabel.innerHTML = "本轮行动";
+        actedLabel.htmlFor = "actedCheckbox" + i;
+
+        const actedCheckbox = document.createElement("input");
+        actedCheckbox.type = "checkbox";
+        actedCheckbox.className = "checkbox";
+        actedCheckbox.id = "actedCheckbox" + i;
+
         actedCheckbox.addEventListener("change", function (event)
         {
             const index = event.target.id.slice(-1);
@@ -454,8 +502,25 @@ function initializeGame()
         }
         );
 
-        const buttonHPDown = document.getElementById("HPMinus" + i);
-        buttonHPDown.addEventListener("click", function (event)
+        checkBlock.appendChild(carrierLabel);
+        checkBlock.appendChild(carrierCheckbox);
+        checkBlock.appendChild(actedLabel);
+        checkBlock.appendChild(actedCheckbox);
+
+        const HPBlock = document.createElement("div");
+        HPBlock.className = "HP-block";
+        HPBlock.classList.add("block");
+        HPBlock.id = "HPBlock" + i;
+
+        const HPLabel = document.createElement("label");
+        HPLabel.innerHTML = "体力值：";
+        HPLabel.htmlFor = "HPMinus" + i;
+
+        const HPMinus = document.createElement("i");
+        HPMinus.className = "fas fa-minus-circle";
+        HPMinus.id = "HPMinus" + i;
+
+        HPMinus.addEventListener("click", function (event)
         {
             const index = event.target.id.slice(-1);
             const piece = Pieces[index - 1];
@@ -471,8 +536,29 @@ function initializeGame()
             }
             saveState();
         });
-        const buttonHPUp = document.getElementById("HPPlus" + i);
-        buttonHPUp.addEventListener("click", function (event)
+
+        const labelHP = document.createElement("label");
+        labelHP.id = "HP" + i;
+        labelHP.type = "numner";
+        labelHP.className = "number";
+        labelHP.innerHTML = "0";
+        labelHP.htmlFor = "HPMinus" + i;
+
+        const labelSlash = document.createElement("label");
+        labelSlash.innerHTML = "/";
+
+        const labelMaxHP = document.createElement("label");
+        labelMaxHP.id = "maxHP" + i;
+        labelMaxHP.type = "numner";
+        labelMaxHP.className = "number";
+        labelMaxHP.innerHTML = "0";
+        labelMaxHP.htmlFor = "HPPlus" + i;
+
+        const HPPlus = document.createElement("i");
+        HPPlus.className = "fas fa-plus-circle";
+        HPPlus.id = "HPPlus" + i;
+
+        HPPlus.addEventListener("click", function (event)
         {
             const index = event.target.id.slice(-1);
             const piece = Pieces[index - 1];
@@ -488,8 +574,27 @@ function initializeGame()
             saveState();
         });
 
-        const weaponSelect = document.getElementById("weaponSelect" + i);
-        for (var name in weapons)
+        HPBlock.appendChild(HPLabel);
+        HPBlock.appendChild(HPMinus);
+        HPBlock.appendChild(labelHP);
+        HPBlock.appendChild(labelSlash);
+        HPBlock.appendChild(labelMaxHP);
+        HPBlock.appendChild(HPPlus);
+
+        const weaponBlock = document.createElement("div");
+        weaponBlock.className = "select-block";
+        weaponBlock.classList.add("block");
+        weaponBlock.id = "weaponBlock" + i;
+
+        const weaponLabel = document.createElement("label");
+        weaponLabel.innerHTML = "武器：";
+        weaponLabel.htmlFor = "weaponSelect" + i;
+
+        const weaponSelect = document.createElement("select");
+        weaponSelect.className = "hero-select";
+        weaponSelect.id = "weaponSelect" + i;
+
+        for (const name in weapons)
         {
             const option = document.createElement("option");
             option.id = name + i;
@@ -497,6 +602,7 @@ function initializeGame()
             option.innerText = name;
             weaponSelect.appendChild(option);
         }
+
         weaponSelect.addEventListener("change", function (event)
         {
             const index = event.target.id.slice(-1);
@@ -506,8 +612,23 @@ function initializeGame()
             saveState();
         });
 
-        const armorSelect = document.getElementById("armorSelect" + i);
-        for (var name in armors)
+        weaponBlock.appendChild(weaponLabel);
+        weaponBlock.appendChild(weaponSelect);
+
+        const armorBlock = document.createElement("div");
+        armorBlock.className = "select-block";
+        armorBlock.classList.add("block");
+        armorBlock.id = "armorBlock" + i;
+
+        const armorLabel = document.createElement("label");
+        armorLabel.innerHTML = "防具：";
+        armorLabel.htmlFor = "armorSelect" + i;
+
+        const armorSelect = document.createElement("select");
+        armorSelect.className = "hero-select";
+        armorSelect.id = "armorSelect" + i;
+
+        for (const name in armors)
         {
             const option = document.createElement("option");
             option.id = name + i;
@@ -515,6 +636,7 @@ function initializeGame()
             option.innerText = name;
             armorSelect.appendChild(option);
         }
+
         armorSelect.addEventListener("change", function (event)
         {
             const index = event.target.id.slice(-1);
@@ -523,8 +645,23 @@ function initializeGame()
             saveState();
         });
 
-        const horseSelect = document.getElementById("horseSelect" + i);
-        for (var name in horses)
+        armorBlock.appendChild(armorLabel);
+        armorBlock.appendChild(armorSelect);
+
+        const horseBlock = document.createElement("div");
+        horseBlock.className = "select-block";
+        horseBlock.classList.add("block");
+        horseBlock.id = "horseBlock" + i;
+
+        const horseLabel = document.createElement("label");
+        horseLabel.innerHTML = "坐骑：";
+        horseLabel.htmlFor = "horseSelect" + i;
+
+        const horseSelect = document.createElement("select");
+        horseSelect.className = "hero-select";
+        horseSelect.id = "horseSelect" + i;
+
+        for (const name in horses)
         {
             const option = document.createElement("option");
             option.id = name + i;
@@ -532,6 +669,7 @@ function initializeGame()
             option.innerText = name;
             horseSelect.appendChild(option);
         }
+
         horseSelect.addEventListener("change", function (event)
         {
             const index = event.target.id.slice(-1);
@@ -539,7 +677,36 @@ function initializeGame()
             piece.horses[0] = horseSelect.value;
             saveState();
         });
+
+        horseBlock.appendChild(horseLabel);
+        horseBlock.appendChild(horseSelect);
+
+        menu.appendChild(selectBlock);
+        menu.appendChild(checkBlock);
+        menu.appendChild(HPBlock);
+        menu.appendChild(weaponBlock);
+        menu.appendChild(armorBlock);
+        menu.appendChild(horseBlock);
+
+        const grave = document.createElement("div");
+        grave.className = "grave";
+        grave.classList.add(i <= 3 ? "Red" : "Blue");
+        grave.id = "grave" + i;
+
+        menu.appendChild(grave);
+
+        if (i <= 3)
+        {
+            redMenuList.appendChild(menu);
+        }
+        else
+        {
+            blueMenuList.appendChild(menu);
+        }
     }
+
+    document.body.appendChild(redMenuList);
+    document.body.appendChild(blueMenuList);
 
     initializePieces();
 

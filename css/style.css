@@ -1,0 +1,78 @@
+@import "./cell.css";
+@import "./piece.css";
+@import "./flag.css";
+/* @import "./function.css"; */
+@import "./highlight.css";
+@import "./menu.css";
+@import "./text.css";
+
+body {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-content: space-around;
+    align-items: center;
+}
+
+label {
+    text-wrap: nowrap;
+    text-overflow: clip;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#mainboard {
+    aspect-ratio: 1;
+
+    border-radius: 2%;
+    border: 1vmin outset gray;
+
+    background-image: url('../assets/Map/野战.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: local;
+}
+
+#chessboard {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: space-between;
+    z-index: 90;
+    margin-bottom: -100%;
+}
+
+#canvas {
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+    z-index: 81;
+    pointer-events: none;
+}
+
+@media screen and (orientation:landscape) {
+    body {
+        align-items: center;
+    }
+
+    #mainboard {
+        width: 91vh;
+        height: 91vh;
+        /* width: 56cqw;
+        height: 56cqw; */
+    }
+}
+
+@media screen and (orientation:portrait) {
+    body {
+        align-items: flex-start;
+    }
+
+    #mainboard {
+        width: 98%;
+    }
+}

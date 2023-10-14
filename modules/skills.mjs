@@ -6,12 +6,12 @@ function skill_zhanji(piece, _index = null)
 {
     const index = _index === null ? Pieces.indexOf(piece) + 1 : _index;
 
-    const armorPanel = document.getElementById("armorPanel" + index);
+    const armorBlock = document.getElementById("armorBlock" + index);
     const armorSelect = document.getElementById("armorSelect" + index);
     const armorSelect_zhanji = document.createElement("select");
     armorSelect_zhanji.id = "armorSelect" + "_zhanji" + index;
     armorSelect_zhanji.className = "heroSelect";
-    armorPanel.appendChild(armorSelect_zhanji);
+    armorBlock.appendChild(armorSelect_zhanji);
 
     for (const name in armors)
     {
@@ -33,12 +33,12 @@ function skill_zhanji(piece, _index = null)
     armorSelect_zhanji.style.width = "32.5%";
 
 
-    const horsePanel = document.getElementById("horsePanel" + index);
+    const horseBlock = document.getElementById("horseBlock" + index);
     const horseSelect = document.getElementById("horseSelect" + index);
     const horseSelect_zhanji = document.createElement("select");
     horseSelect_zhanji.id = "horseSelect" + "_zhanji" + index;
     horseSelect_zhanji.className = "heroSelect";
-    horsePanel.appendChild(horseSelect_zhanji);
+    horseBlock.appendChild(horseSelect_zhanji);
 
     for (const name in horses)
     {
@@ -64,22 +64,22 @@ function skill_zhanji_undo(piece)
 {
     const index = Pieces.indexOf(piece) + 1;
 
-    const armorPanel = document.getElementById("armorPanel" + index);
+    const armorBlock = document.getElementById("armorBlock" + index);
     const armorSelect = document.getElementById("armorSelect" + index);
     const armorSelect_zhanji = document.getElementById("armorSelect" + "_zhanji" + index);
     if (armorSelect_zhanji)
     {
-        armorPanel.removeChild(armorSelect_zhanji);
+        armorBlock.removeChild(armorSelect_zhanji);
     }
 
     armorSelect.style.width = "65%";
 
-    const horsePanel = document.getElementById("horsePanel" + index);
+    const horseBlock = document.getElementById("horseBlock" + index);
     const horseSelect = document.getElementById("horseSelect" + index);
     const horseSelect_zhanji = document.getElementById("horseSelect" + "_zhanji" + index);
     if (horseSelect_zhanji)
     {
-        horsePanel.removeChild(horseSelect_zhanji);
+        horseBlock.removeChild(horseSelect_zhanji);
     }
 
     horseSelect.style.width = "65%";

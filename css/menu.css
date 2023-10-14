@@ -1,63 +1,42 @@
-label {
-    text-wrap: nowrap;
-    text-overflow: clip;
-    -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
-}
-
-.menuList {
-    margin-left: auto;
-    margin-right: auto;
+.menu-list {
     display: flex;
     flex-direction: column;
     flex-wrap: no-wrap;
     justify-content: flex-start;
-    align-items: center;
-    position: absolute;
 }
 
 .menu {
     border: 4px solid gray;
     background-color: rgba(255, 255, 255, 0.7);
-    padding: 8px 8px 8px 8px;
-    margin-top: 1vmin;
-    margin-bottom: 1vmin;
+    margin: 4px 4px 4px 4px;
+    padding: 4px 4px 4px 4px;
     border-radius: 8px;
     z-index: 70;
     display: flex;
     flex-direction: column;
     flex-wrap: no-wrap;
     justify-content: space-around;
+    align-items: center;
+
+    -webkit-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    box-shadow: 0 0 0.1em 0.1em rgb(0, 0, 0, 0.15);
+
+    transition: all 120ms ease-in-out;
 }
 
-.fixedPanel,
-.alivePanel {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: no-wrap;
-    justify-content: space-between;
+.menu:hover {
+    box-shadow: 0 0 0.4em 0.4em rgb(0, 0, 0, 0.15);
 }
 
-.fixedPanel {
-    height: 30%;
-}
-
-.alivePanel {
-    height: 65%;
-}
-
-.selectBlock,
-.HPBlock {
-    display: flex;
-    justify-content: center;
-}
-
-.checkBlock {
+.block {
+    width: 100%;
     display: flex;
     flex-wrap: no-wrap;
     justify-content: space-evenly;
+    align-items: center;
+    margin: 4px 4px 4px 4px;
+    font-family: 'fzlb';
 }
 
 #redMenuList>.menu {
@@ -73,14 +52,16 @@ input[type="checkbox"] {
        -moz-appearance: none;
             appearance: none;
     background-color: transparent;
-    margin: 0;
-    height: 85%;
+    height: 1.5em;
     aspect-ratio: 1;
     border: clamp(0.4px, 0.4vmin, 4px) solid rgba(0, 0, 0, 0.35);
     border-radius: clamp(0.6px, 0.6vmin, 6px);
-    transform: translateY(10%);
     display: inline-flex;
     place-content: center;
+}
+
+input[type="checkbox"]:hover {
+    box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 0, 0.10);
 }
 
 input[type="checkbox"]::before {
@@ -115,104 +96,78 @@ input[name="blueCheckbox"]::before {
     box-shadow: inset 1.5em 1.5em rgba(0, 0, 255, 0.60);
 }
 
-.numberButton {
-    border-radius: 50%;
-    margin-left: 2%;
-    margin-right: 2%;
-    padding: 0 0 0 0;
-    text-align: center;
-    align-content: center;
-    font-family: 'Courier New', Courier, monospace;
-    background-color: white;
-    border: 1px outset gray;
-    -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
-}
-
 .number {
     margin-left: 0.24em;
     margin-right: 0.24em;
 }
 
-.heroSelect {
+.hero-select {
     width: 65%;
+    font-family: 'fzlb';
     -webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
 }
 
+.hero-select:hover {
+    transition: all 120ms ease-in-out;
+    box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 0, 0.10);
+}
+
+.hero-select>option {
+    font-family: 'fzlb';
+}
+
 @media screen and (orientation:landscape) {
-    .menuList {
-        width: clamp(160px, (100vw - 93vmin) / 2, 35vmin);
-        height: 100svh;
+    .menu-list {
+        width: 20%;
     }
 
     #redMenuList {
-        right: calc(50vw + 46.5vmin);
+        order: -1;
     }
 
     #blueMenuList {
-        left: calc(50vw + 46.5vmin);
-    }
-
-    .menu {
-        width: 80%;
-        height: 26%;
+        order: 1;
     }
 
     .menu>div {
-        font-size: clamp(0.8em, 2.5vh, 1.6em);
+        font-size: clamp(1em, 3vh, 1.8em);
     }
 
-    .heroSelect {
-        font-size: clamp(0.8em, 2.5vh, 1.6em);
+    .hero-select {
+        font-size: clamp(1em, 3vh, 1.8em);
     }
 
-    .heroSelect>option {
-        font-size: clamp(0.8em, 2.5vh, 1.6em);
+    .hero-select>option {
+        font-size: clamp(1em, 3vh, 1.8em);
     }
 
-    .numberButton {
-        width: clamp(12px, 3vh, 24px);
-        height: clamp(12px, 3vh, 24px);
-        line-height: clamp(12px, 3vh, 24px);
-        font-size: clamp(12px, 4vh, 30px);
-        transform: translateY(16%)
-    }
 }
 
 @media screen and (orientation:portrait) {
-    .menuList {
-        width: 45vmin;
-        height: 60svh;
-        top: 95vmin;
+    .menu-list {
+        width: 48%;
+        justify-content: flex-start;
     }
-
     #redMenuList {
-        left: 0;
+        order: 1;
     }
 
     #blueMenuList {
-        right: 0;
-    }
-
-    .menu {
-        width: 65%;
-        height: 25%;
+        order: 2;
     }
 
     .menu>div {
         font-size: clamp(12px, 3.0vw, 20px);
     }
 
-    .heroSelect {
+    .hero-select {
         font-size: clamp(12px, 3.0vw, 20px);
     }
 
-    .heroSelect>option {
+    .hero-select>option {
         font-size: clamp(12px, 3.0vw, 20px);
     }
 

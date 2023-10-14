@@ -1,13 +1,9 @@
 .grave {
     width: 13vmin;
-    height: 65%;
+    aspect-ratio: 1;
     /* border: .1vmin solid purple; */
     border: 0;
     display: none;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
     box-sizing: border-box;
     position: relative;
 }

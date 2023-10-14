@@ -13,11 +13,13 @@ function generateFlags()
     redFlag.title = "红方帅旗";
     redFlag.className = "flag";
     redFlag.src = "./assets/Flag/red.png";
+    redFlag.draggable = "false";
 
     blueFlag.inert = "true";
     blueFlag.title = "蓝方帅旗";
     blueFlag.className = "flag";
     blueFlag.src = "./assets/Flag/blue.png";
+    blueFlag.draggable = "false";
 }
 
 function setCarrier(faction, piece, log = true)

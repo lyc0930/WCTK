@@ -2,6 +2,10 @@
     position: absolute;
     z-index: 99;
     border: none;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 
 .piece>.flag {
