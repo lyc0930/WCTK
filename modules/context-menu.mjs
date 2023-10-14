@@ -45,6 +45,10 @@ function addContextMenu(element, items = {})
         event.preventDefault();
         event.stopPropagation();
 
+        // 记录初始位置
+        const startX = event.touches[0].clientX + window.scrollX;
+        const startY = event.touches[0].clientY + window.scrollY;
+
         if (element?.picked)
         {
             return;
@@ -59,7 +63,24 @@ function addContextMenu(element, items = {})
                 menu.style.visibility = 'visible';
                 menu.style.opacity = 1;
             }
-        }, 1000);
+        }, 750);
+
+        element.addEventListener("touchmove", function (event)
+        {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // 计算移动距离
+            const moveX = event.touches[0].clientX + window.scrollX - startX;
+            const moveY = event.touches[0].clientY + window.scrollY - startY;
+
+            // 移动距离大于10px则取消长按
+            if (Math.abs(moveX) > 10 || Math.abs(moveY) > 10)
+            {
+                clearTimeout(timeoutId);
+                element.ontouchmove = null;
+            }
+        });
 
         element.addEventListener("touchend", function (event)
         {

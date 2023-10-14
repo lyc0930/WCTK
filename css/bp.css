@@ -17,7 +17,7 @@ label {
 
 .board {
     backdrop-filter: blur(3px);
-
+    margin: 0.5dvmin;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
