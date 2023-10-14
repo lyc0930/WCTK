@@ -1,5 +1,5 @@
 import { HERO_DATA } from '../modules/data.mjs';
-import { addContextMenu, removeContextMenu, addSkillPanel } from '../modules/context-menu.mjs';
+import { addContextMenu, removeContextMenu, addSkillPanel, createHeroTable, showHeroTable } from '../modules/context-menu.mjs';
 
 var side1st = "red";
 var side2nd = side1st == "red" ? "blue" : "red";
@@ -20,7 +20,7 @@ function createHeroBoard(number = 16)
         cell.id = 'unpickedCell' + i;
 
         const nameTag = document.createElement('label');
-        nameTag.classList.add('name');
+        nameTag.classList.add('hero-name');
         nameTag.id = 'unpickedName' + i;
 
         candidate.appendChild(cell);
@@ -47,7 +47,7 @@ function createHeroBoard(number = 16)
         cell.id = 'cell' + i;
 
         const nameTag = document.createElement('label');
-        nameTag.classList.add('name');
+        nameTag.classList.add('hero-name');
         nameTag.id = 'name' + i;
 
         candidate.appendChild(cell);
@@ -69,6 +69,7 @@ function pick(piece)
     removeContextMenu(piece);
 
     cell.appendChild(piece);
+    piece.picked = true;
     piece.classList.add(side + "-piece");
     name.innerHTML = piece.name;
     saveBPState();
@@ -96,6 +97,7 @@ function createHeroCandidate(name, index)
 
     piece.name = name;
     piece.id = "hero" + index;
+    piece.picked = false;
 
     const cell = document.getElementById("unpickedCell" + index);
     const nameTag = document.getElementById("unpickedName" + index);
@@ -124,16 +126,8 @@ function createHeroCandidate(name, index)
 
         function onMouseDragPiece(event)
         {
-            if (draggingPiece === null)
+            if (draggingPiece === null && piece.picked === false)
             {
-                const cell = piece.parentElement;
-                const candidate = cell.parentElement;
-
-                if (candidate.id.slice(0, 6) != "unpick")
-                {
-                    return;
-                }
-
                 const nameTag = document.getElementById("unpickedName" + index);
                 nameTag.innerHTML = "";
 
@@ -169,9 +163,8 @@ function createHeroCandidate(name, index)
                 draggingPiece.style.height = "10dvmin";
                 draggingPiece.style.transition = "width 100ms ease-out, height 100ms ease-out, left 70ms ease-out, top 70ms ease-out";
 
-                const candidate = document.getElementById("unpickedCandidate" + index);
 
-                if (candidate.id.slice(0, 6) == "unpick")
+                if (draggingPiece.picked === false)
                 {
                     const side = (INDEX % 4 == 0 || INDEX % 4 == 3) ? side1st : side2nd;
                     const board = document.getElementById(side + "Board");
@@ -221,16 +214,8 @@ function createHeroCandidate(name, index)
                 return;
             }
 
-            if (draggingPiece === null)
+            if (draggingPiece === null && piece.picked === false)
             {
-                const cell = piece.parentElement;
-                const candidate = cell.parentElement;
-
-                if (candidate.id.slice(0, 6) != "unpick")
-                {
-                    return;
-                }
-
                 const nameTag = document.getElementById("unpickedName" + index);
                 nameTag.innerHTML = "";
 
@@ -268,9 +253,7 @@ function createHeroCandidate(name, index)
                 draggingPiece.style.width = "10dvmin";
                 draggingPiece.style.height = "10dvmin";
 
-                const candidate = document.getElementById("unpickedCandidate" + index);
-
-                if (candidate.id.slice(0, 6) == "unpick")
+                if (draggingPiece.picked === false)
                 {
                     const side = (INDEX % 4 == 0 || INDEX % 4 == 3) ? side1st : side2nd;
                     const board = document.getElementById(side + "Board");
@@ -302,7 +285,7 @@ function createHeroCandidate(name, index)
     });
 
     addContextMenu(piece, {
-        "更换武将": function () { console.log("test"); }, // TODO
+        "更换武将": function () { showHeroTable(piece); },
         "选择": function () { pick(piece); }
     });
 
@@ -427,10 +410,11 @@ function recoverBPStatefrom(state)
         cell.appendChild(piece);
         const nameTag = cell.parentElement.lastChild;
         nameTag.innerHTML = piece.name;
-        if (cell.id.slice(0, 6) == "unpick")
+        if (piece.picked === true)
         {
             piece.classList.remove("red-piece");
             piece.classList.remove("blue-piece");
+            piece.picked = false;
         }
         else
         {
@@ -442,7 +426,8 @@ function recoverBPStatefrom(state)
 
 function initializeHistory()
 {
-    document.addEventListener("wheel", function (event)
+    const heroBoard = document.getElementById("heroBoard");
+    heroBoard.addEventListener("wheel", function (event)
     {
         event.preventDefault();
         if (event.deltaY < 0)
@@ -504,6 +489,7 @@ function initializeHistory()
 }
 
 const history = new BPHistory();
+createHeroTable();
 initializeHistory();
 createHeroBoard();
 initializeHeroCandidates();

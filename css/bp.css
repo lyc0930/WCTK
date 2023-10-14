@@ -59,12 +59,6 @@ label {
     box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 0, 0.15);
 }
 
-.candidate label {
-    font-family: 'fzlbjt';
-    font-size: 1.8cqi;
-    text-wrap: nowrap;
-}
-
 @media screen and (orientation:landscape) {
     #heroBoard {
         width: 48%;
@@ -85,6 +79,10 @@ label {
 
     #blueBoard {
         order: 1;
+    }
+
+    .hero-name {
+        font-size: 3dvh;
     }
 }
 
@@ -108,5 +106,9 @@ label {
 
     #blueBoard {
         order: 2;
+    }
+
+    .hero-name {
+        font-size: 3.6dvw;
     }
 }

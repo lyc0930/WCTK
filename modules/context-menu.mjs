@@ -2,23 +2,7 @@ import { HERO_DATA } from './data.mjs';
 
 function addContextMenu(element, items = {})
 {
-    const menu = document.createElement("div");
-    menu.id = element.id + "-context-menu";
-    menu.classList.add("context-menu");
-    document.body.appendChild(menu);
-
-    // Add items to the context menu
-    for (let item in items)
-    {
-        let menuItem = document.createElement("div");
-        menuItem.classList.add("context-menu-item");
-        let itemLabel = document.createElement("label");
-        itemLabel.textContent = item;
-        menuItem.appendChild(itemLabel);
-        menuItem.addEventListener("click", items[item]);
-        menu.appendChild(menuItem);
-    }
-
+    const menu = document.getElementById("context-menu");
 
     element.addEventListener("contextmenu", function (event)
     {
@@ -33,6 +17,11 @@ function addContextMenu(element, items = {})
             return;
         }
 
+        if (element?.picked)
+        {
+            return;
+        }
+
         event.preventDefault();
         event.stopPropagation();
 
@@ -40,12 +29,13 @@ function addContextMenu(element, items = {})
         {
             event.preventDefault();
             event.stopPropagation();
+            updateContextMenu(menu, items);
+            positionMenu(menu, event);
             if (menu.style.visibility != 'visible')
             {
                 menu.style.visibility = 'visible';
                 menu.style.opacity = 1;
             }
-            positionMenu(menu, event);
             element.onmouseup = null;
         });
     });
@@ -55,15 +45,20 @@ function addContextMenu(element, items = {})
         event.preventDefault();
         event.stopPropagation();
 
+        if (element?.picked)
+        {
+            return;
+        }
+
         const timeoutId = setTimeout(function ()
         {
+            updateContextMenu(menu, items);
+            positionMenu(menu, event);
             if (menu.style.visibility != 'visible')
             {
-                hideAllSuspension();
                 menu.style.visibility = 'visible';
                 menu.style.opacity = 1;
             }
-            positionMenu(menu, event);
         }, 1000);
 
         element.addEventListener("touchend", function (event)
@@ -83,6 +78,11 @@ function addContextMenu(element, items = {})
             {
                 menu.style.visibility = 'hidden';
                 menu.style.opacity = 0;
+                menu.ontrasitionend = function ()
+                {
+                    menu.innerHTML = "";
+                    menu.ontrasitionend = null;
+                }
             }
         }
     });
@@ -90,21 +90,76 @@ function addContextMenu(element, items = {})
 
 function removeContextMenu(element)
 {
-    const menu = document.getElementById(element.id + "-context-menu");
-    document.body.removeChild(menu);
+    element.onmousedown = null;
     element.oncontextmenu = null;
 }
 
 function addSkillPanel(piece)
 {
-    const skillPanel = document.createElement("div");
-    skillPanel.id = piece.id + "-skill-panel";
-    skillPanel.classList.add("skill-panel");
-    document.body.appendChild(skillPanel);
+    const skillPanel = document.getElementById("skill-panel");
 
-    const skills = HERO_DATA[piece.name]["技能"];
-    const faction = HERO_DATA[piece.name]["势力"];
-    for (let skill in skills)
+    piece.addEventListener("mouseover", function (event)
+    {
+        event.preventDefault();
+        event.stopPropagation();
+
+        updateSkillPanel(skillPanel, piece.name);
+
+        const timeoutId = setTimeout(function ()
+        {
+            skillPanel.style.visibility = 'visible';
+            skillPanel.style.opacity = 1;
+        }, 300);
+
+        piece.addEventListener("mouseout", function (event)
+        {
+            event.preventDefault();
+            event.stopPropagation();
+            clearTimeout(timeoutId);
+            skillPanel.style.visibility = 'hidden';
+            skillPanel.style.opacity = 0;
+            skillPanel.ontrasitionend = function () {
+                skillPanel.innerHTML = "";
+                skillPanel.ontrasitionend = null;
+            }
+            piece.onmouseout = null;
+        });
+    });
+
+    piece.addEventListener("touchstart", function (event)
+    {
+        event.preventDefault();
+        event.stopPropagation();
+
+        updateSkillPanel(skillPanel, piece.name);
+        skillPanel.style.visibility = 'visible';
+        skillPanel.style.opacity = 1;
+
+        piece.addEventListener("touchend", function (event)
+        {
+            document.addEventListener("click", function (event)
+            {
+                skillPanel.style.visibility = 'hidden';
+                skillPanel.style.opacity = 0;
+                skillPanel.ontrasitionend = function () {
+                    skillPanel.innerHTML = "";
+                    skillPanel.ontrasitionend = null;
+                }
+                piece.ontouchend = null;
+
+            });
+        });
+    });
+}
+
+function updateSkillPanel(panel, name)
+{
+    panel.innerHTML = "";
+
+    const skills = HERO_DATA[name]["技能"];
+    const faction = HERO_DATA[name]["势力"];
+
+    for (const skill in skills)
     {
         const skillItem = document.createElement("div");
         skillItem.classList.add("skill-item");
@@ -115,16 +170,19 @@ function addSkillPanel(piece)
 
         if (faction == "魏")
         {
-            skillName.classList.add("wei");
-        } else if (faction == "蜀")
+            skillName.classList.add("wei-front");
+        }
+        else if (faction == "蜀")
         {
-            skillName.classList.add("shu");
-        } else if (faction == "吴")
+            skillName.classList.add("shu-front");
+        }
+        else if (faction == "吴")
         {
-            skillName.classList.add("wu");
-        } else if (faction == "群")
+            skillName.classList.add("wu-front");
+        }
+        else if (faction == "群")
         {
-            skillName.classList.add("qun");
+            skillName.classList.add("qun-front");
         }
 
         skillItem.appendChild(skillName);
@@ -132,66 +190,23 @@ function addSkillPanel(piece)
         skillText.classList.add("skill-text");
         skillText.innerHTML = skills[skill];
         skillItem.appendChild(skillText);
-        skillPanel.appendChild(skillItem);
+
+        panel.appendChild(skillItem);
     }
-
-    piece.addEventListener("mouseover", function (event)
-    {
-        event.preventDefault();
-        event.stopPropagation();
-        const timeoutId = setTimeout(function ()
-        {
-            skillPanel.style.visibility = 'visible';
-            skillPanel.style.opacity = 1;
-        }, 500);
-
-        piece.addEventListener("mouseout", function (event)
-        {
-            event.preventDefault();
-            event.stopPropagation();
-            clearTimeout(timeoutId);
-            skillPanel.style.visibility = 'hidden';
-            skillPanel.style.opacity = 0;
-            piece.onmouseout = null;
-        });
-    });
-
-    piece.addEventListener("touchstart", function (event)
-    {
-        event.preventDefault();
-        event.stopPropagation();
-
-        hideAllSuspension();
-        skillPanel.style.visibility = 'visible';
-        skillPanel.style.opacity = 1;
-
-        piece.addEventListener("touchend", function (event)
-        {
-            document.addEventListener("click", function (event)
-            {
-                skillPanel.style.visibility = 'hidden';
-                skillPanel.style.opacity = 0;
-                piece.ontouchend = null;
-
-            });
-        });
-    });
 }
 
-function hideAllSuspension()
+function updateContextMenu(menu, items = {})
 {
-    const contextMenus = document.getElementsByClassName("context-menu");
-    for (let i = 0; i < contextMenus.length; i++)
+    menu.innerHTML = "";
+    for (const item in items)
     {
-        contextMenus[i].style.visibility = 'hidden';
-        contextMenus[i].style.opacity = 0;
-    }
-
-    const skillPanels = document.getElementsByClassName("skill-panel");
-    for (let i = 0; i < skillPanels.length; i++)
-    {
-        skillPanels[i].style.visibility = 'hidden';
-        skillPanels[i].style.opacity = 0;
+        const menuItem = document.createElement("div");
+        menuItem.classList.add("context-menu-item");
+        const itemLabel = document.createElement("label");
+        itemLabel.textContent = item;
+        menuItem.appendChild(itemLabel);
+        menuItem.addEventListener("click", items[item]);
+        menu.appendChild(menuItem);
     }
 }
 
@@ -199,19 +214,17 @@ function getPosition(event)
 {
     var posX = 0;
     var posY = 0;
-    if (event?.pageX || event?.pageY)
+    if (event?.clientX || event?.clientY)
     {
-        posX = event.pageX;
-        posY = event.pageY;
-    } else if (event?.clientX || event?.clientY)
-    {
-        posX = event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-        posY = event.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-    } else if (event?.touches[0].clientX || event?.touches[0].clientY)
+        posX = event.clientX;
+        posY = event.clientY;
+    }
+    else if (event?.touches[0].clientX || event?.touches[0].clientY)
     {
         posX = event.touches[0].clientX;
         posY = event.touches[0].clientY;
-    } else if (event?.changedTouches[0].clientX || event?.changedTouches[0].clientY)
+    }
+    else if (event?.changedTouches[0].clientX || event?.changedTouches[0].clientY)
     {
         posX = event.changedTouches[0].clientX;
         posY = event.changedTouches[0].clientY;
@@ -252,4 +265,101 @@ function positionMenu(menu, event)
     }
 }
 
-export { addContextMenu, removeContextMenu, addSkillPanel };
+function createHeroTable()
+{
+    const heroTable = document.createElement("div");
+    heroTable.id = "hero-table";
+    heroTable.classList.add("hero-table");
+    document.body.appendChild(heroTable);
+
+    const factions = ["魏", "蜀", "吴", "群"];
+    for (const faction of factions)
+    {
+        const factionTable = document.createElement("div");
+        factionTable.classList.add("faction-table");
+        heroTable.appendChild(factionTable);
+
+        const factionLabel = document.createElement("label");
+        factionLabel.classList.add("faction-label");
+
+        factionLabel.innerHTML = faction;
+        factionTable.appendChild(factionLabel);
+
+        const factionHeroes = document.createElement("div");
+        factionHeroes.classList.add("faction-heroes");
+        factionTable.appendChild(factionHeroes);
+
+        if (faction == "魏")
+        {
+            factionLabel.classList.add("wei-front");
+            factionTable.classList.add("wei-back");
+        }
+        else if (faction == "蜀")
+        {
+            factionLabel.classList.add("shu-front");
+            factionTable.classList.add("shu-back");
+        }
+        else if (faction == "吴")
+        {
+            factionLabel.classList.add("wu-front");
+            factionTable.classList.add("wu-back");
+        }
+        else if (faction == "群")
+        {
+            factionLabel.classList.add("qun-front");
+            factionTable.classList.add("qun-back");
+        }
+
+        const heroes = (Object.keys(HERO_DATA)).filter(hero => HERO_DATA[hero]["势力"] == faction);
+
+        for (const hero of heroes)
+        {
+            const heroName = document.createElement("div");
+            heroName.classList.add("hero-name");
+            heroName.innerHTML = hero;
+            heroName.id = hero + "-hero-name";
+            factionHeroes.appendChild(heroName);
+        }
+    }
+}
+
+function showHeroTable(piece)
+{
+    const heroTable = document.getElementById("hero-table");
+    heroTable.style.visibility = 'visible';
+    heroTable.style.opacity = 1;
+
+    const pieces = document.getElementsByClassName("piece");
+    const heroNames_existed = Array.from(pieces, piece => piece.name);
+
+    const heroNames = heroTable.getElementsByClassName("hero-name");
+    for (const heroName of heroNames)
+    {
+        if (heroNames_existed.includes(heroName.innerHTML))
+        {
+            heroName.style.opacity = 0.4;
+            heroName.style.pointerEvents = 'none';
+        }
+        else
+        {
+            heroName.style.opacity = 1;
+            heroName.style.pointerEvents = 'auto';
+            heroName.onclick = function (event)
+            {
+                event.preventDefault();
+                piece.name = heroName.innerHTML;
+
+                const avatar = piece.getElementsByClassName("avatar")[0];
+                avatar.src = "./assets/Avatar/active/" + HERO_DATA[piece.name]["拼音"] + ".png";
+
+                const nameTag = document.getElementById("unpickedName" + piece.id.slice(4));
+                nameTag.innerHTML = piece.name;
+
+                heroTable.style.visibility = 'hidden';
+                heroTable.style.opacity = 0;
+            };
+        }
+    }
+}
+
+export { addContextMenu, removeContextMenu, addSkillPanel, createHeroTable, showHeroTable };
