@@ -138,7 +138,7 @@
 }
 
 .faction-heroes > .hero-name:hover {
-    background-color: rgb(255, 255, 255, 0.05);
+    background-color: rgb(255, 255, 255, 0.3);
     backdrop-filter: blur(3px);
     box-shadow: 0 0 0.1em 0.1em rgb(0, 0, 0, 0.15);
 }

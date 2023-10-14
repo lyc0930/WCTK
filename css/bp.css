@@ -47,6 +47,7 @@ label {
 }
 
 .candidate {
+    aspect-ratio: 1;
     border-radius: 7.5%;
     background-color: rgb(255, 255, 255, 0.5);
     backdrop-filter: blur(3px);
@@ -59,6 +60,16 @@ label {
     box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 0, 0.15);
 }
 
+.candidate.waiting-red {
+    border: 3px solid rgb(255, 0, 0, 0.5);
+    /* box-shadow: 0 0 0.2em 0.2em rgb(255, 0, 0, 0.3); */
+}
+
+.candidate.waiting-blue {
+    border: 3px solid rgb(0, 0, 255, 0.5);
+    /* box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 255, 0.3); */
+}
+
 @media screen and (orientation:landscape) {
     #heroBoard {
         width: 48%;
@@ -69,8 +80,7 @@ label {
     }
 
     .candidate {
-        width: 16dvh;
-        height: 16dvh;
+        width: 18dvh;
     }
 
     #redBoard {
@@ -97,7 +107,6 @@ label {
 
     .candidate {
         width: 20dvw;
-        height: 20dvw;
     }
 
     #redBoard {
