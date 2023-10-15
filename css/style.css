@@ -54,7 +54,7 @@ label {
     pointer-events: none;
 }
 
-@media screen and (min-aspect-ratio: 8/5) {
+@media screen and (min-aspect-ratio: 1.3) {
     body {
         align-items: center;
     }
@@ -67,7 +67,7 @@ label {
     }
 }
 
-@media screen and (max-aspect-ratio: 8/5) {
+@media screen and (max-aspect-ratio: 1.3) {
     body {
         align-items: flex-start;
     }
