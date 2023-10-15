@@ -7,6 +7,7 @@
     z-index: 98;
     transition: width 100ms ease-out,
         height 100ms ease-out,
+        transform 70ms ease-out,
         left 70ms ease-out,
         top 70ms ease-out;
 }
@@ -141,4 +142,98 @@ body>.piece {
 
 .blue-piece.selected {
     border-color: rgba(0, 0, 255, 1);
+}
+
+body>.piece:hover {
+    width: 11vmin;
+    height: 11vmin;
+    z-index: 100;
+}
+
+.cell>.piece:only-of-type:hover {
+    width: 11vmin;
+    height: 11vmin;
+    z-index: 100;
+}
+
+.grave>.piece:hover {
+    width: 11vmin;
+    height: 11vmin;
+    z-index: 100;
+}
+
+.cell>.piece:nth-of-type(2):nth-last-of-type(1):hover {
+    width: 9vmin;
+    height: 9vmin;
+    top: 0%;
+    left: 0%;
+    border-width: .72vmin;
+    z-index: 100;
+}
+
+.cell>.piece:nth-of-type(1):nth-last-of-type(2):hover {
+    width: 8vmin;
+    height: 8vmin;
+    bottom: 0%;
+    right: 0%;
+    border-width: .64vmin;
+    z-index: 100;
+}
+
+.cell>.piece:nth-of-type(n+3):nth-last-of-type(1):hover {
+    width: 9vmin;
+    height: 9vmin;
+    top: 0%;
+    left: 0%;
+    border-width: .72vmin;
+    z-index: 100;
+}
+
+.cell>.piece:nth-of-type(1):nth-last-of-type(n+3):hover {
+    width: 6vmin;
+    height: 6vmin;
+    bottom: 0%;
+    right: 0%;
+    border-width: .48vmin;
+    z-index: 100;
+}
+
+.cell>.piece:nth-of-type(2):nth-last-of-type(n+2):hover {
+    width: 6vmin;
+    height: 6vmin;
+    top: 50%;
+    bottom: 50%;
+    right: 0%;
+    transform: translate(0, -50%);
+    border-width: .48vmin;
+    z-index: 100;
+}
+
+.cell>.piece:nth-of-type(3):nth-last-of-type(n+2):hover {
+    width: 6vmin;
+    height: 6vmin;
+    top: 0%;
+    right: 0%;
+    border-width: .48vmin;
+    z-index: 100;
+}
+
+.cell>.piece:nth-of-type(4):nth-last-of-type(n+2):hover {
+    width: 6vmin;
+    height: 6vmin;
+    bottom: 0%;
+    left: 50%;
+    right: 50%;
+    transform: translate(-50%, 0);
+    border-width: .48vmin;
+    z-index: 100;
+}
+
+.cell>.piece:nth-of-type(5):nth-last-of-type(n+2):hover {
+    width: 6vmin;
+    height: 6vmin;
+    bottom: 0%;
+    left: 0%;
+    border-width: .48vmin;
+    z-index: 100;
 }

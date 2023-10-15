@@ -1,6 +1,7 @@
 .grave {
-    width: 13vmin;
+    width: 60%;
     aspect-ratio: 1;
+    margin: 0.2em 0.2em 0.2em 0.2em;
     /* border: .1vmin solid purple; */
     border: 0;
     display: none;

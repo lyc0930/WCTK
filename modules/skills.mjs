@@ -10,7 +10,7 @@ function skill_zhanji(piece, _index = null)
     const armorSelect = document.getElementById("armorSelect" + index);
     const armorSelect_zhanji = document.createElement("select");
     armorSelect_zhanji.id = "armorSelect" + "_zhanji" + index;
-    armorSelect_zhanji.className = "heroSelect";
+    armorSelect_zhanji.className = "hero-select";
     armorBlock.appendChild(armorSelect_zhanji);
 
     for (const name in armors)
@@ -37,7 +37,7 @@ function skill_zhanji(piece, _index = null)
     const horseSelect = document.getElementById("horseSelect" + index);
     const horseSelect_zhanji = document.createElement("select");
     horseSelect_zhanji.id = "horseSelect" + "_zhanji" + index;
-    horseSelect_zhanji.className = "heroSelect";
+    horseSelect_zhanji.className = "hero-select";
     horseBlock.appendChild(horseSelect_zhanji);
 
     for (const name in horses)

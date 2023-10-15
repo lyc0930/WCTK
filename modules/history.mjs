@@ -127,7 +127,7 @@ function saveState()
     state.overlaps = overlaps;
     stateHistory.updateHistory(state);
 }
-
+// TODO:    帅旗Bug
 function recoverStatefrom(state)
 {
     for (const player of state.players)
@@ -155,14 +155,8 @@ function recoverStatefrom(state)
             grave.style.display = "none";
             actedCheckbox.disabled = false;
 
-            const HPBlock = document.getElementById("HPBlock" + index);
-            HPBlock.style.display = "flex";
-            const weaponBlock = document.getElementById("weaponBlock" + index);
-            weaponBlock.style.display = "flex";
-            const armorBlock = document.getElementById("armorBlock" + index);
-            armorBlock.style.display = "flex";
-            const horseBlock = document.getElementById("horseBlock" + index);
-            horseBlock.style.display = "flex";
+            const alivePanel = document.getElementById("alivePanel" + index);
+            alivePanel.style.display = "flex";
 
             player.piece.HP = player.HP;
             const labelHP = document.getElementById("HP" + index);
@@ -202,14 +196,8 @@ function recoverStatefrom(state)
             grave.style.display = "flex";
             actedCheckbox.disabled = true;
 
-            const HPBlock = document.getElementById("HPBlock" + index);
-            HPBlock.style.display = "none";
-            const weaponBlock = document.getElementById("weaponBlock" + index);
-            weaponBlock.style.display = "none";
-            const armorBlock = document.getElementById("armorBlock" + index);
-            armorBlock.style.display = "none";
-            const horseBlock = document.getElementById("horseBlock" + index);
-            horseBlock.style.display = "none";
+            const alivePanel = document.getElementById("alivePanel" + index);
+            alivePanel.style.display = "none";
 
             grave.appendChild(player.piece);
         }

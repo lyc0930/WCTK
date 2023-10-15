@@ -54,26 +54,26 @@ label {
     pointer-events: none;
 }
 
-@media screen and (orientation:landscape) {
+@media screen and (min-aspect-ratio: 8/5) {
     body {
         align-items: center;
     }
 
     #mainboard {
-        width: 91vh;
-        height: 91vh;
+        width: 91vmin;
+        height: 91vmin;
         /* width: 56cqw;
         height: 56cqw; */
     }
 }
 
-@media screen and (orientation:portrait) {
+@media screen and (max-aspect-ratio: 8/5) {
     body {
         align-items: flex-start;
     }
 
     #mainboard {
-        width: 91vw;
-        height: 91vw;
+        width: 91vmin;
+        height: 91vmin;
     }
 }

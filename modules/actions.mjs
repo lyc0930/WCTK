@@ -147,14 +147,8 @@ function slot(piece, cell, isDraw = false)
                 horseSelect_zhanji.value = "";
             }
 
-            const HPBlock = document.getElementById("HPBlock" + index);
-            HPBlock.style.display = "flex";
-            const weaponBlock = document.getElementById("weaponBlock" + index);
-            weaponBlock.style.display = "flex";
-            const armorBlock = document.getElementById("armorBlock" + index);
-            armorBlock.style.display = "flex";
-            const horseBlock = document.getElementById("horseBlock" + index);
-            horseBlock.style.display = "flex";
+            const alivePanel = document.getElementById("alivePanel" + index);
+            alivePanel.style.display = "flex";
 
             console.log(`${piece.name}登场于(${row + 1}, ${col + 1})`);
         }
@@ -251,14 +245,8 @@ function bury(piece)
             horseSelect_zhanji.value = "";
         }
 
-        const HPBlock = document.getElementById("HPBlock" + index);
-        HPBlock.style.display = "none";
-        const weaponBlock = document.getElementById("weaponBlock" + index);
-        weaponBlock.style.display = "none";
-        const armorBlock = document.getElementById("armorBlock" + index);
-        armorBlock.style.display = "none";
-        const horseBlock = document.getElementById("horseBlock" + index);
-        horseBlock.style.display = "none";
+        const alivePanel = document.getElementById("alivePanel" + index);
+        alivePanel.style.display = "none";
 
         grave.appendChild(piece);
         saveState();

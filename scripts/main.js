@@ -383,6 +383,10 @@ function initializeGame()
         menu.className = "menu";
         menu.id = "menu" + i;
 
+        const fixedPanel = document.createElement("div");
+        fixedPanel.className = "fixed-panel";
+        fixedPanel.id = "fixedPanel" + i;
+
         const selectBlock = document.createElement("div");
         selectBlock.className = "select-block";
         selectBlock.classList.add("block");
@@ -506,6 +510,13 @@ function initializeGame()
         checkBlock.appendChild(carrierCheckbox);
         checkBlock.appendChild(actedLabel);
         checkBlock.appendChild(actedCheckbox);
+
+        fixedPanel.appendChild(selectBlock);
+        fixedPanel.appendChild(checkBlock);
+
+        const alivePanel = document.createElement("div");
+        alivePanel.className = "alive-panel";
+        alivePanel.id = "alivePanel" + i;
 
         const HPBlock = document.createElement("div");
         HPBlock.className = "HP-block";
@@ -681,12 +692,13 @@ function initializeGame()
         horseBlock.appendChild(horseLabel);
         horseBlock.appendChild(horseSelect);
 
-        menu.appendChild(selectBlock);
-        menu.appendChild(checkBlock);
-        menu.appendChild(HPBlock);
-        menu.appendChild(weaponBlock);
-        menu.appendChild(armorBlock);
-        menu.appendChild(horseBlock);
+        alivePanel.appendChild(HPBlock);
+        alivePanel.appendChild(weaponBlock);
+        alivePanel.appendChild(armorBlock);
+        alivePanel.appendChild(horseBlock);
+
+        menu.appendChild(fixedPanel);
+        menu.appendChild(alivePanel);
 
         const grave = document.createElement("div");
         grave.className = "grave";
