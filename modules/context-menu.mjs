@@ -132,7 +132,7 @@ function addContextMenu(element, items = {})
 
     element.addEventListener("mousedown", element.contextmenuEventListener["mousedown"]);
 
-    element.addEventListener("touchstart", element.contextmenuEventListener["touchstart"]);
+    element.addEventListener("touchstart", element.contextmenuEventListener["touchstart"], { passive: false });
 
     document.addEventListener("click", (event) =>
     {

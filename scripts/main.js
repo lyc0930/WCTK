@@ -819,6 +819,78 @@ function initializeGame()
             cls();
         }
     });
+
+    document.addEventListener("touchstart", function (event)
+    {
+        if (event.touches.length > 1)
+        {
+            return;
+        }
+
+        var direction = null;
+        // 没到顶且没到底
+        if (window.scrollY <= 0)
+        {
+            direction = "up";
+        }
+        else if (window.scrollY + window.innerHeight >= document.body.scrollHeight)
+        {
+            direction = "down";
+        }
+        else
+        {
+            return;
+        }
+
+        var startY = event.touches[0].clientY;
+        var deltaY = 0;
+        const threshold = 100;
+
+        function ontouchscroll(event)
+        {
+            // 纵向滑动已经到顶后仍然向下滑动
+            if (direction == "up" && window.scrollY <= 0 && event.touches[0].clientY > startY)
+            {
+                event.preventDefault();
+                event.stopPropagation();
+                deltaY += (event.touches[0].clientY - startY);
+                startY = event.touches[0].clientY;
+                while (deltaY > threshold)
+                {
+                    const previousState = stateHistory.undo();
+                    if (previousState)
+                    {
+                        recoverStatefrom(previousState);
+                    }
+                    deltaY -= threshold;
+                }
+            }
+            // 纵向滑动已经到底后仍然向上滑动
+            else if (direction == "down" && window.scrollY + window.innerHeight >= document.body.scrollHeight && event.touches[0].clientY < startY)
+            {
+                event.preventDefault();
+                event.stopPropagation();
+                deltaY += (event.touches[0].clientY - startY);
+                startY = event.touches[0].clientY;
+                while (deltaY < -threshold)
+                {
+                    const nextState = stateHistory.redo();
+                    if (nextState)
+                    {
+                        recoverStatefrom(nextState);
+                    }
+                    deltaY += threshold;
+                }
+            }
+        }
+
+        document.addEventListener("touchmove", ontouchscroll, { passive: false });
+
+        document.addEventListener("touchend", function (event)
+        {
+            document.removeEventListener("touchmove", ontouchscroll);
+        });
+    }, { passive: false });
 }
 // 启动游戏
 initializeGame();

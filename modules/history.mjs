@@ -27,6 +27,34 @@ class StateHistory
         if (this.currentIndex > 0)
         {
             this.currentIndex--;
+
+            const historyTooltip = document.getElementById("history-tooltip");
+            const icon = historyTooltip.querySelector("i");
+            const label = historyTooltip.querySelector("label");
+
+            if (historyTooltip.style.visibility == "visible" && historyTooltip.style.opacity == "1" && icon.className == "fas fa-rotate-left")
+            {
+                var number = parseInt(label.textContent.slice(2, -1));
+                number++;
+                label.textContent = `后退${number}步`;
+            }
+            else
+            {
+                icon.className = "fas fa-rotate-left";
+                label.textContent = "后退1步";
+            }
+
+            historyTooltip.style.visibility = "visible";
+            historyTooltip.style.opacity = "1";
+
+            clearTimeout(this.tooltipTimeoutId);
+
+            this.tooltipTimeoutId = setTimeout(() =>
+            {
+                historyTooltip.style.visibility = "hidden";
+                historyTooltip.style.opacity = "0";
+            }, 2000);
+
             return this.history[this.currentIndex];
         }
         return null; // 没有可以撤销的状态
@@ -38,6 +66,33 @@ class StateHistory
         if (this.currentIndex < this.history.length - 1)
         {
             this.currentIndex++;
+
+            const historyTooltip = document.getElementById("history-tooltip");
+            const icon = historyTooltip.querySelector("i");
+            const label = historyTooltip.querySelector("label");
+
+            if (historyTooltip.style.visibility == "visible" && historyTooltip.style.opacity == "1" && icon.className == "fas fa-rotate-right")
+            {
+                var number = parseInt(label.textContent.slice(2, -1));
+                number++;
+                label.textContent = `重做${number}步`;
+            }
+            else
+            {
+                icon.className = "fas fa-rotate-right";
+                label.textContent = "重做1步";
+            }
+
+            historyTooltip.style.visibility = "visible";
+            historyTooltip.style.opacity = "1";
+            clearTimeout(this.tooltipTimeoutId);
+
+            this.tooltipTimeoutId = setTimeout(() =>
+            {
+                historyTooltip.style.visibility = "hidden";
+                historyTooltip.style.opacity = "0";
+            }, 2000);
+
             return this.history[this.currentIndex];
         }
         return null; // 没有可以重做的状态
