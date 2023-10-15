@@ -6,7 +6,7 @@ const MENU_LOGO = {
     "查看技能": "fa-list-ul",
     "移动阶段（测试中）": "fa-up-down-left-right",
     "迅【闪】（测试中）": "fa-arrow-right-from-bracket",
-    "【暗度陈仓】（测试中）": "fa-arrow-right-to-bracket",
+    "【暗度陈仓】（测试中）": "fa-person-arrow-down-to-line",
     "【兵贵神速】（测试中）": "fa-angles-right",
     "【奇门遁甲】（测试中）": "fa-arrows-rotate",
     "【诱敌深入】（测试中）": "fa-person-walking-arrow-right"
