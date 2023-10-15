@@ -127,7 +127,7 @@ function saveState()
     state.overlaps = overlaps;
     stateHistory.updateHistory(state);
 }
-// TODO:    帅旗Bug
+
 function recoverStatefrom(state)
 {
     for (const player of state.players)
@@ -203,13 +203,13 @@ function recoverStatefrom(state)
         }
 
     }
-
     if (state.redCarrier)
     {
         setCarrier("Red", state.redCarrier, false);
     }
     else
     {
+        setCarrier("Red", null, false);
         const cell = document.getElementsByClassName("cell")[state.redFlagPosition[0] * 7 + state.redFlagPosition[1]];
         cell.appendChild(redFlag);
     }
@@ -219,6 +219,7 @@ function recoverStatefrom(state)
     }
     else
     {
+        setCarrier("Blue", null, false);
         const cell = document.getElementsByClassName("cell")[state.blueFlagPosition[0] * 7 + state.blueFlagPosition[1]];
         cell.appendChild(blueFlag);
     }
