@@ -5,6 +5,7 @@
 @import "./highlight.css";
 @import "./menu.css";
 @import "./text.css";
+@import "./context-menu.css";
 
 body {
     display: flex;

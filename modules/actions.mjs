@@ -3,6 +3,7 @@ import { adjacentCells, distanceMapOf, isPassable, isStayable, baseOf, enemyBase
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
 import { Pieces } from "../scripts/main.js";
+import { addContextMenu, removeContextMenu, showSkillPanel, } from './context-menu.mjs';
 
 //移动
 function move(piece, cell, ifConsumeMovePoints = false)
@@ -158,6 +159,24 @@ function slot(piece, cell, isDraw = false)
         }
 
         cell.appendChild(piece);
+        removeContextMenu(piece);
+        addContextMenu(piece, {
+            "查看技能": function (event)
+            {
+                event.preventDefault();
+                event.stopPropagation();
+                showSkillPanel(piece);
+            },
+            "break-line-1": "<hr>",
+            "移动阶段（测试中）": function () { },
+            "break-line-2": "<hr>",
+            "迅【闪】（测试中）": function () { },
+            "break-line-3": "<hr>",
+            "【暗度陈仓】（测试中）": function () { },
+            "【兵贵神速】（测试中）": function () { },
+            "【奇门遁甲】（测试中）": function () { },
+            "【诱敌深入】（测试中）": function () { },
+        });
         afterPositionChange(piece, cell);
 
         return true;
@@ -249,6 +268,15 @@ function bury(piece)
         alivePanel.style.display = "none";
 
         grave.appendChild(piece);
+        removeContextMenu(piece);
+        addContextMenu(piece, {
+            "查看技能": function (event)
+            {
+                event.preventDefault();
+                event.stopPropagation();
+                showSkillPanel(piece);
+            }
+        });
         saveState();
     }
 }

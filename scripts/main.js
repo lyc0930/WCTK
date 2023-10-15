@@ -5,6 +5,7 @@ import { stateHistory, saveState, recoverStatefrom } from '../modules/history.mj
 import { generateFlags, setCarrier } from '../modules/flags.mjs';
 import { HPColor, draw, cls } from '../modules/utils.mjs';
 import { skill_zhanji, skill_zhanji_undo } from '../modules/skills.mjs';
+import { addContextMenu, removeContextMenu, showSkillPanel, } from '../modules/context-menu.mjs';
 
 
 export var Pieces = [];
@@ -302,6 +303,25 @@ function createPiece(color, name, index)
     piece.addEventListener("click", clickPiece);
     piece.addEventListener("mouseenter", onMouseEnterPiece);
     piece.addEventListener("mouseleave", onMouseLeavePiece);
+
+    addContextMenu(piece, {
+        "查看技能": function (event)
+        {
+            event.preventDefault();
+            event.stopPropagation();
+            showSkillPanel(piece);
+        },
+        "break-line-1": "<hr>",
+        "移动阶段（测试中）": function () { },
+        "break-line-2": "<hr>",
+        "迅【闪】（测试中）": function () { },
+        "break-line-3": "<hr>",
+        "【暗度陈仓】（测试中）": function () { },
+        "【兵贵神速】（测试中）": function () { },
+        "【奇门遁甲】（测试中）": function () { },
+        "【诱敌深入】（测试中）": function () { },
+    });
+
     return piece;
 }
 
