@@ -234,6 +234,14 @@ function createPiece(color, name, index)
             return;
         }
         event.stopPropagation();
+
+        piece.old_style = piece.style;
+        piece.style.width = "11vmin";
+        piece.style.height = "11vmin";
+        piece.style.zIndex = "92";
+        piece.style.borderWidth = ".8vmin";
+        piece.style.boxShadow = "0 0 0.4em 0.4em rgb(0, 0, 0, 0.15)";
+
         const rect = piece.getBoundingClientRect();
 
         const shiftX = event.touches[0].clientX - (rect.left + 0.5 * rect.width);
@@ -276,6 +284,8 @@ function createPiece(color, name, index)
             piece.removeEventListener('touchmove', onTouchDragPiece);
 
             phantomPiece.remove();
+
+            piece.style = piece.old_style;
 
             if (draggingPiece != null)
             {

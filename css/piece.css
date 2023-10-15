@@ -7,12 +7,12 @@
     z-index: 91;
     transition: width 100ms ease-out,
         height 100ms ease-out,
-        transform 70ms ease-out,
+        /* transform 70ms ease-out, */
         left 70ms ease-out,
         top 70ms ease-out;
 }
 
-.piece:hover {
+.piece:hover, .piece:active, .piece:focus {
     box-shadow: 0 0 0.4em 0.4em rgb(0, 0, 0, 0.15);
 }
 
