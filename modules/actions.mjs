@@ -1,10 +1,14 @@
 import { HERO_DATA } from './data.mjs';
 import { adjacentCells, PathesOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls } from "./utils.mjs";
+import { highlightCells, removeHighlight } from "./highlight.mjs";
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
 import { Pieces } from "../scripts/main.js";
 import { addContextMenu, removeContextMenu, showSkillPanel, } from './context-menu.mjs';
 import { movePhase } from './phases.mjs';
+import { xunShan } from './basics.mjs';
+
+const movingPieces = [];
 
 //移动
 function move(piece, cell, ifConsumeMovePoints = false, isDraw = false)
@@ -86,6 +90,48 @@ function step(piece, cell, isDraw = false)
         return true;
     }
     return false;
+}
+
+function move_fixed_steps(piece, isDraw = false)
+{
+    // 棋子压栈
+    movingPieces.push(piece);
+
+    // 计算可到达的区域
+    const Pathes = PathesOf(piece);
+    const reachableCells = [];
+
+    for (const cell of document.getElementsByClassName("cell"))
+    {
+        const row = cell.row;
+        const col = cell.col;
+        if (Pathes[row][col] && (Pathes[row][col].length - 1 == piece.moveSteps))
+        {
+            reachableCells.push(cell);
+        }
+    }
+
+    // 定义点击高亮区域行为
+    function onclick(event)
+    {
+        move(piece, event.target, false, isDraw);
+        removeHighlight("reachable", onclick);
+        movingPieces.pop();
+
+        // 还有移动力
+        if (piece.moveSteps > 0)
+        {
+            move_fixed_steps(piece);
+        }
+        else
+        {
+            removeHighlight("reachable", onclick);
+            movingPieces.pop();
+        }
+    }
+
+    // 高亮可到达的区域
+    highlightCells(reachableCells, "reachable", onclick);
 }
 
 // 转移
@@ -173,9 +219,9 @@ function slot(piece, cell, isDraw = false)
                 showSkillPanel(piece);
             },
             "break-line-1": "<hr>",
-            "移动阶段（测试中）": function () { movePhase(piece); },
+            "移动阶段": function () { movePhase(piece); },
             "break-line-2": "<hr>",
-            "迅【闪】（测试中）": function () { },
+            "迅【闪】": function () { xunShan(piece); },
             "break-line-3": "<hr>",
             "【暗度陈仓】（测试中）": function () { },
             "【兵贵神速】（测试中）": function () { },
@@ -344,4 +390,4 @@ function afterPositionChange(piece, cell)
     saveState();
 }
 
-export { move, step, leap, swap, slot, bury };
+export { move, step, leap, swap, slot, bury, move_fixed_steps };

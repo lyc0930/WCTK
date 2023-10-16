@@ -7,6 +7,7 @@ import { HPColor, cls } from '../modules/utils.mjs';
 import { skill_zhanji, skill_zhanji_undo } from '../modules/skills.mjs';
 import { addContextMenu, removeContextMenu, showSkillPanel, } from '../modules/context-menu.mjs';
 import { movePhase } from '../modules/phases.mjs';
+import { xunShan } from '../modules/basics.mjs';
 
 
 export var Pieces = [];
@@ -327,9 +328,9 @@ function createPiece(color, name, index)
             showSkillPanel(piece);
         },
         "break-line-1": "<hr>",
-        "移动阶段（测试中）": function () { movePhase(piece); },
+        "移动阶段": function () { movePhase(piece); },
         "break-line-2": "<hr>",
-        "迅【闪】（测试中）": function () { },
+        "迅【闪】": function () { xunShan(piece); },
         "break-line-3": "<hr>",
         "【暗度陈仓】（测试中）": function () { },
         "【兵贵神速】（测试中）": function () { },
