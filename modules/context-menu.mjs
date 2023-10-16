@@ -29,11 +29,6 @@ function addContextMenu(element, items = {})
                 return;
             }
 
-            if (element?.picked)
-            {
-                return;
-            }
-
             event.preventDefault();
             event.stopPropagation();
 
@@ -41,7 +36,7 @@ function addContextMenu(element, items = {})
             const startX = event.clientX + window.scrollX;
             const startY = event.clientY + window.scrollY;
 
-            element.addEventListener("mouseup", function (event)
+            function onmouseup(event)
             {
                 if (event.button != 2)
                 {
@@ -66,29 +61,21 @@ function addContextMenu(element, items = {})
                     }
                 }
 
-                element.onmousemove = null;
-                element.onmouseup = null;
-            });
+                element.removeEventListener("mouseup", onmouseup);
+            }
+
+            element.addEventListener("mouseup", onmouseup);
         },
         "touchstart": function (event)
         {
             event.preventDefault();
             event.stopPropagation();
 
-            if (menu.style.visibility != 'hidden')
-            {
-                menu.style.visibility = 'hidden';
-                menu.style.opacity = 0;
-            }
+            hideContextMenu();
 
             // 记录初始位置
             const startX = event.touches[0].clientX + window.scrollX;
             const startY = event.touches[0].clientY + window.scrollY;
-
-            if (element?.picked)
-            {
-                return;
-            }
 
             const timeoutId = setTimeout(function ()
             {
@@ -101,30 +88,35 @@ function addContextMenu(element, items = {})
                 }
             }, 750);
 
-            element.addEventListener("touchmove", function (event)
-            {
-                event.preventDefault();
-                event.stopPropagation();
-
-                // 计算移动距离
-                const moveX = event.touches[0].clientX + window.scrollX - startX;
-                const moveY = event.touches[0].clientY + window.scrollY - startY;
-
-                // 移动距离大于10px则取消长按
-                if (Math.abs(moveX) > 10 || Math.abs(moveY) > 10)
+            element.touchEventListener = {
+                "touchmove": function (event)
                 {
-                    clearTimeout(timeoutId);
-                    element.ontouchmove = null;
-                }
-            });
+                    event.preventDefault();
+                    event.stopPropagation();
 
-            element.addEventListener("touchend", function (event)
-            {
-                event.preventDefault();
-                event.stopPropagation();
-                clearTimeout(timeoutId);
-                element.ontouchend = null;
-            });
+                    // 计算移动距离
+                    const moveX = event.touches[0].clientX + window.scrollX - startX;
+                    const moveY = event.touches[0].clientY + window.scrollY - startY;
+
+                    // 移动距离大于10px则取消长按
+                    if (Math.abs(moveX) > 10 || Math.abs(moveY) > 10)
+                    {
+                        clearTimeout(timeoutId);
+                        element.removeEventListener("touchmove", element.touchEventListener["touchmove"]);
+                    }
+                },
+                "touchend": function (event)
+                {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    clearTimeout(timeoutId);
+                    element.removeEventListener("touchend", element.touchEventListener["touchend"]);
+                }
+            };
+
+            element.addEventListener("touchmove", element.touchEventListener["touchmove"], { passive: false });
+
+            element.addEventListener("touchend", element.touchEventListener["touchend"]);
         }
     }
 
@@ -138,16 +130,7 @@ function addContextMenu(element, items = {})
     {
         if (event.button === 0 && menu != null)
         {
-            if (menu.style.visibility != 'hidden')
-            {
-                menu.style.visibility = 'hidden';
-                menu.style.opacity = 0;
-                menu.ontrasitionend = function ()
-                {
-                    menu.innerHTML = "";
-                    menu.ontrasitionend = null;
-                }
-            }
+            hideContextMenu();
         }
     });
 }
@@ -160,89 +143,96 @@ function removeContextMenu(element)
     element.contextmenuEventListener = null;
 }
 
+function hideContextMenu()
+{
+    const menu = document.getElementById("context-menu");
+
+    if (menu.style.visibility != 'hidden')
+    {
+        menu.style.visibility = 'hidden';
+        menu.style.opacity = 0;
+        menu.ontrasitionend = function ()
+        {
+            menu.innerHTML = "";
+            menu.ontrasitionend = null;
+        }
+    }
+}
+
 function addSkillPanel(piece)
 {
-    const skillPanel = document.getElementById("skill-panel");
 
-    piece.addEventListener("mouseover", function (event)
-    {
-        event.preventDefault();
-        event.stopPropagation();
-
-        updateSkillPanel(skillPanel, piece.name);
-
-        const timeoutId = setTimeout(function ()
-        {
-            skillPanel.style.visibility = 'visible';
-            skillPanel.style.opacity = 1;
-        }, 300);
-
-        piece.addEventListener("mouseout", function (event)
-        {
-            event.preventDefault();
-            event.stopPropagation();
-            clearTimeout(timeoutId);
-            skillPanel.style.visibility = 'hidden';
-            skillPanel.style.opacity = 0;
-            skillPanel.ontrasitionend = function () {
-                skillPanel.innerHTML = "";
-                skillPanel.ontrasitionend = null;
-            }
-            piece.onmouseout = null;
-        });
-    });
-
-    piece.addEventListener("touchstart", function (event)
-    {
-        event.preventDefault();
-        event.stopPropagation();
-
-        // 记录初始位置
-        const startX = event.touches[0].clientX + window.scrollX;
-        const startY = event.touches[0].clientY + window.scrollY;
-
-        updateSkillPanel(skillPanel, piece.name);
-        skillPanel.style.visibility = 'visible';
-        skillPanel.style.opacity = 1;
-
-        piece.addEventListener("touchmove", function (event)
+    piece.skillPanelEventListener = {
+        "mouseover": function (event)
         {
             event.preventDefault();
             event.stopPropagation();
 
-            // 计算移动距离
-            const moveX = event.touches[0].clientX + window.scrollX - startX;
-            const moveY = event.touches[0].clientY + window.scrollY - startY;
-
-            // 移动距离大于10px则取消长按
-            if (Math.abs(moveX) > 10 || Math.abs(moveY) > 10)
+            const timeoutId = setTimeout(function ()
             {
-                skillPanel.style.visibility = 'hidden';
-                skillPanel.style.opacity = 0;
-                skillPanel.ontrasitionend = function () {
-                    skillPanel.innerHTML = "";
-                    skillPanel.ontrasitionend = null;
-                }
-                piece.ontouchmove = null;
-                piece.ontouchend = null;
+                showSkillPanel(piece);
+            }, 300);
+
+            function onmouseout(event)
+            {
+                event.preventDefault();
+                event.stopPropagation();
+                clearTimeout(timeoutId);
+                hideSkillPanel();
+                piece.removeEventListener("mouseout", onmouseout);
             }
-        });
 
-        piece.addEventListener("touchend", function (event)
+            piece.addEventListener("mouseout", onmouseout);
+        },
+        "touchstart": function (event)
         {
-            document.addEventListener("click", function (event)
-            {
-                skillPanel.style.visibility = 'hidden';
-                skillPanel.style.opacity = 0;
-                skillPanel.ontrasitionend = function () {
-                    skillPanel.innerHTML = "";
-                    skillPanel.ontrasitionend = null;
+            event.preventDefault();
+            event.stopPropagation();
+
+            // 记录初始位置
+            const startX = event.touches[0].clientX + window.scrollX;
+            const startY = event.touches[0].clientY + window.scrollY;
+
+            showSkillPanel(piece);
+
+            piece.touchEventListener = {
+                "touchmove": function (event)
+                {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    // 计算移动距离
+                    const moveX = event.touches[0].clientX + window.scrollX - startX;
+                    const moveY = event.touches[0].clientY + window.scrollY - startY;
+
+                    // 移动距离大于10px则取消长按
+                    if (Math.abs(moveX) > 10 || Math.abs(moveY) > 10)
+                    {
+                        hideSkillPanel();
+                        piece.removeEventListener("touchmove", piece.touchEventListener["touchmove"]);
+                        piece.removeEventListener("touchend", piece.touchEventListener["touchend"]);
+                    }
+                },
+                "touchend": function (event)
+                {
+                    // document.addEventListener("click", function (event)
+                    // {
+                        hideSkillPanel();
+                        piece.removeEventListener("touchmove", piece.touchEventListener["touchmove"]);
+                        piece.removeEventListener("touchend", piece.touchEventListener["touchend"]);
+                    // });
                 }
-                piece.ontouchend = null;
-                piece.ontouchmove = null;
-            });
-        });
-    });
+            };
+
+            piece.addEventListener("touchmove", piece.touchEventListener["touchmove"], { passive: false });
+
+            piece.addEventListener("touchend", piece.touchEventListener["touchend"], { passive: false });
+        }
+    };
+
+    piece.addEventListener("mouseover", piece.skillPanelEventListener["mouseover"]);
+
+    piece.addEventListener("touchstart", piece.skillPanelEventListener["touchstart"], { passive: false });
 }
 
 function updateSkillPanel(panel, name)
@@ -290,9 +280,7 @@ function updateSkillPanel(panel, name)
 
 function showSkillPanel(piece)
 {
-    const contextMenu = document.getElementById("context-menu");
-    contextMenu.style.visibility = 'hidden';
-    contextMenu.style.opacity = 0;
+    // hideContextMenu();
 
     const skillPanel = document.getElementById("skill-panel");
     updateSkillPanel(skillPanel, piece.name);
@@ -301,13 +289,21 @@ function showSkillPanel(piece)
 
     document.addEventListener("click", function (event)
     {
-        skillPanel.style.visibility = 'hidden';
-        skillPanel.style.opacity = 0;
-        skillPanel.ontrasitionend = function () {
-            skillPanel.innerHTML = "";
-            skillPanel.ontrasitionend = null;
-        }
+        hideSkillPanel();
     });
+}
+
+function hideSkillPanel()
+{
+    const skillPanel = document.getElementById("skill-panel");
+
+    skillPanel.style.visibility = 'hidden';
+    skillPanel.style.opacity = 0;
+    skillPanel.ontrasitionend = function ()
+    {
+        skillPanel.innerHTML = "";
+        skillPanel.ontrasitionend = null;
+    }
 }
 
 function updateContextMenu(menu, items = {})
@@ -478,7 +474,6 @@ function showHeroTable(piece)
                 piece.name = heroName.textContent;
 
                 const avatar = piece.getElementsByClassName("avatar")[0];
-                console.log(piece.name);
                 avatar.src = "./assets/Avatar/active/" + HERO_DATA[piece.name]["拼音"] + ".png";
 
                 const nameTag = document.getElementById("unpickedName" + piece.id.slice(4));
@@ -489,6 +484,12 @@ function showHeroTable(piece)
             };
         }
     }
+
+    document.addEventListener("click", function (event)
+    {
+        heroTable.style.visibility = 'hidden';
+        heroTable.style.opacity = 0;
+    });
 }
 
-export { addContextMenu, removeContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel };
+export { addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel };

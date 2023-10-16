@@ -2,6 +2,7 @@
 @import "./piece.css";
 @import "./context-menu.css";
 @import "./text.css";
+@import "./history.css";
 
 body {
     display: flex;

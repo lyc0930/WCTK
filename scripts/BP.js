@@ -1,5 +1,5 @@
 import { HERO_DATA } from '../modules/data.mjs';
-import { addContextMenu, removeContextMenu, addSkillPanel, createHeroTable, showHeroTable } from '../modules/context-menu.mjs';
+import { addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, showSkillPanel, createHeroTable, showHeroTable } from '../modules/context-menu.mjs';
 
 var side1st = "red";
 var side2nd = side1st == "red" ? "blue" : "red";
@@ -67,7 +67,15 @@ function pick(piece)
     const name = document.getElementById("name" + INDEX);
 
     removeContextMenu(piece);
-
+    addContextMenu(piece, {
+        "查看技能": function (event)
+        {
+            event.preventDefault();
+            event.stopPropagation();
+            hideContextMenu();
+            showSkillPanel(piece);
+        }
+    });
     cell.appendChild(piece);
     piece.picked = true;
     piece.classList.add(side + "-piece");
@@ -117,10 +125,13 @@ function createHeroCandidate(name, index)
 
     piece.addEventListener("mousedown", function (event)
     {
-        if (piece.picked)
+        if (piece.picked || event.button != 0)
         {
             return;
         }
+
+        const startX = event.clientX;
+        const startY = event.clientY;
 
         const rect = piece.getBoundingClientRect();
 
@@ -129,7 +140,8 @@ function createHeroCandidate(name, index)
 
         var draggingPiece = null;
 
-        function onMouseDragPiece(event)
+        // TODO: dictlize
+        function onmousemove(event)
         {
             if (draggingPiece === null)
             {
@@ -150,23 +162,21 @@ function createHeroCandidate(name, index)
 
         }
 
-        document.addEventListener('mousemove', onMouseDragPiece);
-
-        piece.addEventListener('mouseup', function (event)
+        function onmouseup(event)
         {
-            if (piece.picked)
+            if (piece.picked || event.button != 0)
             {
                 return;
             }
 
-            document.removeEventListener('mousemove', onMouseDragPiece);
+            document.removeEventListener('mousemove', onmousemove);
 
             if (draggingPiece != null)
             {
                 event.preventDefault();
                 event.stopPropagation();
 
-                draggingPiece.onmouseup = null;
+                draggingPiece.removeEventListener('mouseup', onmouseup);
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
                 draggingPiece.style.width = "10vmin";
@@ -186,16 +196,39 @@ function createHeroCandidate(name, index)
                     }
                     else
                     {
-                        const index = draggingPiece.id.slice(4);
-                        const oldCell = document.getElementById("unpickedCell" + index);
-                        oldCell.appendChild(draggingPiece);
-                        const nameTag = document.getElementById("unpickedName" + oldCell.id.slice(12));
-                        nameTag.innerHTML = draggingPiece.name;
+                        // 计算移动距离
+                        const moveX = event.clientX + window.scrollX - startX;
+                        const moveY = event.clientY + window.scrollY - startY;
+
+                        // 移动距离小于10px则选择
+                        if (Math.abs(moveX) <= 10 && Math.abs(moveY) <= 10)
+                        {
+                            pick(draggingPiece);
+                        }
+                        else
+                        {
+                            const index = draggingPiece.id.slice(4);
+                            const oldCell = document.getElementById("unpickedCell" + index);
+                            oldCell.appendChild(draggingPiece);
+                            const nameTag = document.getElementById("unpickedName" + oldCell.id.slice(12));
+                            nameTag.innerHTML = draggingPiece.name;
+                        }
                     }
                 }
                 draggingPiece = null;
             }
-        });
+            else
+            {
+                pick(piece);
+                piece.style.width = "10vmin";
+                piece.style.height = "10vmin";
+            }
+        }
+
+        document.addEventListener('mousemove', onmousemove);
+
+
+        piece.addEventListener('mouseup', onmouseup);
     });
 
     piece.addEventListener("touchstart", function (event)
@@ -222,96 +255,101 @@ function createHeroCandidate(name, index)
 
         var draggingPiece = null;
 
-        function onTouchDragPiece(event)
-        {
-            event.preventDefault();
-            if (event.touches.length > 1)
+        piece.eventListener = {
+            "ontouchmove": function (event)
             {
-                return;
-            }
-
-            if (draggingPiece === null)
-            {
-                const nameTag = document.getElementById("unpickedName" + index);
-                nameTag.innerHTML = "";
-
-                draggingPiece = piece;
-
-                document.body.append(piece);
-            }
-
-            draggingPiece.style.left = event.touches[0].clientX - shiftX + window.scrollX + 'px';
-            draggingPiece.style.top = event.touches[0].clientY - shiftY + window.scrollY + 'px';
-
-        }
-
-        piece.addEventListener('touchmove', onTouchDragPiece);
-
-        piece.addEventListener('touchend', function (event)
-        {
-            if (event.changedTouches.length > 1)
-            {
-                return;
-            }
-
-            if (piece.picked)
-            {
-                return;
-            }
-
-            piece.style.width = "10vmin";
-            piece.style.height = "10vmin";
-
-            piece.removeEventListener('touchmove', onTouchDragPiece);
-
-            if (draggingPiece != null)
-            {
-                event.stopPropagation();
-
-                draggingPiece.ontouchend = null;
-                draggingPiece.style.left = null;
-                draggingPiece.style.top = null;
-                draggingPiece.style.width = "10vmin";
-                draggingPiece.style.height = "10vmin";
-
-                if (draggingPiece.picked === false)
+                event.preventDefault();
+                if (event.touches.length > 1)
                 {
-                    const side = (INDEX % 4 == 0 || INDEX % 4 == 3) ? side1st : side2nd;
-                    const board = document.getElementById(side + "Board");
-                    const boardRect = board.getBoundingClientRect();
-
-                    if (event.changedTouches[0].clientX >= boardRect.left && event.changedTouches[0].clientX <= boardRect.right && event.changedTouches[0].clientY >= boardRect.top && event.changedTouches[0].clientY <= boardRect.bottom) // 在看板范围内
-                    {
-                        pick(draggingPiece);
-                    }
-                    else
-                    {
-                        const index = draggingPiece.id.slice(4);
-                        const cell = document.getElementById("unpickedCell" + index);
-                        cell.appendChild(draggingPiece);
-                        const nameTag = document.getElementById("unpickedName" + cell.id.slice(12));
-                        nameTag.innerHTML = draggingPiece.name;
-                    }
+                    return;
                 }
-                draggingPiece = null;
-            }
-        });
-    });
 
-    piece.addEventListener("click", function (event)
-    {
-        if (piece.picked)
-        {
-            return;
+                if (draggingPiece === null)
+                {
+                    const nameTag = document.getElementById("unpickedName" + index);
+                    nameTag.innerHTML = "";
+
+                    draggingPiece = piece;
+
+                    document.body.append(piece);
+                }
+
+                draggingPiece.style.left = event.touches[0].clientX - shiftX + window.scrollX + 'px';
+                draggingPiece.style.top = event.touches[0].clientY - shiftY + window.scrollY + 'px';
+
+            },
+            "ontouchend": function (event)
+            {
+                if (event.changedTouches.length > 1)
+                {
+                    return;
+                }
+
+                if (piece.picked)
+                {
+                    return;
+                }
+
+                piece.style.width = "10vmin";
+                piece.style.height = "10vmin";
+
+                piece.removeEventListener('touchmove', piece.eventListener["ontouchmove"]);
+                piece.removeEventListener('touchend', piece.eventListener["ontouchend"]);
+
+                if (draggingPiece != null)
+                {
+                    event.stopPropagation();
+
+                    draggingPiece.removeEventListener('touchend', piece.eventListener["ontouchend"]);
+                    draggingPiece.style.left = null;
+                    draggingPiece.style.top = null;
+                    draggingPiece.style.width = "10vmin";
+                    draggingPiece.style.height = "10vmin";
+
+                    if (draggingPiece.picked === false)
+                    {
+                        const side = (INDEX % 4 == 0 || INDEX % 4 == 3) ? side1st : side2nd;
+                        const board = document.getElementById(side + "Board");
+                        const boardRect = board.getBoundingClientRect();
+
+                        if (event.changedTouches[0].clientX >= boardRect.left && event.changedTouches[0].clientX <= boardRect.right && event.changedTouches[0].clientY >= boardRect.top && event.changedTouches[0].clientY <= boardRect.bottom) // 在看板范围内
+                        {
+                            pick(draggingPiece);
+                        }
+                        else
+                        {
+                            const index = draggingPiece.id.slice(4);
+                            const cell = document.getElementById("unpickedCell" + index);
+                            cell.appendChild(draggingPiece);
+                            const nameTag = document.getElementById("unpickedName" + cell.id.slice(12));
+                            nameTag.innerHTML = draggingPiece.name;
+                        }
+                    }
+                    draggingPiece = null;
+                }
+            }
         }
 
-        pick(piece);
-        piece.style.width = "10vmin";
-        piece.style.height = "10vmin";
-    });
+        piece.addEventListener('touchmove', piece.eventListener["ontouchmove"], { passive: false });
+
+        piece.addEventListener('touchend', piece.eventListener["ontouchend"]);
+    }, { passive: false });
 
     addContextMenu(piece, {
-        "更换武将": function () { showHeroTable(piece); },
+        "查看技能": function (event)
+        {
+            event.preventDefault();
+            event.stopPropagation();
+            hideContextMenu();
+            showSkillPanel(piece);
+        },
+        "更换武将": function (event)
+        {
+            event.preventDefault();
+            event.stopPropagation();
+            hideContextMenu();
+            showHeroTable(piece);
+        },
         "选择": function () { pick(piece); }
     });
 
@@ -392,6 +430,34 @@ class BPHistory
         {
             this.currentIndex--;
             INDEX--;
+
+            const historyTooltip = document.getElementById("history-tooltip");
+            const icon = historyTooltip.querySelector("i");
+            const label = historyTooltip.querySelector("label");
+
+            if (historyTooltip.style.visibility == "visible" && historyTooltip.style.opacity == "1" && icon.className == "fas fa-rotate-left")
+            {
+                var number = parseInt(label.textContent.slice(2, -1));
+                number++;
+                label.textContent = `后退${number}步`;
+            }
+            else
+            {
+                icon.className = "fas fa-rotate-left";
+                label.textContent = "后退1步";
+            }
+
+            historyTooltip.style.visibility = "visible";
+            historyTooltip.style.opacity = "1";
+
+            clearTimeout(this.tooltipTimeoutId);
+
+            this.tooltipTimeoutId = setTimeout(() =>
+            {
+                historyTooltip.style.visibility = "hidden";
+                historyTooltip.style.opacity = "0";
+            }, 2000);
+
             return this.history[this.currentIndex];
         }
         return null; // 没有可以撤销的状态
@@ -404,6 +470,33 @@ class BPHistory
         {
             this.currentIndex++;
             INDEX++;
+
+            const historyTooltip = document.getElementById("history-tooltip");
+            const icon = historyTooltip.querySelector("i");
+            const label = historyTooltip.querySelector("label");
+
+            if (historyTooltip.style.visibility == "visible" && historyTooltip.style.opacity == "1" && icon.className == "fas fa-rotate-right")
+            {
+                var number = parseInt(label.textContent.slice(2, -1));
+                number++;
+                label.textContent = `重做${number}步`;
+            }
+            else
+            {
+                icon.className = "fas fa-rotate-right";
+                label.textContent = "重做1步";
+            }
+
+            historyTooltip.style.visibility = "visible";
+            historyTooltip.style.opacity = "1";
+            clearTimeout(this.tooltipTimeoutId);
+
+            this.tooltipTimeoutId = setTimeout(() =>
+            {
+                historyTooltip.style.visibility = "hidden";
+                historyTooltip.style.opacity = "0";
+            }, 2000);
+
             return this.history[this.currentIndex];
         }
         return null; // 没有可以重做的状态
@@ -514,10 +607,89 @@ function initializeHistory()
             }
         }
     });
+
+    document.addEventListener("touchstart", function (event)
+    {
+        if (event.touches.length > 1)
+        {
+            return;
+        }
+
+        var direction = null;
+        // 没到顶且没到底
+        if (window.scrollY <= 0)
+        {
+            direction = "up";
+        }
+        else if (window.scrollY + window.innerHeight >= document.body.scrollHeight)
+        {
+            direction = "down";
+        }
+        else
+        {
+            return;
+        }
+
+        var startY = event.touches[0].clientY;
+        var deltaY = 0;
+        const threshold = 100;
+
+        function ontouchscroll(event)
+        {
+            // 纵向滑动已经到顶后仍然向下滑动
+            if (direction == "up" && window.scrollY <= 0 && event.touches[0].clientY > startY)
+            {
+                event.preventDefault();
+                event.stopPropagation();
+                deltaY += (event.touches[0].clientY - startY);
+                startY = event.touches[0].clientY;
+                while (deltaY > threshold)
+                {
+                    const previousState = history.undo();
+                    if (previousState)
+                    {
+                        recoverBPStatefrom(previousState);
+                    }
+                    deltaY -= threshold;
+                }
+            }
+            // 纵向滑动已经到底后仍然向上滑动
+            else if (direction == "down" && window.scrollY + window.innerHeight >= document.body.scrollHeight && event.touches[0].clientY < startY)
+            {
+                event.preventDefault();
+                event.stopPropagation();
+                deltaY += (event.touches[0].clientY - startY);
+                startY = event.touches[0].clientY;
+                while (deltaY < -threshold)
+                {
+                    const nextState = history.redo();
+                    if (nextState)
+                    {
+                        recoverBPStatefrom(nextState);
+                    }
+                    deltaY += threshold;
+                }
+            }
+        }
+
+        document.addEventListener("touchmove", ontouchscroll, { passive: false });
+
+        document.addEventListener("touchend", function (event)
+        {
+            document.removeEventListener("touchmove", ontouchscroll);
+        });
+    }, { passive: false });
 }
 
 const history = new BPHistory();
 createHeroTable();
+
+document.body.addEventListener("contextmenu", function (event)
+{
+    event.preventDefault();
+    event.stopPropagation();
+});
+
 initializeHistory();
 createHeroBoard();
 initializeHeroCandidates();

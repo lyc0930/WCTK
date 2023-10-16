@@ -194,7 +194,7 @@ function createPiece(color, name, index)
 
         document.addEventListener('mousemove', onMouseDragPiece);
 
-        piece.addEventListener('mouseup', function (event)
+        function onmouseup(event)
         {
             event.stopPropagation();
             document.removeEventListener('mousemove', onMouseDragPiece);
@@ -203,7 +203,7 @@ function createPiece(color, name, index)
 
             if (draggingPiece != null)
             {
-                draggingPiece.onmouseup = null;
+                draggingPiece.removeEventListener('mouseup', onmouseup);
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
                 draggingPiece.old_parent.appendChild(draggingPiece); // 解决出身问题
@@ -223,7 +223,9 @@ function createPiece(color, name, index)
                 draggingPiece.old_parent = null;
                 draggingPiece = null;
             }
-        });
+        }
+
+        piece.addEventListener('mouseup', onmouseup);
     });
 
     // 添加触摸事件
@@ -274,7 +276,7 @@ function createPiece(color, name, index)
 
         piece.addEventListener('touchmove', onTouchDragPiece);
 
-        piece.addEventListener('touchend', function (event)
+        function ontouchend(event)
         {
             if (event.changedTouches.length > 1)
             {
@@ -289,7 +291,7 @@ function createPiece(color, name, index)
 
             if (draggingPiece != null)
             {
-                draggingPiece.ontouchend = null;
+                draggingPiece.removeEventListener('touchend', ontouchend);
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
                 draggingPiece.old_parent.appendChild(draggingPiece); // 解决出身问题
@@ -308,7 +310,9 @@ function createPiece(color, name, index)
                 draggingPiece.old_parent = null;
                 draggingPiece = null;
             }
-        });
+        }
+
+        piece.addEventListener('touchend', ontouchend);
     });
     piece.addEventListener("click", clickPiece);
     piece.addEventListener("mouseenter", onMouseEnterPiece);
@@ -319,6 +323,7 @@ function createPiece(color, name, index)
         {
             event.preventDefault();
             event.stopPropagation();
+            hideContextMenu();
             showSkillPanel(piece);
         },
         "break-line-1": "<hr>",

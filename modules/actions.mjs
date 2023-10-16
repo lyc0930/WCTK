@@ -165,6 +165,7 @@ function slot(piece, cell, isDraw = false)
             {
                 event.preventDefault();
                 event.stopPropagation();
+                hideContextMenu();
                 showSkillPanel(piece);
             },
             "break-line-1": "<hr>",
@@ -274,6 +275,7 @@ function bury(piece)
             {
                 event.preventDefault();
                 event.stopPropagation();
+                hideContextMenu();
                 showSkillPanel(piece);
             }
         });
