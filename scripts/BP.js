@@ -536,10 +536,40 @@ function recoverBPStatefrom(state)
             piece.classList.remove("red-piece");
             piece.classList.remove("blue-piece");
             piece.picked = false;
+
+            removeContextMenu(piece);
+            addContextMenu(piece, {
+                "查看技能": function (event)
+                {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    hideContextMenu();
+                    showSkillPanel(piece);
+                },
+                "更换武将": function (event)
+                {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    hideContextMenu();
+                    showHeroTable(piece);
+                },
+                "选择": function () { pick(piece); }
+            });
         }
         else
         {
             piece.classList.add(cell.parentElement.parentElement.id.slice(0, -5) + "-piece");
+            removeContextMenu(piece);
+            addContextMenu(piece, {
+                "查看技能": function (event)
+                {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    hideContextMenu();
+                    showSkillPanel(piece);
+                }
+            });
+
         }
     }
     highlightCandidate();
