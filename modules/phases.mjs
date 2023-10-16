@@ -36,7 +36,23 @@ function movePhase_subphase(piece)
     // 定义点击高亮区域行为
     function onclick(event)
     {
-        move(piece, event.target, true, true);
+        const target = event.target;
+        if (target.classList.contains("cell"))
+        {
+            move(piece, target, true, true);
+        }
+        else if (target.classList.contains("piece") || target.classList.contains("flag"))
+        {
+            move(piece, target.parentElement, true, true);
+        }
+        else if (target.classList.contains("avatar"))
+        {
+            move(piece, target.parentElement.parentElement, true, true);
+        }
+        else
+        {
+            return;
+        }
         removeHighlight("reachable", onclick);
         movingPieces.pop();
 

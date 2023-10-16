@@ -114,7 +114,23 @@ function move_fixed_steps(piece, isDraw = false)
     // 定义点击高亮区域行为
     function onclick(event)
     {
-        move(piece, event.target, false, isDraw);
+        const target = event.target;
+        if (target.classList.contains("cell"))
+        {
+            move(piece, target, false, isDraw);
+        }
+        else if (target.classList.contains("piece") || target.classList.contains("flag"))
+        {
+            move(piece, target.parentElement, false, isDraw);
+        }
+        else if (target.classList.contains("avatar"))
+        {
+            move(piece, target.parentElement.parentElement, false, isDraw);
+        }
+        else
+        {
+            return;
+        }
         removeHighlight("reachable", onclick);
         movingPieces.pop();
 
