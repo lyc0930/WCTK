@@ -525,51 +525,63 @@ function recoverBPStatefrom(state)
     const pieces = document.getElementsByClassName("piece");
     for (const piece of pieces)
     {
-        const oldNameTag = piece.parentElement.parentElement.lastChild;
-        oldNameTag.innerHTML = "";
         const cell = document.getElementById(state[piece.id]);
-        cell.appendChild(piece);
-        const nameTag = cell.parentElement.lastChild;
-        nameTag.innerHTML = piece.name;
-        if (piece.picked === true)
+        if (cell != piece.parentElement)
         {
-            piece.classList.remove("red-piece");
-            piece.classList.remove("blue-piece");
-            piece.picked = false;
+            const oldNameTag = piece.parentElement.parentElement.lastChild;
+            oldNameTag.innerHTML = "";
+            const nameTag = cell.parentElement.lastChild;
+            nameTag.innerHTML = piece.name;
 
-            removeContextMenu(piece);
-            addContextMenu(piece, {
-                "查看技能": function (event)
-                {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    hideContextMenu();
-                    showSkillPanel(piece);
-                },
-                "更换武将": function (event)
-                {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    hideContextMenu();
-                    showHeroTable(piece);
-                },
-                "选择": function () { pick(piece); }
-            });
-        }
-        else
-        {
-            piece.classList.add(cell.parentElement.parentElement.id.slice(0, -5) + "-piece");
-            removeContextMenu(piece);
-            addContextMenu(piece, {
-                "查看技能": function (event)
-                {
-                    event.preventDefault();
-                    event.stopPropagation();
-                    hideContextMenu();
-                    showSkillPanel(piece);
-                }
-            });
+            cell.appendChild(piece);
 
+            if (piece.picked === true)
+            {
+                piece.classList.remove("red-piece");
+                piece.classList.remove("blue-piece");
+                piece.picked = false;
+
+                removeContextMenu(piece);
+                addContextMenu(piece, {
+                    "查看技能": function (event)
+                    {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        hideContextMenu();
+                        showSkillPanel(piece);
+                    },
+                    "更换武将": function (event)
+                    {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        hideContextMenu();
+                        showHeroTable(piece);
+                    },
+                    "选择": function () { pick(piece); }
+                });
+            }
+            else
+            {
+                piece.classList.add(cell.parentElement.parentElement.id.slice(0, -5) + "-piece");
+                removeContextMenu(piece);
+                addContextMenu(piece, {
+                    "查看技能": function (event)
+                    {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        hideContextMenu();
+                        showSkillPanel(piece);
+                    },
+                    "更换武将": function (event)
+                    {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        hideContextMenu();
+                        showHeroTable(piece);
+                    },
+                    "选择": function () { pick(piece); }
+                });
+            }
         }
     }
     highlightCandidate();
