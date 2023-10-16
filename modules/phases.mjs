@@ -6,12 +6,16 @@ import { move } from '../modules/actions.mjs';
 const movingPieces = [];
 
 // 移动阶段
-// TODO 多次移动
 function movePhase(piece)
 {
     // 基于体力值生成移动力
     piece.movePoints = piece.HP;
 
+    movePhase_subphase(piece);
+}
+
+function movePhase_subphase(piece)
+{
     // 棋子压栈
     movingPieces.push(piece);
 
@@ -34,13 +38,33 @@ function movePhase(piece)
     {
         move(piece, event.target, true);
         removeHighlight("reachable", onclick);
-        // 出栈
+        movingPieces.pop();
+
+        // 还有移动力
+        if (piece.movePoints > 0)
+        {
+            movePhase_subphase(piece);
+        }
+        else
+        {
+            endMovePhase();
+        }
+    }
+
+    // 定义结束移动阶段函数
+    function endMovePhase(event)
+    {
+        event.preventDefault();
+        removeHighlight("reachable", onclick);
+        document.removeEventListener("contextmenu", endMovePhase);
         movingPieces.pop();
     }
 
     // 高亮可到达的区域
     highlightCells(reachableCells, "reachable", onclick);
 
+    // 右键结束移动阶段
+    document.addEventListener("contextmenu", endMovePhase, { once: true });
 }
 
 export { movePhase };
