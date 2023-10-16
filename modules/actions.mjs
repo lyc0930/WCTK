@@ -1,5 +1,5 @@
 import { HERO_DATA } from './data.mjs';
-import { adjacentCells, PathesOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn, HPColor, draw } from "./utils.mjs";
+import { adjacentCells, PathesOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls } from "./utils.mjs";
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
 import { Pieces } from "../scripts/main.js";
@@ -7,7 +7,7 @@ import { addContextMenu, removeContextMenu, showSkillPanel, } from './context-me
 import { movePhase } from './phases.mjs';
 
 //移动
-function move(piece, cell, ifConsumeMovePoints = false)
+function move(piece, cell, ifConsumeMovePoints = false, isDraw = false)
 {
     const row = cell.row;
     const col = cell.col;
@@ -44,10 +44,15 @@ function move(piece, cell, ifConsumeMovePoints = false)
         var moveLog = `(${path[0].row + 1}, ${path[0].col + 1})`;
         for (var i = 1; i < path.length; i++)
         {
-            step(piece, path[i]);
+            step(piece, path[i], isDraw);
             moveLog += ` -> (${path[i].row + 1}, ${path[i].col + 1})`;
         }
         console.log(piece.name, moveLog);
+
+        if (isDraw)
+        {
+            cls(1000 * path.length);
+        }
 
         return true;
     }
@@ -55,10 +60,27 @@ function move(piece, cell, ifConsumeMovePoints = false)
 }
 
 // 移动一步
-function step(piece, cell)
+function step(piece, cell, isDraw = false)
 {
     if (piece && isPassable(cell, piece) && adjacentCells(cell, piece).includes(piece.parentElement))
     {
+        if (isDraw)
+        {
+            const startRow = piece.parentElement.row;
+            const startCol = piece.parentElement.col;
+            const row = cell.row;
+            const col = cell.col;
+            // 如果起终点确实相邻
+            if (Math.abs(startRow - row) + Math.abs(startCol - col) === 1)
+            {
+                drawArrow([[startRow, startCol], [row, col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+            }
+            else // 〖渡江〗
+            {
+                drawTeleport([[startRow, startCol], [row, col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+            }
+        }
+
         cell.appendChild(piece);
         afterPositionChange(piece, cell);
         return true;
@@ -90,7 +112,7 @@ function slot(piece, cell, isDraw = false)
 
     if (isDraw)
     {
-        draw([[piece.parentElement.row, piece.parentElement.col], [row, col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+        drawArrow([[piece.parentElement.row, piece.parentElement.col], [row, col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
     }
 
     if (piece)

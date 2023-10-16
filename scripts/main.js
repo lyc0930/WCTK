@@ -3,7 +3,7 @@ import { terrain, HERO_DATA, weapons, armors, horses } from '../modules/data.mjs
 import { highlightCells, highlightPieces, removeHighlight } from '../modules/highlight.mjs';
 import { stateHistory, saveState, recoverStatefrom } from '../modules/history.mjs';
 import { generateFlags, setCarrier } from '../modules/flags.mjs';
-import { HPColor, draw, cls } from '../modules/utils.mjs';
+import { HPColor, cls } from '../modules/utils.mjs';
 import { skill_zhanji, skill_zhanji_undo } from '../modules/skills.mjs';
 import { addContextMenu, removeContextMenu, showSkillPanel, } from '../modules/context-menu.mjs';
 import { movePhase } from '../modules/phases.mjs';

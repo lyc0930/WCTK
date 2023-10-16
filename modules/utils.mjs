@@ -358,7 +358,7 @@ function HPColor(HP, maxHP)
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-function draw(line, color = 'rgba(50, 50, 50)', isArrow = true)
+function drawArrow(line, color = 'rgba(50, 50, 50)', isArrow = true)
 {
     var cellSize = canvas.width / 7; // 计算每个单元格的大小
     const width = 20;
@@ -417,9 +417,68 @@ function draw(line, color = 'rgba(50, 50, 50)', isArrow = true)
     }
 }
 
-function cls()
+function drawTeleport(line, color = 'rgba(50, 50, 50)')
 {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    var cellSize = canvas.width / 7; // 计算每个单元格的大小
+
+    const Px = line[0][1] * cellSize + cellSize / 2;
+    const Py = line[0][0] * cellSize + cellSize / 2;
+    const Qx = line[1][1] * cellSize + cellSize / 2;
+    const Qy = line[1][0] * cellSize + cellSize / 2;
+    if (Px === Qx && Py === Qy)
+    {
+        return;
+    }
+
+    const width = 10;
+    ctx.beginPath();
+    ctx.lineWidth = width;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.setLineDash([5, 20]);
+    ctx.strokeStyle = color;
+
+    ctx.moveTo(Px, Py);
+    ctx.lineTo(Qx, Qy);
+
+    ctx.stroke();
+
+    ctx.lineWidth = width / 2;
+    ctx.setLineDash([]);
+
+    var dx = Qx - Px;
+    var dy = Qy - Py;
+
+    // 起点优弧
+    ctx.beginPath();
+    var angle = Math.atan2(dy, dx);
+    ctx.moveTo(line[0][1] * cellSize + cellSize / 2 + 50 * Math.cos(angle + Math.PI / 5), line[0][0] * cellSize + cellSize / 2 + 50 * Math.sin(angle + Math.PI / 5));
+    ctx.arc(line[0][1] * cellSize + cellSize / 2, line[0][0] * cellSize + cellSize / 2, 50, angle + Math.PI / 5, angle - Math.PI / 5);
+
+    ctx.stroke();
+
+    // 终点优弧
+    ctx.beginPath();
+    angle = Math.atan2(-dy, -dx);
+    ctx.moveTo(line[1][1] * cellSize + cellSize / 2 + 50 * Math.cos(angle + Math.PI / 5), line[1][0] * cellSize + cellSize / 2 + 50 * Math.sin(angle + Math.PI / 5));
+    ctx.arc(line[1][1] * cellSize + cellSize / 2, line[1][0] * cellSize + cellSize / 2, 50, angle + Math.PI / 5, angle - Math.PI / 5);
+
+    ctx.stroke();
 }
 
-export { PathesOf, isStayable, isPassable, adjacentCells, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, draw, cls};
+function cls(delay = 0)
+{
+    if (delay > 0)
+    {
+        setTimeout(() =>
+        {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }, delay);
+    }
+    else
+    {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+}
+
+export { PathesOf, isStayable, isPassable, adjacentCells, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls};

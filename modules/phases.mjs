@@ -1,5 +1,5 @@
 import { Pieces } from "../scripts/main.js";
-import { adjacentCells, PathesOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn, HPColor, draw } from "./utils.mjs";
+import { adjacentCells, PathesOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn } from "./utils.mjs";
 import { highlightCells, highlightPieces, removeHighlight } from "./highlight.mjs";
 import { move } from '../modules/actions.mjs';
 
@@ -36,7 +36,7 @@ function movePhase_subphase(piece)
     // 定义点击高亮区域行为
     function onclick(event)
     {
-        move(piece, event.target, true);
+        move(piece, event.target, true, true);
         removeHighlight("reachable", onclick);
         movingPieces.pop();
 
@@ -47,7 +47,7 @@ function movePhase_subphase(piece)
         }
         else
         {
-            endMovePhase();
+            endMovePhase(event);
         }
     }
 
