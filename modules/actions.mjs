@@ -4,7 +4,7 @@ import { highlightCells, removeHighlight } from "./highlight.mjs";
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
 import { Pieces } from "../scripts/main.js";
-import { addContextMenu, removeContextMenu, showSkillPanel, } from './context-menu.mjs';
+import { addContextMenu, removeContextMenu, hideContextMenu, showSkillPanel, } from './context-menu.mjs';
 import { movePhase } from './phases.mjs';
 import { xunShan } from './basics.mjs';
 

@@ -5,7 +5,7 @@ import { stateHistory, saveState, recoverStatefrom } from '../modules/history.mj
 import { generateFlags, setCarrier } from '../modules/flags.mjs';
 import { HPColor, cls } from '../modules/utils.mjs';
 import { skill_zhanji, skill_zhanji_undo } from '../modules/skills.mjs';
-import { addContextMenu, removeContextMenu, showSkillPanel, } from '../modules/context-menu.mjs';
+import { addContextMenu, removeContextMenu, hideContextMenu, showSkillPanel, } from '../modules/context-menu.mjs';
 import { movePhase } from '../modules/phases.mjs';
 import { xunShan } from '../modules/basics.mjs';
 
@@ -197,7 +197,7 @@ function createPiece(color, name, index)
 
         function onmouseup(event)
         {
-            event.stopPropagation();
+            // event.stopPropagation();
             document.removeEventListener('mousemove', onMouseDragPiece);
 
             phantomPiece.remove();
@@ -236,7 +236,7 @@ function createPiece(color, name, index)
         {
             return;
         }
-        event.stopPropagation();
+        // event.stopPropagation();
 
         piece.old_style = piece.style;
         piece.style.width = "11vmin";
@@ -283,7 +283,7 @@ function createPiece(color, name, index)
             {
                 return;
             }
-            event.stopPropagation();
+            // event.stopPropagation();
             piece.removeEventListener('touchmove', onTouchDragPiece);
 
             phantomPiece.remove();
