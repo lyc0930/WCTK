@@ -1,26 +1,27 @@
-import { terrain, HERO_DATA, weapons, armors, horses } from './data.mjs';
-import { adjacentCells, distanceMapOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn, HPColor, draw } from "./utils.mjs";
+import { HERO_DATA } from './data.mjs';
+import { adjacentCells, PathesOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn, HPColor, draw } from "./utils.mjs";
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
 import { Pieces } from "../scripts/main.js";
 import { addContextMenu, removeContextMenu, showSkillPanel, } from './context-menu.mjs';
+import { movePhase } from './phases.mjs';
 
 //移动
 function move(piece, cell, ifConsumeMovePoints = false)
 {
     const row = cell.row;
     const col = cell.col;
-    const distance = distanceMapOf(piece);
+    const Pathes = PathesOf(piece);
 
-    if (piece && cell.classList.contains("reachable") && (distance[row][col] > 0) && isStayable(cell, piece))
+    if (piece && cell.classList.contains("reachable") && Pathes[row][col] != null && isStayable(cell, piece))
     {
-        var steps = distance[row][col];
+        var steps = Pathes[row][col].length - 1;
 
         if (ifConsumeMovePoints)
         {
-            if (piece.movePoints >= distance[row][col])
+            if (piece.movePoints >= steps)
             {
-                piece.movePoints = piece.movePoints - distance[row][col];
+                piece.movePoints = piece.movePoints - steps;
             }
             else
             {
@@ -29,9 +30,9 @@ function move(piece, cell, ifConsumeMovePoints = false)
         }
         else
         {
-            if (piece.moveSteps >= distance[row][col])
+            if (piece.moveSteps >= steps)
             {
-                piece.moveSteps = piece.moveSteps - distance[row][col];
+                piece.moveSteps = piece.moveSteps - steps;
             }
             else
             {
@@ -39,32 +40,12 @@ function move(piece, cell, ifConsumeMovePoints = false)
             }
         }
 
-        // 步进
-        var moveLink = [cell];
-        var currentCell = cell;
-        for (var i = 0; i < steps; i++)
+        var path = Pathes[row][col];
+        var moveLog = `(${path[0].row + 1}, ${path[0].col + 1})`;
+        for (var i = 1; i < path.length; i++)
         {
-            const currRow = currentCell.row;
-            const currCol = currentCell.col;
-            for (const adjacentCell of adjacentCells(currentCell, piece))
-            {
-                const prevRow = adjacentCell.row;
-                const prevCol = adjacentCell.col;
-                if (distance[prevRow][prevCol] === distance[currRow][currCol] - 1)
-                {
-                    moveLink.push(adjacentCell);
-                    currentCell = adjacentCell;
-                    break;
-                }
-            }
-        }
-        // moveLink.pop() // 移除起点
-        var moveLog = `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1})`;
-        for (var i = moveLink.length - 2; i >= 0; i--)
-        {
-            const currentCell = moveLink[i];
-            step(piece, currentCell);
-            moveLog += ` -> (${currentCell.row + 1}, ${currentCell.col + 1})`;
+            step(piece, path[i]);
+            moveLog += ` -> (${path[i].row + 1}, ${path[i].col + 1})`;
         }
         console.log(piece.name, moveLog);
 
@@ -139,6 +120,7 @@ function slot(piece, cell, isDraw = false)
             const horseSelect = document.getElementById("horseSelect" + index);
             horseSelect.value = "";
 
+            // 〖展骥〗
             if (piece.name == "庞统")
             {
                 const armorSelect_zhanji = document.getElementById("armorSelect" + "_zhanji" + index);
@@ -169,7 +151,7 @@ function slot(piece, cell, isDraw = false)
                 showSkillPanel(piece);
             },
             "break-line-1": "<hr>",
-            "移动阶段（测试中）": function () { },
+            "移动阶段（测试中）": function () { movePhase(piece); },
             "break-line-2": "<hr>",
             "迅【闪】（测试中）": function () { },
             "break-line-3": "<hr>",
@@ -256,6 +238,7 @@ function bury(piece)
         const horseSelect = document.getElementById("horseSelect" + index);
         horseSelect.value = "";
 
+        // 〖展骥〗
         if (piece.name == "庞统")
         {
             const armorSelect_zhanji = document.getElementById("armorSelect" + "_zhanji" + index);

@@ -1,13 +1,15 @@
-// 计算移动距离
-function distanceMapOf(piece)
+import { HERO_DATA, weapons, armors, horses } from './data.mjs';
+
+// 计算路径
+function PathesOf(piece)
 {
-    var distance = new Array(7)
+    var Pathes = new Array(7)
     for (var i = 0; i < 7; i++)
     {
-        distance[i] = new Array(7)
+        Pathes[i] = new Array(7)
         for (var j = 0; j < 7; j++)
         {
-            distance[i][j] = 50;
+            Pathes[i][j] = null;
         }
     }
 
@@ -15,7 +17,7 @@ function distanceMapOf(piece)
     queue.push(piece.parentElement);
     const startRow = piece.parentElement.row;
     const startCol = piece.parentElement.col;
-    distance[startRow][startCol] = 0;
+    Pathes[startRow][startCol] = [piece.parentElement];
 
     while (queue.length)
     {
@@ -26,9 +28,9 @@ function distanceMapOf(piece)
         {
             const nextRow = cell.row;
             const nextCol = cell.col;
-            if (distance[nextRow][nextCol] >= 50)
+            if (Pathes[nextRow][nextCol] == null)
             {
-                distance[nextRow][nextCol] = distance[row][col] + 1;
+                Pathes[nextRow][nextCol] = Pathes[row][col].concat([cell]);
                 queue.push(cell);
             }
         }
@@ -40,11 +42,11 @@ function distanceMapOf(piece)
         const col = cell.col;
         if (!isStayable(cell, piece))
         {
-            distance[row][col] = 50;
+            Pathes[row][col] = null;
         }
     }
 
-    return distance;
+    return Pathes;
 }
 
 // 可停留
@@ -59,18 +61,19 @@ function isStayable(cell, piece = null)
             break;
         }
     }
-    var hold_gucheng = false;
 
+    // 〖固城〗
+    var gu_cheng = false;
     for (const enemyPiece of enemyPiecesOf(piece))
     {
         if (enemyPiece.name === "曹仁")
         {
-            hold_gucheng = true;
+            gu_cheng = true;
             break;
         }
     }
 
-    if (hold_by_enemy && hold_gucheng)
+    if (hold_by_enemy && gu_cheng)
     {
         if (cell.classList.contains("base"))
         {
@@ -110,9 +113,71 @@ function isStayable(cell, piece = null)
 // 可穿越
 function isPassable(cell, piece = null)
 {
-    // TODO: 穿越马
     // TODO: 张绣
-    return isStayable(cell, piece);
+    // 如果可以停留必然可以穿越
+    if (isStayable(cell, piece))
+    {
+        return true;
+    }
+    else
+    {
+        // 【穿越马】
+        var cross_horse = false;
+        for (const horse of piece.horses)
+        {
+            if (horses[horse] == "穿越")
+            {
+                cross_horse = true;
+                break;
+            }
+        }
+
+        if (cross_horse)
+        {
+            var hold_by_enemy = false;
+            for (const enemyPiece of enemyPiecesOf(piece))
+            {
+                if (cell.contains(enemyPiece))
+                {
+                    hold_by_enemy = true;
+                    break;
+                }
+            }
+
+            // 〖固城〗
+            var gucheng = false;
+            for (const enemyPiece of enemyPiecesOf(piece))
+            {
+                if (enemyPiece.name === "曹仁")
+                {
+                    gucheng = true;
+                    break;
+                }
+            }
+
+            if (hold_by_enemy && gucheng)
+            {
+                if (cell.classList.contains("base"))
+                {
+                    if (piece.classList.contains("blue-piece") && !cell.classList.contains("Blue"))
+                    {
+                        return false;
+                    }
+                    if (piece.classList.contains("red-piece") && !cell.classList.contains("Red"))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        return false;
+    }
 }
 
 // 相邻区域
@@ -133,14 +198,17 @@ function adjacentCells(cell, piece = null)
             adjCells.push(nextCell);
         }
     }
+
+    // 〖渡江〗
+    const currentPlayer = piece;
     if (piece === currentPlayer && piece.name === "吕蒙" && cell.classList.contains("lake"))
-    // if (piece.skills.contains("渡江"))
     {
         for (const lakeCell of document.getElementsByClassName("lake"))
         {
             adjCells.push(lakeCell);
         }
     }
+
     return adjCells;
 }
 
@@ -354,4 +422,4 @@ function cls()
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
-export { distanceMapOf, isStayable, isPassable, adjacentCells, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, draw, cls};
+export { PathesOf, isStayable, isPassable, adjacentCells, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, draw, cls};

@@ -6,6 +6,7 @@ import { generateFlags, setCarrier } from '../modules/flags.mjs';
 import { HPColor, draw, cls } from '../modules/utils.mjs';
 import { skill_zhanji, skill_zhanji_undo } from '../modules/skills.mjs';
 import { addContextMenu, removeContextMenu, showSkillPanel, } from '../modules/context-menu.mjs';
+import { movePhase } from '../modules/phases.mjs';
 
 
 export var Pieces = [];
@@ -30,7 +31,6 @@ function clickPiece(event)
     {
         selectedPiece = this;
         this.classList.add("selected");
-        // currentPlayer = this;
     }
     else
     {
@@ -38,7 +38,6 @@ function clickPiece(event)
         {
             selectedPiece = null;
             this.classList.remove("selected");
-            // currentPlayer = null;
         }
 
     }
@@ -158,6 +157,7 @@ function createPiece(color, name, index)
     const labelMaxHP = document.getElementById("maxHP" + index);
     labelMaxHP.textContent = HERO_DATA[piece.name]["体力上限"];
 
+    // 〖展骥〗
     if (name == "庞统")
     {
         skill_zhanji(piece, index);
@@ -327,7 +327,7 @@ function createPiece(color, name, index)
             showSkillPanel(piece);
         },
         "break-line-1": "<hr>",
-        "移动阶段（测试中）": function () { },
+        "移动阶段（测试中）": function () { movePhase(piece); },
         "break-line-2": "<hr>",
         "迅【闪】（测试中）": function () { },
         "break-line-3": "<hr>",
@@ -469,6 +469,7 @@ function initializeGame()
             const horseSelect = document.getElementById("horseSelect" + index);
             horseSelect.value = "";
 
+            // 〖展骥〗
             if (piece.name == "庞统")
             {
                 skill_zhanji(piece);

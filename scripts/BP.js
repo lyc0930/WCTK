@@ -140,7 +140,6 @@ function createHeroCandidate(name, index)
 
         var draggingPiece = null;
 
-        // TODO: dictlize
         function onmousemove(event)
         {
             if (draggingPiece === null)

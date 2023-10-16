@@ -163,6 +163,7 @@ function saveState()
                 player.horses.push(horse);
             }
 
+            // 〖展骥〗
             if (player.piece.name != "庞统")
             {
                 player.armors.push("");
@@ -230,6 +231,7 @@ function recoverStatefrom(state)
             const horseSelect = document.getElementById("horseSelect" + index);
             horseSelect.value = player.horses[0];
 
+            // 〖展骥〗
             if (player.piece.name == "庞统")
             {
                 const armorSelect_zhanji = document.getElementById("armorSelect" + "_zhanji" + index);

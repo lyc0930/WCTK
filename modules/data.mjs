@@ -86,14 +86,14 @@ const armors = {
 
 const horses = {
     "": "",
-    "的卢": "active",
-    "绝影": "active",
-    "爪黄飞电": "active",
-    "赤兔": "cross",
-    "大宛": "cross",
-    "紫骅": "cross",
-    "乌云踏雪": "still",
-    "燎原火": "still",
+    "的卢":    "穿越",
+    "绝影":    "穿越",
+    "爪黄飞电": "穿越",
+    "赤兔":    "移动",
+    "大宛":    "移动",
+    "紫骅":    "移动",
+    "乌云踏雪": "阻动",
+    "燎原火":   "阻动",
 }
 
 export { terrain, HERO_DATA, weapons, armors, horses };
