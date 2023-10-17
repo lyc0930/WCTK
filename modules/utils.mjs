@@ -224,7 +224,10 @@ function adjacentCells(cell, piece = null)
     {
         for (const lakeCell of document.getElementsByClassName("lake"))
         {
-            adjCells.push(lakeCell);
+            if (isPassable(lakeCell, piece))
+            {
+                adjCells.push(lakeCell);
+            }
         }
     }
 
