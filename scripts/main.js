@@ -183,7 +183,6 @@ function createPiece(color, name, index)
 
             if (draggingPiece != null)
             {
-                draggingPiece.removeEventListener('mouseup', onmouseup);
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
                 draggingPiece.old_parent.appendChild(draggingPiece); // 解决出身问题
@@ -207,7 +206,7 @@ function createPiece(color, name, index)
 
         document.addEventListener('mousemove', onmousemove);
 
-        piece.addEventListener('mouseup', onmouseup);
+        piece.addEventListener('mouseup', onmouseup, { once: true });
     });
 
     // 添加触摸事件
@@ -279,7 +278,6 @@ function createPiece(color, name, index)
 
             if (draggingPiece != null)
             {
-                draggingPiece.removeEventListener('touchend', ontouchend);
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
                 draggingPiece.old_parent.appendChild(draggingPiece); // 解决出身问题
@@ -302,7 +300,7 @@ function createPiece(color, name, index)
 
         piece.addEventListener('touchmove', ontouchmove);
 
-        piece.addEventListener('touchend', ontouchend);
+        piece.addEventListener('touchend', ontouchend, { once: true });
     });
 
     function onClickPiece(event)
@@ -907,7 +905,7 @@ function initializeGame()
         {
             document.removeEventListener("touchmove", ontouchscroll);
         });
-    }, { passive: false });
+    }, { passive: false, once: true });
 }
 // 启动游戏
 initializeGame();

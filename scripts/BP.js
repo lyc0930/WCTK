@@ -175,7 +175,6 @@ function createHeroCandidate(name, index)
                 event.preventDefault();
                 event.stopPropagation();
 
-                draggingPiece.removeEventListener('mouseup', onmouseup);
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
                 draggingPiece.style.width = "10vmin";
@@ -226,8 +225,7 @@ function createHeroCandidate(name, index)
 
         document.addEventListener('mousemove', onmousemove);
 
-
-        piece.addEventListener('mouseup', onmouseup);
+        piece.addEventListener('mouseup', onmouseup, { once: true });
     });
 
     piece.addEventListener("touchstart", function (event)
@@ -293,13 +291,11 @@ function createHeroCandidate(name, index)
                 piece.style.height = "10vmin";
 
                 piece.removeEventListener('touchmove', piece.eventListener["ontouchmove"]);
-                piece.removeEventListener('touchend', piece.eventListener["ontouchend"]);
 
                 if (draggingPiece != null)
                 {
                     event.stopPropagation();
 
-                    draggingPiece.removeEventListener('touchend', piece.eventListener["ontouchend"]);
                     draggingPiece.style.left = null;
                     draggingPiece.style.top = null;
                     draggingPiece.style.width = "10vmin";
@@ -332,7 +328,7 @@ function createHeroCandidate(name, index)
         piece.addEventListener('touchmove', piece.eventListener["ontouchmove"], { passive: false });
 
         piece.addEventListener('touchend', piece.eventListener["ontouchend"]);
-    }, { passive: false });
+    }, { passive: false, once: true });
 
     addContextMenu(piece, {
         "查看技能": function (event)
@@ -719,7 +715,7 @@ function initializeHistory()
         {
             document.removeEventListener("touchmove", ontouchscroll);
         });
-    }, { passive: false });
+    }, { passive: false, once: true });
 }
 
 const history = new BPHistory();

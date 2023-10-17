@@ -61,10 +61,9 @@ function addContextMenu(element, items = {})
                     }
                 }
 
-                element.removeEventListener("mouseup", onmouseup);
             }
 
-            element.addEventListener("mouseup", onmouseup);
+            element.addEventListener("mouseup", onmouseup, { once: true });
         },
         "touchstart": function (event)
         {
@@ -110,13 +109,12 @@ function addContextMenu(element, items = {})
                     event.preventDefault();
                     event.stopPropagation();
                     clearTimeout(timeoutId);
-                    element.removeEventListener("touchend", element.touchEventListener["touchend"]);
                 }
             };
 
             element.addEventListener("touchmove", element.touchEventListener["touchmove"], { passive: false });
 
-            element.addEventListener("touchend", element.touchEventListener["touchend"]);
+            element.addEventListener("touchend", element.touchEventListener["touchend"], { once: true });
         }
     }
 
@@ -179,10 +177,9 @@ function addSkillPanel(piece)
                 event.stopPropagation();
                 clearTimeout(timeoutId);
                 hideSkillPanel();
-                piece.removeEventListener("mouseout", onmouseout);
             }
 
-            piece.addEventListener("mouseout", onmouseout);
+            piece.addEventListener("mouseout", onmouseout, { once: true });
         },
         "touchstart": function (event)
         {
@@ -219,14 +216,13 @@ function addSkillPanel(piece)
                     // {
                         hideSkillPanel();
                         piece.removeEventListener("touchmove", piece.touchEventListener["touchmove"]);
-                        piece.removeEventListener("touchend", piece.touchEventListener["touchend"]);
                     // });
                 }
             };
 
             piece.addEventListener("touchmove", piece.touchEventListener["touchmove"], { passive: false });
 
-            piece.addEventListener("touchend", piece.touchEventListener["touchend"], { passive: false });
+            piece.addEventListener("touchend", piece.touchEventListener["touchend"], { passive: false, once: true });
         }
     };
 
