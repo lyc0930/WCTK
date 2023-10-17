@@ -328,7 +328,7 @@ function createHeroCandidate(name, index)
         piece.addEventListener('touchmove', piece.eventListener["ontouchmove"], { passive: false });
 
         piece.addEventListener('touchend', piece.eventListener["ontouchend"]);
-    }, { passive: false, once: true });
+    }, { passive: false });
 
     addContextMenu(piece, {
         "查看技能": function (event)
