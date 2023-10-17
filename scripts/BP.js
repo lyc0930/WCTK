@@ -142,6 +142,9 @@ function createHeroCandidate(name, index)
 
         function onmousemove(event)
         {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
             if (draggingPiece === null)
             {
                 const nameTag = document.getElementById("unpickedName" + index);
@@ -152,9 +155,6 @@ function createHeroCandidate(name, index)
                 draggingPiece.style.transition = "width 100ms ease-out, height 100ms ease-out";
                 document.body.append(piece);
             }
-
-            if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
 
             draggingPiece.style.left = event.clientX - shiftX + window.scrollX + 'px';
             draggingPiece.style.top = event.clientY - shiftY + window.scrollY + 'px';
@@ -240,6 +240,7 @@ function createHeroCandidate(name, index)
             return;
         }
 
+        event.preventDefault();
         event.stopPropagation();
 
         piece.style.width = "12vmin";
@@ -256,6 +257,7 @@ function createHeroCandidate(name, index)
             "ontouchmove": function (event)
             {
                 if (event.cancelable) event.preventDefault();
+                event.stopPropagation();
                 if (event.touches.length > 1)
                 {
                     return;
@@ -267,6 +269,7 @@ function createHeroCandidate(name, index)
                     nameTag.innerHTML = "";
 
                     draggingPiece = piece;
+                    draggingPiece.style.transition = "width 100ms ease-out, height 100ms ease-out";
 
                     document.body.append(piece);
                 }
@@ -290,7 +293,7 @@ function createHeroCandidate(name, index)
                 piece.style.width = "10vmin";
                 piece.style.height = "10vmin";
 
-                piece.removeEventListener('touchmove', piece.eventListener["ontouchmove"]);
+                piece.removeEventListener("touchmove", piece.eventListener["ontouchmove"]);
 
                 if (draggingPiece != null)
                 {
@@ -300,6 +303,7 @@ function createHeroCandidate(name, index)
                     draggingPiece.style.top = null;
                     draggingPiece.style.width = "10vmin";
                     draggingPiece.style.height = "10vmin";
+                    draggingPiece.style.transition = "width 100ms ease-out, height 100ms ease-out, left 70ms ease-out, top 70ms ease-out";
 
                     if (draggingPiece.picked === false)
                     {
@@ -325,9 +329,9 @@ function createHeroCandidate(name, index)
             }
         }
 
-        piece.addEventListener('touchmove', piece.eventListener["ontouchmove"], { passive: false });
+        piece.addEventListener("touchmove", piece.eventListener["ontouchmove"], { passive: false });
 
-        piece.addEventListener('touchend', piece.eventListener["ontouchend"]);
+        piece.addEventListener("touchend", piece.eventListener["ontouchend"]);
     }, { passive: false });
 
     addContextMenu(piece, {

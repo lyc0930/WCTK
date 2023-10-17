@@ -266,6 +266,7 @@ function createPiece(color, name, index)
                 draggingPiece = piece;
                 draggingPiece.old_parent = piece.parentElement;
                 document.body.append(piece);
+                draggingPiece.style.transition = "width 100ms ease-out, height 100ms ease-out";
             }
 
             draggingPiece.style.left = event.touches[0].clientX - shiftX + window.scrollX  + 'px';
@@ -283,7 +284,7 @@ function createPiece(color, name, index)
             }
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
-            piece.removeEventListener('touchmove', ontouchmove);
+            piece.removeEventListener("touchmove", ontouchmove);
 
             phantomPiece.remove();
 
@@ -294,6 +295,7 @@ function createPiece(color, name, index)
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
                 draggingPiece.old_parent.appendChild(draggingPiece); // 解决出身问题
+                draggingPiece.style.transition = "width 100ms ease-out, height 100ms ease-out, left 70ms ease-out, top 70ms ease-out";
 
                 const chessboardRect = document.getElementById("chessboard").getBoundingClientRect();
 
@@ -311,9 +313,9 @@ function createPiece(color, name, index)
             }
         }
 
-        piece.addEventListener('touchmove', ontouchmove, { passive: false });
+        piece.addEventListener("touchmove", ontouchmove, { passive: false });
 
-        piece.addEventListener('touchend', ontouchend, { once: true });
+        piece.addEventListener("touchend", ontouchend, { once: true });
     }, { passive: false });
 
     function onClickPiece(event)
@@ -854,6 +856,9 @@ function initializeGame()
         {
             return;
         }
+
+        event.preventDefault();
+        event.stopPropagation();
 
         var direction = null;
         // 没到顶且没到底
