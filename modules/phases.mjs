@@ -78,16 +78,22 @@ function movePhase_subphase(piece)
     // 定义结束移动阶段函数
     function endMovePhase(event)
     {
-        event.preventDefault();
-        removeHighlight("reachable", onclick);
-        document.removeEventListener("contextmenu", endMovePhase);
+        if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable") && event.target != piece.parentElement)
+        {
+            event.preventDefault();
+            event.stopPropagation();
+            removeHighlight("reachable", onclick);
+            document.removeEventListener("contextmenu", endMovePhase);
+            document.removeEventListener("click", endMovePhase);
+        }
     }
 
     // 高亮可到达的区域
     highlightCells(reachableCells, "reachable", onclick);
 
-    // 右键结束移动阶段
-    document.addEventListener("contextmenu", endMovePhase, { once: true });
+    // 空白处结束移动阶段
+    document.addEventListener("contextmenu", endMovePhase);
+    document.addEventListener("click", endMovePhase);
 }
 
 export { movePhase };

@@ -336,13 +336,7 @@ function createPiece(color, name, index)
     piece.addEventListener("mouseleave", onMouseLeavePiece);
 
     addContextMenu(piece, {
-        "查看技能": function (event)
-        {
-            event.preventDefault();
-            event.stopPropagation();
-            hideContextMenu();
-            showSkillPanel(piece);
-        },
+        "查看技能": function () { showSkillPanel(piece); },
         "break-line-1": "<hr>",
         "移动阶段": function () { movePhase(piece); },
         "break-line-2": "<hr>",

@@ -318,7 +318,13 @@ function updateContextMenu(menu, items = {})
             const itemLabel = document.createElement("label");
             itemLabel.innerHTML = `<i class="fas ${MENU_LOGO[item]}" style="color: #333333;"></i> ${item}`;
             menuItem.appendChild(itemLabel);
-            menuItem.addEventListener("click", items[item]);
+            menuItem.addEventListener("click", function (event)
+            {
+                event.preventDefault();
+                event.stopPropagation();
+                hideContextMenu();
+                items[item]();
+            });
             menu.appendChild(menuItem);
         }
         else
