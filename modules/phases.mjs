@@ -100,7 +100,7 @@ function movePhase_subphase(piece)
     {
         if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable") && event.target != piece.parentElement)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             event.stopPropagation();
             removeHighlight("reachable", onclick);
             document.removeEventListener("contextmenu", endMovePhase);

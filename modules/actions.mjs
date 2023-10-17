@@ -164,7 +164,7 @@ function leap(piece, cell)
 }
 
 // 任意拖动
-function slot(piece, cell, isDraw = true)
+function slot(piece, cell, isDraw = false)
 {
     const row = cell.row;
     const col = cell.col;
@@ -331,7 +331,7 @@ function bury(piece)
         addContextMenu(piece, {
             "查看技能": function (event)
             {
-                event.preventDefault();
+                if (event.cancelable) event.preventDefault();
                 event.stopPropagation();
                 hideContextMenu();
                 showSkillPanel(piece);

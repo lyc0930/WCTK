@@ -12,6 +12,8 @@ import { xunShan } from '../modules/basics.mjs';
 
 export var Pieces = [];
 
+var draggingPiece = null; // 正在拖动的棋子
+
 var selectedPiece = null; // 选中的棋子
 
 var currentPlayer = null; // 当前回合玩家
@@ -141,7 +143,7 @@ function createPiece(color, name, index)
     piece.addEventListener("mousedown", function (event)
     {
         // 正在等待响应
-        if (isHighlighting())
+        if (isHighlighting() && draggingPiece != null)
         {
             return;
         }
@@ -155,10 +157,10 @@ function createPiece(color, name, index)
         phantomPiece.className = "phantom piece";
         phantomPiece.id = "phantomPiece";
 
-        var draggingPiece = null;
-
         function onmousemove(event)
         {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
             if (draggingPiece === null)
             {
                 draggingPiece = piece;
@@ -176,7 +178,7 @@ function createPiece(color, name, index)
 
         function onmouseup(event)
         {
-            // event.stopPropagation();
+            event.stopPropagation();
             document.removeEventListener('mousemove', onmousemove);
 
             phantomPiece.remove();
@@ -222,7 +224,7 @@ function createPiece(color, name, index)
         {
             return;
         }
-        // event.stopPropagation();
+        event.stopPropagation();
 
         piece.old_style = piece.style;
         piece.style.width = "11vmin";
@@ -240,11 +242,10 @@ function createPiece(color, name, index)
         phantomPiece.className = "phantom piece";
         phantomPiece.id = "phantomPiece";
 
-        var draggingPiece = null;
-
         function ontouchmove(event)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
             if (event.touches.length > 1)
             {
                 return;
@@ -269,7 +270,8 @@ function createPiece(color, name, index)
             {
                 return;
             }
-            // event.stopPropagation();
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
             piece.removeEventListener('touchmove', ontouchmove);
 
             phantomPiece.remove();
@@ -298,10 +300,10 @@ function createPiece(color, name, index)
             }
         }
 
-        piece.addEventListener('touchmove', ontouchmove);
+        piece.addEventListener('touchmove', ontouchmove, { passive: false });
 
         piece.addEventListener('touchend', ontouchend, { once: true });
-    });
+    }, { passive: false });
 
     function onClickPiece(event)
     {
@@ -311,7 +313,7 @@ function createPiece(color, name, index)
             return;
         }
 
-        // event.preventDefault();
+        // if (event.cancelable) event.preventDefault();
 
         if (selectedPiece == null)
         {
@@ -772,7 +774,7 @@ function initializeGame()
 
     chessboard.addEventListener("wheel", function (event)
     {
-        event.preventDefault();
+        if (event.cancelable) event.preventDefault();
         if (event.deltaY < 0)
         {
             const previousState = stateHistory.undo();
@@ -794,7 +796,7 @@ function initializeGame()
     {
         if (event.key == 'ArrowUp')
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             const previousState = stateHistory.undo();
             if (previousState)
             {
@@ -803,7 +805,7 @@ function initializeGame()
         }
         else if (event.key == 'ArrowDown')
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             const nextState = stateHistory.redo();
             if (nextState)
             {
@@ -812,7 +814,7 @@ function initializeGame()
         }
         else if(event.key == 'z' && event.ctrlKey)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             const previousState = stateHistory.undo();
             if (previousState)
             {
@@ -821,7 +823,7 @@ function initializeGame()
         }
         else if (event.key == 'y' && event.ctrlKey)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             const nextState = stateHistory.redo();
             if (nextState)
             {
@@ -866,7 +868,7 @@ function initializeGame()
             // 纵向滑动已经到顶后仍然向下滑动
             if (direction == "up" && window.scrollY <= 0 && event.touches[0].clientY > startY)
             {
-                event.preventDefault();
+                if (event.cancelable) event.preventDefault();
                 event.stopPropagation();
                 deltaY += (event.touches[0].clientY - startY);
                 startY = event.touches[0].clientY;
@@ -883,7 +885,7 @@ function initializeGame()
             // 纵向滑动已经到底后仍然向上滑动
             else if (direction == "down" && window.scrollY + window.innerHeight >= document.body.scrollHeight && event.touches[0].clientY < startY)
             {
-                event.preventDefault();
+                if (event.cancelable) event.preventDefault();
                 event.stopPropagation();
                 deltaY += (event.touches[0].clientY - startY);
                 startY = event.touches[0].clientY;
@@ -905,7 +907,7 @@ function initializeGame()
         {
             document.removeEventListener("touchmove", ontouchscroll);
         });
-    }, { passive: false, once: true });
+    }, { passive: false });
 }
 // 启动游戏
 initializeGame();

@@ -19,7 +19,7 @@ function addContextMenu(element, items = {})
     element.contextmenuEventListener = {
         "contextmenu": function (event)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             event.stopPropagation();
         },
         "mousedown": function (event)
@@ -29,7 +29,7 @@ function addContextMenu(element, items = {})
                 return;
             }
 
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             event.stopPropagation();
 
             // 记录初始位置
@@ -50,7 +50,7 @@ function addContextMenu(element, items = {})
                 // 移动距离大于10px则取消右键
                 if (Math.abs(moveX) <= 10 && Math.abs(moveY) <= 10)
                 {
-                    event.preventDefault();
+                    if (event.cancelable) event.preventDefault();
                     event.stopPropagation();
                     updateContextMenu(menu, items);
                     positionMenu(menu, event);
@@ -67,7 +67,7 @@ function addContextMenu(element, items = {})
         },
         "touchstart": function (event)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             event.stopPropagation();
 
             hideContextMenu();
@@ -90,7 +90,7 @@ function addContextMenu(element, items = {})
             element.touchEventListener = {
                 "touchmove": function (event)
                 {
-                    event.preventDefault();
+                    if (event.cancelable) event.preventDefault();
                     event.stopPropagation();
 
                     // 计算移动距离
@@ -101,20 +101,24 @@ function addContextMenu(element, items = {})
                     if (Math.abs(moveX) > 10 || Math.abs(moveY) > 10)
                     {
                         clearTimeout(timeoutId);
+                        hideContextMenu();
                         element.removeEventListener("touchmove", element.touchEventListener["touchmove"]);
+                        element.removeEventListener("touchend", element.touchEventListener["touchend"]);
                     }
                 },
                 "touchend": function (event)
                 {
-                    event.preventDefault();
+                    if (event.cancelable) event.preventDefault();
                     event.stopPropagation();
+                    element.removeEventListener("touchmove", element.touchEventListener["touchmove"]);
+                    element.removeEventListener("touchend", element.touchEventListener["touchend"]);
                     clearTimeout(timeoutId);
                 }
             };
 
             element.addEventListener("touchmove", element.touchEventListener["touchmove"], { passive: false });
 
-            element.addEventListener("touchend", element.touchEventListener["touchend"], { once: true });
+            element.addEventListener("touchend", element.touchEventListener["touchend"], { passive: false, once: true });
         }
     }
 
@@ -163,7 +167,7 @@ function addSkillPanel(piece)
     piece.skillPanelEventListener = {
         "mouseover": function (event)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             event.stopPropagation();
 
             const timeoutId = setTimeout(function ()
@@ -173,7 +177,7 @@ function addSkillPanel(piece)
 
             function onmouseout(event)
             {
-                event.preventDefault();
+                if (event.cancelable) event.preventDefault();
                 event.stopPropagation();
                 clearTimeout(timeoutId);
                 hideSkillPanel();
@@ -183,7 +187,7 @@ function addSkillPanel(piece)
         },
         "touchstart": function (event)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             event.stopPropagation();
 
             // 记录初始位置
@@ -195,7 +199,7 @@ function addSkillPanel(piece)
             piece.touchEventListener = {
                 "touchmove": function (event)
                 {
-                    event.preventDefault();
+                    if (event.cancelable) event.preventDefault();
                     event.stopPropagation();
 
                     // 计算移动距离
@@ -316,7 +320,7 @@ function updateContextMenu(menu, items = {})
             menuItem.appendChild(itemLabel);
             menuItem.addEventListener("click", function (event)
             {
-                event.preventDefault();
+                if (event.cancelable) event.preventDefault();
                 event.stopPropagation();
                 hideContextMenu();
                 items[item]();
@@ -472,7 +476,7 @@ function showHeroTable(piece)
             heroName.style.pointerEvents = 'auto';
             heroName.onclick = function (event)
             {
-                event.preventDefault();
+                if (event.cancelable) event.preventDefault();
                 piece.name = heroName.textContent;
 
                 const avatar = piece.getElementsByClassName("avatar")[0];

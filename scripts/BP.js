@@ -70,7 +70,7 @@ function pick(piece)
     addContextMenu(piece, {
         "查看技能": function (event)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             event.stopPropagation();
             hideContextMenu();
             showSkillPanel(piece);
@@ -153,7 +153,7 @@ function createHeroCandidate(name, index)
                 document.body.append(piece);
             }
 
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             event.stopPropagation();
 
             draggingPiece.style.left = event.clientX - shiftX + window.scrollX + 'px';
@@ -172,7 +172,7 @@ function createHeroCandidate(name, index)
 
             if (draggingPiece != null)
             {
-                event.preventDefault();
+                if (event.cancelable) event.preventDefault();
                 event.stopPropagation();
 
                 draggingPiece.style.left = null;
@@ -255,7 +255,7 @@ function createHeroCandidate(name, index)
         piece.eventListener = {
             "ontouchmove": function (event)
             {
-                event.preventDefault();
+                if (event.cancelable) event.preventDefault();
                 if (event.touches.length > 1)
                 {
                     return;
@@ -333,14 +333,14 @@ function createHeroCandidate(name, index)
     addContextMenu(piece, {
         "查看技能": function (event)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             event.stopPropagation();
             hideContextMenu();
             showSkillPanel(piece);
         },
         "更换武将": function (event)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             event.stopPropagation();
             hideContextMenu();
             showHeroTable(piece);
@@ -540,14 +540,14 @@ function recoverBPStatefrom(state)
                 addContextMenu(piece, {
                     "查看技能": function (event)
                     {
-                        event.preventDefault();
+                        if (event.cancelable) event.preventDefault();
                         event.stopPropagation();
                         hideContextMenu();
                         showSkillPanel(piece);
                     },
                     "更换武将": function (event)
                     {
-                        event.preventDefault();
+                        if (event.cancelable) event.preventDefault();
                         event.stopPropagation();
                         hideContextMenu();
                         showHeroTable(piece);
@@ -562,14 +562,14 @@ function recoverBPStatefrom(state)
                 addContextMenu(piece, {
                     "查看技能": function (event)
                     {
-                        event.preventDefault();
+                        if (event.cancelable) event.preventDefault();
                         event.stopPropagation();
                         hideContextMenu();
                         showSkillPanel(piece);
                     },
                     "更换武将": function (event)
                     {
-                        event.preventDefault();
+                        if (event.cancelable) event.preventDefault();
                         event.stopPropagation();
                         hideContextMenu();
                         showHeroTable(piece);
@@ -587,7 +587,7 @@ function initializeHistory()
     const heroBoard = document.getElementById("heroBoard");
     heroBoard.addEventListener("wheel", function (event)
     {
-        event.preventDefault();
+        if (event.cancelable) event.preventDefault();
         if (event.deltaY < 0)
         {
             const previousState = history.undo();
@@ -609,7 +609,7 @@ function initializeHistory()
     {
         if (event.key == 'ArrowUp')
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             const previousState = history.undo();
             if (previousState)
             {
@@ -618,7 +618,7 @@ function initializeHistory()
         }
         else if (event.key == 'ArrowDown')
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             const nextState = history.redo();
             if (nextState)
             {
@@ -627,7 +627,7 @@ function initializeHistory()
         }
         else if (event.key == 'z' && event.ctrlKey)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             const previousState = history.undo();
             if (previousState)
             {
@@ -636,7 +636,7 @@ function initializeHistory()
         }
         else if (event.key == 'y' && event.ctrlKey)
         {
-            event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             const nextState = history.redo();
             if (nextState)
             {
@@ -676,7 +676,7 @@ function initializeHistory()
             // 纵向滑动已经到顶后仍然向下滑动
             if (direction == "up" && window.scrollY <= 0 && event.touches[0].clientY > startY)
             {
-                event.preventDefault();
+                if (event.cancelable) event.preventDefault();
                 event.stopPropagation();
                 deltaY += (event.touches[0].clientY - startY);
                 startY = event.touches[0].clientY;
@@ -693,7 +693,7 @@ function initializeHistory()
             // 纵向滑动已经到底后仍然向上滑动
             else if (direction == "down" && window.scrollY + window.innerHeight >= document.body.scrollHeight && event.touches[0].clientY < startY)
             {
-                event.preventDefault();
+                if (event.cancelable) event.preventDefault();
                 event.stopPropagation();
                 deltaY += (event.touches[0].clientY - startY);
                 startY = event.touches[0].clientY;
@@ -715,7 +715,7 @@ function initializeHistory()
         {
             document.removeEventListener("touchmove", ontouchscroll);
         });
-    }, { passive: false, once: true });
+    }, { passive: false });
 }
 
 const history = new BPHistory();
@@ -723,7 +723,7 @@ createHeroTable();
 
 document.body.addEventListener("contextmenu", function (event)
 {
-    event.preventDefault();
+    if (event.cancelable) event.preventDefault();
     event.stopPropagation();
 });
 
