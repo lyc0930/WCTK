@@ -36,6 +36,9 @@ function PathesOf(piece)
         }
     }
 
+    // 删除起点
+    Pathes[startRow][startCol] = null;
+
     for (const cell of document.getElementsByClassName("cell"))
     {
         const row = cell.row;

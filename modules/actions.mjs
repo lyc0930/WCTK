@@ -64,7 +64,7 @@ function move(piece, cell, ifConsumeMovePoints = false, isDraw = false)
 // 移动一步
 function step(piece, cell, isDraw = false)
 {
-    if (piece && isPassable(cell, piece) && adjacentCells(cell, piece).includes(piece.parentElement))
+    if (piece && isPassable(cell, piece) && adjacentCells(piece.parentElement, piece).includes(cell))
     {
         if (isDraw)
         {
