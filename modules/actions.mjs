@@ -164,7 +164,7 @@ function leap(piece, cell)
 }
 
 // 任意拖动
-function slot(piece, cell, isDraw = false)
+function slot(piece, cell, isDraw = true)
 {
     const row = cell.row;
     const col = cell.col;
