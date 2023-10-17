@@ -1,4 +1,4 @@
-import { Pieces } from "../scripts/main.js";
+import { currentPlayer, setCurrentPlayer, currentPhase, setCurrentPhase } from "../scripts/main.js";
 import { distance, PathesOf, isPassable, isStayable, baseOf, enemyPiecesOf, piecesIn } from "./utils.mjs";
 import { highlightCells, highlightPieces, removeHighlight, isHighlighting } from "./highlight.mjs";
 import { move } from '../modules/actions.mjs';
@@ -12,6 +12,9 @@ function movePhase(piece)
     {
         return;
     }
+
+    setCurrentPlayer(piece);
+    setCurrentPhase("移动");
 
     // 基于体力值生成移动力
     piece.movePoints = piece.HP;
@@ -82,6 +85,7 @@ function movePhase_subphase(piece)
         {
             return;
         }
+        event.stopPropagation();
         removeHighlight("reachable", onclick);
 
         // 还有移动力
@@ -95,19 +99,6 @@ function movePhase_subphase(piece)
         }
     }
 
-    // 定义结束移动阶段函数
-    function endMovePhase(event)
-    {
-        if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable") && event.target != piece.parentElement)
-        {
-            if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
-            removeHighlight("reachable", onclick);
-            document.removeEventListener("contextmenu", endMovePhase);
-            document.removeEventListener("click", endMovePhase);
-        }
-    }
-
     // 高亮可到达的区域
     highlightCells(reachableCells, "reachable", onclick);
 
@@ -116,4 +107,28 @@ function movePhase_subphase(piece)
     document.addEventListener("click", endMovePhase);
 }
 
-export { movePhase };
+// 定义结束移动阶段函数
+function endMovePhase(event = null)
+{
+    if (event != null)
+    {
+        if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+            removeHighlight("reachable", onclick);
+            document.removeEventListener("contextmenu", endMovePhase);
+            document.removeEventListener("click", endMovePhase);
+            setCurrentPhase(null);
+        }
+    }
+    else
+    {
+        removeHighlight("reachable", onclick);
+        document.removeEventListener("contextmenu", endMovePhase);
+        document.removeEventListener("click", endMovePhase);
+        setCurrentPhase(null);
+    }
+}
+
+export { movePhase, endMovePhase };

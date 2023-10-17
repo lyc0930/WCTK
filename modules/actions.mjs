@@ -1,12 +1,13 @@
 import { HERO_DATA } from './data.mjs';
-import { adjacentCells, PathesOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls } from "./utils.mjs";
+import { adjacentCells, PathesOf, isPassable, isStayable, baseOf, enemyBaseOf, enemyPiecesOf, piecesIn, HPColor, drawArrow, drawTeleport, cls } from "./utils.mjs";
 import { highlightCells, removeHighlight } from "./highlight.mjs";
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
-import { Pieces } from "../scripts/main.js";
+import { Pieces, currentPlayer, currentPhase } from "../scripts/main.js";
 import { addContextMenu, removeContextMenu, hideContextMenu, showSkillPanel, } from './context-menu.mjs';
 import { movePhase } from './phases.mjs';
 import { xunShan } from './basics.mjs';
+import { chong_sha } from './skills.mjs';
 
 //移动
 function move(piece, cell, ifConsumeMovePoints = false, isDraw = false)
@@ -15,7 +16,7 @@ function move(piece, cell, ifConsumeMovePoints = false, isDraw = false)
     const col = cell.col;
     const Pathes = PathesOf(piece);
 
-    if (piece && cell.classList.contains("reachable") && Pathes[row][col] != null && isStayable(cell, piece))
+    if (piece && Pathes[row][col] != null && isStayable(cell, piece))
     {
         var steps = Pathes[row][col].length - 1;
 
@@ -61,21 +62,50 @@ function move(piece, cell, ifConsumeMovePoints = false, isDraw = false)
     return false;
 }
 
+// Step类
+class Step
+{
+    constructor(start, end)
+    {
+        this.start = start;
+        this.end = end;
+
+        const startRow = this.start.row;
+        const startCol = this.start.col;
+        const endRow = this.end.row;
+        const endCol = this.end.col;
+
+        if (startRow === endRow && startCol === endCol)
+        {
+            this.direction = null;
+        }
+        else if (startRow === endRow)
+        {
+            this.direction = startCol < endCol ? "+X" : "-X";
+        }
+        else if (startCol === endCol)
+        {
+            this.direction = startRow < endRow ? "+Y" : "-Y";
+        }
+        else
+        {
+            this.direction = null;
+        }
+    }
+}
+
 // 移动一步
 function step(piece, cell, isDraw = false)
 {
     if (piece && isPassable(cell, piece) && adjacentCells(piece.parentElement, piece).includes(cell))
     {
-        const startRow = piece.parentElement.row;
-        const startCol = piece.parentElement.col;
-        const row = cell.row;
-        const col = cell.col;
-        // 如果起终点确实相邻
-        if (Math.abs(startRow - row) + Math.abs(startCol - col) === 1)
+        const _step = new Step(piece.parentElement, cell);
+        // 有方向
+        if (_step.direction != null)
         {
             if (isDraw)
             {
-                drawArrow([[startRow, startCol], [row, col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+                drawArrow([[_step.start.row, _step.start.col], [_step.end.row, _step.end.col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
             }
         }
         else // 〖渡江〗
@@ -83,15 +113,28 @@ function step(piece, cell, isDraw = false)
             console.log(`${piece.name}使用【渡江】`);
             if (isDraw)
             {
-                drawTeleport([[startRow, startCol], [row, col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+                drawTeleport([[_step.start.row, _step.start.col], [_step.end.row, _step.end.col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
             }
         }
 
         cell.appendChild(piece);
         afterPositionChange(piece, cell);
-        return true;
+
+
+        // 〖冲杀〗
+        // 当你移动一步后，若你进入有敌方角色的区域；
+        var subject = piece;
+        for (const pieceInCell of piecesIn(cell))
+        {
+            if (enemyPiecesOf(piece).includes(pieceInCell) && (currentPhase == "移动" && piece.name === "张绣" && subject === piece))
+            {
+                chong_sha(piece, pieceInCell, _step.direction);
+            }
+        }
+
+        return _step;
     }
-    return false;
+    return null;
 }
 
 function move_fixed_steps(piece, isDraw = false)
@@ -148,19 +191,62 @@ function move_fixed_steps(piece, isDraw = false)
 }
 
 // 转移
-function leap(piece, cell)
+function leap(piece, cell, isDraw = false)
 {
     const row = cell.row;
     const col = cell.col;
     if (piece && cell.classList.contains("landable") && isStayable(cell, piece))
     {
         console.log(piece.name, `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) |> (${row + 1}, ${col + 1})`);
+        if (isDraw)
+        {
+            drawTeleport([[piece.parentElement.row, piece.parentElement.col], [row, col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+        }
         cell.appendChild(piece);
         afterPositionChange(piece, cell);
 
         return true;
     }
     return false;
+}
+
+function leap_to_cells(piece, cells, isDraw = false)
+{
+    // 定义点击高亮区域行为
+    function onclick(event)
+    {
+        const target = event.target;
+        if (target.classList.contains("cell"))
+        {
+            leap(piece, target, isDraw);
+        }
+        else if (target.classList.contains("piece") || target.classList.contains("flag"))
+        {
+            leap(piece, target.parentElement, isDraw);
+        }
+        else if (target.classList.contains("avatar"))
+        {
+            leap(piece, target.parentElement.parentElement, isDraw);
+        }
+        else
+        {
+            return;
+        }
+        removeHighlight("landable", onclick);
+
+        // 还有移动力
+        if (piece.moveSteps > 0)
+        {
+            move_fixed_steps(piece);
+        }
+        else
+        {
+            removeHighlight("landable", onclick);
+        }
+    }
+
+    // 高亮可到达的区域
+    highlightCells(cells, "landable", onclick);
 }
 
 // 任意拖动
@@ -397,4 +483,4 @@ function afterPositionChange(piece, cell)
     saveState();
 }
 
-export { move, step, leap, swap, slot, bury, move_fixed_steps };
+export { move, step, leap, swap, slot, bury, move_fixed_steps, leap_to_cells };

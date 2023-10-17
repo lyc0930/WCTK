@@ -12,12 +12,20 @@ import { xunShan } from '../modules/basics.mjs';
 
 export var Pieces = [];
 
-var draggingPiece = null; // 正在拖动的棋子
+export var draggingPiece = null; // 正在拖动的棋子
 
 var selectedPiece = null; // 选中的棋子
 
-var currentPlayer = null; // 当前回合玩家
+export var currentPlayer = null; // 当前回合玩家
+export function setCurrentPlayer (player) {
+    currentPlayer = player;
+}
 
+export var currentPhase = null; // 当前阶段
+export function setCurrentPhase(phase)
+{
+    currentPhase = phase;
+}
 
 function onMouseEnterPiece(event)
 {
@@ -143,10 +151,12 @@ function createPiece(color, name, index)
     piece.addEventListener("mousedown", function (event)
     {
         // 正在等待响应
-        if (isHighlighting() && draggingPiece != null)
+        if (isHighlighting() || draggingPiece != null)
         {
             return;
         }
+        if (event.cancelable) event.preventDefault();
+        event.stopPropagation();
 
         const rect = piece.getBoundingClientRect();
 
@@ -220,10 +230,11 @@ function createPiece(color, name, index)
         }
 
         // 正在等待响应
-        if (isHighlighting())
+        if (isHighlighting() || draggingPiece != null)
         {
             return;
         }
+
         event.stopPropagation();
 
         piece.old_style = piece.style;
@@ -308,7 +319,7 @@ function createPiece(color, name, index)
     function onClickPiece(event)
     {
         // 正在等待响应
-        if (isHighlighting())
+        if (isHighlighting() || draggingPiece != null)
         {
             return;
         }

@@ -1,4 +1,5 @@
 import { HERO_DATA, weapons, armors, horses } from './data.mjs';
+import { currentPlayer, currentPhase } from "../scripts/main.js";
 
 // 计算距离
 function distance(P, Q)
@@ -38,6 +39,25 @@ function PathesOf(piece)
     while (queue.length)
     {
         const currentCell = queue.shift();
+
+        // 〖冲杀〗
+        // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域（并Stop）；
+        var subject = piece;
+        var chong_sha = (currentPhase == "移动" && piece.name === "张绣" && subject === piece);
+        var chong_sha_stop = false;
+        for (const pieceInCell of piecesIn(currentCell))
+        {
+            if (enemyPiecesOf(piece).includes(pieceInCell) && chong_sha)
+            {
+                chong_sha_stop = true;
+                break;
+            }
+        }
+        if (chong_sha_stop)
+        {
+            continue;
+        }
+
         const row = currentCell.row;
         const col = currentCell.col;
         for (const cell of adjacentCells(currentCell, piece))
@@ -114,17 +134,21 @@ function isStayable(cell, piece = null)
     {
         return true;
     }
-    if (cell === piece.parentElement)
-    {
-        return true;
-    }
-    if (piecesIn(cell).length > 0)
+    else if (cell.classList.contains("ridge"))
     {
         return false;
     }
-    if (cell.classList.contains("ridge"))
+    // 〖冲杀〗
+    // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域
+    var subject = piece;
+    var chong_sha = (currentPhase == "移动" && piece.name === "张绣" && subject === piece);
+
+    for (const pieceInCell of piecesIn(cell))
     {
-        return false;
+        if (pieceInCell !== piece && !(enemyPiecesOf(piece).includes(pieceInCell) && chong_sha))
+        {
+            return false;
+        }
     }
     return true;
 }
@@ -219,7 +243,6 @@ function adjacentCells(cell, piece = null)
     }
 
     // 〖渡江〗
-    const currentPlayer = piece;
     if (piece === currentPlayer && piece.name === "吕蒙" && cell.classList.contains("lake"))
     {
         for (const lakeCell of document.getElementsByClassName("lake"))
@@ -232,6 +255,31 @@ function adjacentCells(cell, piece = null)
     }
 
     return adjCells;
+}
+
+
+// 距离最近的可进入区域
+function nearestCellOf(piece)
+{
+    var nearestCells = [];
+    var minDistance = 100;
+    for (const cell of document.getElementsByClassName("cell"))
+    {
+        if (isStayable(cell, piece))
+        {
+            const d = distance(piece, cell);
+            if (d < minDistance)
+            {
+                minDistance = d;
+                nearestCells = [cell];
+            }
+            else if (d === minDistance)
+            {
+                nearestCells.push(cell);
+            }
+        }
+    }
+    return nearestCells;
 }
 
 // 所有棋子
@@ -503,4 +551,4 @@ function cls(delay = 0)
     }
 }
 
-export { distance, PathesOf, isStayable, isPassable, adjacentCells, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls};
+export { distance, PathesOf, isStayable, isPassable, adjacentCells, nearestCellOf, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls};

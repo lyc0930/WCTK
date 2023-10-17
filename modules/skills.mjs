@@ -1,7 +1,9 @@
 import { Pieces } from "../scripts/main.js";
 import { armors, horses } from "./data.mjs";
 import { saveState } from "./history.mjs";
-import { distance, allyPiecesOf } from "./utils.mjs";
+import { move, leap_to_cells } from "./actions.mjs";
+import { distance, allyPiecesOf, adjacentCells, nearestCellOf } from "./utils.mjs";
+import { endMovePhase } from "./phases.mjs";
 
 function zhan_ji(piece, _index = null)
 {
@@ -100,6 +102,37 @@ function yong_quan(piece)
     }
 }
 
-export { zhan_ji, zhan_ji_undo, yong_quan };
+// 〖冲杀〗
+function chong_sha(piece, object, direction)
+{
+    console.log(`张绣发动〖冲杀〗`);
+    const cell = object.parentElement;
+    const row = cell.row;
+    const col = cell.col;
+    const cells = document.getElementsByClassName("cell");
+    const Direction = {
+        "-X": [0, -1],
+        "+X": [0, +1],
+        "-Y": [-1, 0],
+        "+Y": [+1, 0],
+    }
+    const targetCell = cells[(row + Direction[direction][0]) * 7 + (col + Direction[direction][1])];
+    // 若该角色可以执行步数为1且方向与你相同的移动，你控制其执行之；
+    if (adjacentCells(cell, object).includes(targetCell))
+    {
+        object.moveSteps = 1;
+        move(object, targetCell, false, true);
+    }
+    // 若该角色不可以执行步数为1且方向与你相同的移动且其可以转移，你控制其转移至与其距离最近的可进入区域，
+    else
+    {
+        endMovePhase(); // 先结束移动阶段
+        const nearestCells = nearestCellOf(object);
+        leap_to_cells(object, nearestCells, false);
+        // 然后你对该角色造成1点普通伤害
+    }
+}
+
+export { zhan_ji, zhan_ji_undo, yong_quan, chong_sha };
 
 
