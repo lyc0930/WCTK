@@ -333,16 +333,10 @@ function createHeroCandidate(name, index)
     addContextMenu(piece, {
         "查看技能": function (event)
         {
-            if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
-            hideContextMenu();
             showSkillPanel(piece);
         },
         "更换武将": function (event)
         {
-            if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
-            hideContextMenu();
             showHeroTable(piece);
         },
         "选择": function () { pick(piece); }
@@ -540,16 +534,10 @@ function recoverBPStatefrom(state)
                 addContextMenu(piece, {
                     "查看技能": function (event)
                     {
-                        if (event.cancelable) event.preventDefault();
-                        event.stopPropagation();
-                        hideContextMenu();
                         showSkillPanel(piece);
                     },
                     "更换武将": function (event)
                     {
-                        if (event.cancelable) event.preventDefault();
-                        event.stopPropagation();
-                        hideContextMenu();
                         showHeroTable(piece);
                     },
                     "选择": function () { pick(piece); }
@@ -562,16 +550,10 @@ function recoverBPStatefrom(state)
                 addContextMenu(piece, {
                     "查看技能": function (event)
                     {
-                        if (event.cancelable) event.preventDefault();
-                        event.stopPropagation();
-                        hideContextMenu();
                         showSkillPanel(piece);
                     },
                     "更换武将": function (event)
                     {
-                        if (event.cancelable) event.preventDefault();
-                        event.stopPropagation();
-                        hideContextMenu();
                         showHeroTable(piece);
                     },
                     "选择": function () { pick(piece); }
