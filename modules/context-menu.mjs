@@ -1,6 +1,5 @@
 import { HERO_DATA } from './data.mjs';
 import { isHighlighting } from './highlight.mjs';
-import { draggingPiece } from '../scripts/main.js';
 
 const MENU_LOGO = {
     "更换武将": "fa-users",
@@ -75,7 +74,7 @@ function addContextMenu(element, items = {})
             }
 
             // 正在等待响应
-            if (isHighlighting() || draggingPiece != null)
+            if (isHighlighting())
             {
                 return;
             }
@@ -206,7 +205,7 @@ function addSkillPanel(piece)
             }
 
             // 正在等待响应
-            if (isHighlighting() || draggingPiece != null)
+            if (isHighlighting())
             {
                 return;
             }
