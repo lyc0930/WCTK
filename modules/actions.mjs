@@ -8,8 +8,6 @@ import { addContextMenu, removeContextMenu, hideContextMenu, showSkillPanel, } f
 import { movePhase } from './phases.mjs';
 import { xunShan } from './basics.mjs';
 
-const movingPieces = [];
-
 //移动
 function move(piece, cell, ifConsumeMovePoints = false, isDraw = false)
 {
@@ -94,9 +92,6 @@ function step(piece, cell, isDraw = false)
 
 function move_fixed_steps(piece, isDraw = false)
 {
-    // 棋子压栈
-    movingPieces.push(piece);
-
     // 计算可到达的区域
     const Pathes = PathesOf(piece);
     const reachableCells = [];
@@ -132,7 +127,6 @@ function move_fixed_steps(piece, isDraw = false)
             return;
         }
         removeHighlight("reachable", onclick);
-        movingPieces.pop();
 
         // 还有移动力
         if (piece.moveSteps > 0)
@@ -142,7 +136,6 @@ function move_fixed_steps(piece, isDraw = false)
         else
         {
             removeHighlight("reachable", onclick);
-            movingPieces.pop();
         }
     }
 

@@ -1,24 +1,33 @@
 import { Pieces } from "../scripts/main.js";
 import { adjacentCells, PathesOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn } from "./utils.mjs";
-import { highlightCells, highlightPieces, removeHighlight } from "./highlight.mjs";
+import { highlightCells, highlightPieces, removeHighlight, isHighlighting } from "./highlight.mjs";
 import { move } from '../modules/actions.mjs';
-
-const movingPieces = [];
 
 // 移动阶段
 function movePhase(piece)
 {
+    // 正在等待响应
+    if (isHighlighting())
+    {
+        return;
+    }
+
     // 基于体力值生成移动力
-    piece.movePoints = piece.HP;
+    // 〖奔命〗
+    if (piece.name === "孙乾")
+    {
+        piece.movePoints = 4;
+    }
+    else
+    {
+        piece.movePoints = piece.HP;
+    }
 
     movePhase_subphase(piece);
 }
 
 function movePhase_subphase(piece)
 {
-    // 棋子压栈
-    movingPieces.push(piece);
-
     // 计算可到达的区域
     const Pathes = PathesOf(piece);
     const reachableCells = [];
@@ -54,7 +63,6 @@ function movePhase_subphase(piece)
             return;
         }
         removeHighlight("reachable", onclick);
-        movingPieces.pop();
 
         // 还有移动力
         if (piece.movePoints > 0)
@@ -73,7 +81,6 @@ function movePhase_subphase(piece)
         event.preventDefault();
         removeHighlight("reachable", onclick);
         document.removeEventListener("contextmenu", endMovePhase);
-        movingPieces.pop();
     }
 
     // 高亮可到达的区域

@@ -50,4 +50,23 @@ function removeHighlight(className, listener = null)
     }
 }
 
-export { highlightCells, highlightPieces, removeHighlight };
+function isHighlighting(className = null)
+{
+    if (className != null)
+    {
+        return document.getElementsByClassName(className).length > 0;
+    }
+    else
+    {
+        const highlights = ["reachable", "landable", "targetable"];
+        for (const highlight of highlights)
+        {
+            if (document.getElementsByClassName(highlight).length > 0)
+            {
+                return true;
+            }
+        }
+    }
+}
+
+export { highlightCells, highlightPieces, removeHighlight, isHighlighting };

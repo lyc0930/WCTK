@@ -1,6 +1,6 @@
 import { slot, bury } from '../modules/actions.mjs';
 import { terrain, HERO_DATA, weapons, armors, horses } from '../modules/data.mjs';
-import { highlightCells, highlightPieces, removeHighlight } from '../modules/highlight.mjs';
+import { highlightCells, highlightPieces, removeHighlight, isHighlighting } from '../modules/highlight.mjs';
 import { stateHistory, saveState, recoverStatefrom } from '../modules/history.mjs';
 import { generateFlags, setCarrier } from '../modules/flags.mjs';
 import { HPColor, cls } from '../modules/utils.mjs';
@@ -12,37 +12,10 @@ import { xunShan } from '../modules/basics.mjs';
 
 export var Pieces = [];
 
-var draggingPiece = null; // 正在拖动的棋子
-
-var leapingPiece = null; // 正在转移的棋子
-
-var movingPiece = null; // 正在移动的棋子
-
 var selectedPiece = null; // 选中的棋子
 
 var currentPlayer = null; // 当前回合玩家
 
-
-// 棋子点击事件
-function clickPiece(event)
-{
-    event.preventDefault();
-
-    if (selectedPiece == null)
-    {
-        selectedPiece = this;
-        this.classList.add("selected");
-    }
-    else
-    {
-        if (document.getElementsByClassName("reachable").length <= 0 && document.getElementsByClassName("landable").length <= 0 && document.getElementsByClassName("targetable").length <= 0)
-        {
-            selectedPiece = null;
-            this.classList.remove("selected");
-        }
-
-    }
-}
 
 function onMouseEnterPiece(event)
 {
@@ -167,6 +140,12 @@ function createPiece(color, name, index)
     // 添加鼠标事件
     piece.addEventListener("mousedown", function (event)
     {
+        // 正在等待响应
+        if (isHighlighting())
+        {
+            return;
+        }
+
         const rect = piece.getBoundingClientRect();
 
         const shiftX = event.clientX - (rect.left + 0.5 * rect.width);
@@ -176,7 +155,9 @@ function createPiece(color, name, index)
         phantomPiece.className = "phantom piece";
         phantomPiece.id = "phantomPiece";
 
-        function onMouseDragPiece(event)
+        var draggingPiece = null;
+
+        function onmousemove(event)
         {
             if (draggingPiece === null)
             {
@@ -193,12 +174,10 @@ function createPiece(color, name, index)
             nearestCell.appendChild(phantomPiece);
         }
 
-        document.addEventListener('mousemove', onMouseDragPiece);
-
         function onmouseup(event)
         {
             // event.stopPropagation();
-            document.removeEventListener('mousemove', onMouseDragPiece);
+            document.removeEventListener('mousemove', onmousemove);
 
             phantomPiece.remove();
 
@@ -226,6 +205,8 @@ function createPiece(color, name, index)
             }
         }
 
+        document.addEventListener('mousemove', onmousemove);
+
         piece.addEventListener('mouseup', onmouseup);
     });
 
@@ -233,6 +214,12 @@ function createPiece(color, name, index)
     piece.addEventListener("touchstart", function (event)
     {
         if (event.touches.length > 1)
+        {
+            return;
+        }
+
+        // 正在等待响应
+        if (isHighlighting())
         {
             return;
         }
@@ -254,7 +241,9 @@ function createPiece(color, name, index)
         phantomPiece.className = "phantom piece";
         phantomPiece.id = "phantomPiece";
 
-        function onTouchDragPiece(event)
+        var draggingPiece = null;
+
+        function ontouchmove(event)
         {
             event.preventDefault();
             if (event.touches.length > 1)
@@ -275,8 +264,6 @@ function createPiece(color, name, index)
             nearestCell.appendChild(phantomPiece);
         }
 
-        piece.addEventListener('touchmove', onTouchDragPiece);
-
         function ontouchend(event)
         {
             if (event.changedTouches.length > 1)
@@ -284,7 +271,7 @@ function createPiece(color, name, index)
                 return;
             }
             // event.stopPropagation();
-            piece.removeEventListener('touchmove', onTouchDragPiece);
+            piece.removeEventListener('touchmove', ontouchmove);
 
             phantomPiece.remove();
 
@@ -313,9 +300,38 @@ function createPiece(color, name, index)
             }
         }
 
+        piece.addEventListener('touchmove', ontouchmove);
+
         piece.addEventListener('touchend', ontouchend);
     });
-    piece.addEventListener("click", clickPiece);
+
+    function onClickPiece(event)
+    {
+        // 正在等待响应
+        if (isHighlighting())
+        {
+            return;
+        }
+
+        // event.preventDefault();
+
+        if (selectedPiece == null)
+        {
+            selectedPiece = this;
+            this.classList.add("selected");
+        }
+        else
+        {
+            if (document.getElementsByClassName("reachable").length <= 0 && document.getElementsByClassName("landable").length <= 0 && document.getElementsByClassName("targetable").length <= 0)
+            {
+                selectedPiece = null;
+                this.classList.remove("selected");
+            }
+
+        }
+    }
+
+    piece.addEventListener("click", onClickPiece);
     piece.addEventListener("mouseenter", onMouseEnterPiece);
     piece.addEventListener("mouseleave", onMouseLeavePiece);
 
