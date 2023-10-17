@@ -91,15 +91,19 @@ function zhan_ji_undo(piece)
 // 〖拥权〗
 function yong_quan(piece)
 {
-    var limit = 1;
-    // 若距离<1>范围内有其它己方角色
-    for (const allyPiece of allyPiecesOf(piece))
+    if (piece.name == "董卓")
     {
-        if (piece != allyPiece && distance(piece, allyPiece) <= limit)
+        var limit = 1;
+        // 若距离<1>范围内有其它己方角色
+        for (const allyPiece of allyPiecesOf(piece))
         {
-            return true;
+            if (piece != allyPiece && distance(piece, allyPiece) <= limit)
+            {
+                return true;
+            }
         }
     }
+    return false;
 }
 
 // 〖冲杀〗

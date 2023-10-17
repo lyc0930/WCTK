@@ -1,5 +1,6 @@
 import { HERO_DATA, weapons, armors, horses } from './data.mjs';
 import { currentPlayer, currentPhase } from "../scripts/main.js";
+import { yong_quan } from "./skills.mjs";
 
 // 计算距离
 function distance(P, Q)
@@ -145,7 +146,7 @@ function isStayable(cell, piece = null)
 
     for (const pieceInCell of piecesIn(cell))
     {
-        if (pieceInCell !== piece && !(enemyPiecesOf(piece).includes(pieceInCell) && chong_sha))
+        if (pieceInCell !== piece && !(enemyPiecesOf(piece).includes(pieceInCell) && chong_sha && !yong_quan(pieceInCell)))
         {
             return false;
         }
@@ -156,7 +157,6 @@ function isStayable(cell, piece = null)
 // 可穿越
 function isPassable(cell, piece = null)
 {
-    // TODO: 张绣
     // 如果可以停留必然可以穿越
     if (isStayable(cell, piece))
     {
