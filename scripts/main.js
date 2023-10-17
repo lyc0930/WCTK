@@ -4,7 +4,7 @@ import { highlightCells, highlightPieces, removeHighlight, isHighlighting } from
 import { stateHistory, saveState, recoverStatefrom } from '../modules/history.mjs';
 import { generateFlags, setCarrier } from '../modules/flags.mjs';
 import { HPColor, cls } from '../modules/utils.mjs';
-import { skill_zhanji, skill_zhanji_undo } from '../modules/skills.mjs';
+import { zhan_ji, zhan_ji_undo } from '../modules/skills.mjs';
 import { addContextMenu, removeContextMenu, hideContextMenu, showSkillPanel, } from '../modules/context-menu.mjs';
 import { movePhase } from '../modules/phases.mjs';
 import { xunShan } from '../modules/basics.mjs';
@@ -134,7 +134,7 @@ function createPiece(color, name, index)
     // 〖展骥〗
     if (name == "庞统")
     {
-        skill_zhanji(piece, index);
+        zhan_ji(piece, index);
     }
 
     // 添加鼠标事件
@@ -481,11 +481,11 @@ function initializeGame()
             // 〖展骥〗
             if (piece.name == "庞统")
             {
-                skill_zhanji(piece);
+                zhan_ji(piece);
             }
             else
             {
-                skill_zhanji_undo(piece);
+                zhan_ji_undo(piece);
             }
             saveState();
         });

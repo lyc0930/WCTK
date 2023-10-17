@@ -2,7 +2,7 @@ import { Pieces } from "../scripts/main.js";
 import { armors, horses } from "./data.mjs";
 import { saveState } from "./history.mjs";
 
-function skill_zhanji(piece, _index = null)
+function zhan_ji(piece, _index = null)
 {
     const index = _index === null ? Pieces.indexOf(piece) + 1 : _index;
 
@@ -60,7 +60,7 @@ function skill_zhanji(piece, _index = null)
     horseSelect_zhanji.style.width = "32.5%";
 }
 
-function skill_zhanji_undo(piece)
+function zhan_ji_undo(piece)
 {
     const index = Pieces.indexOf(piece) + 1;
 
@@ -85,6 +85,6 @@ function skill_zhanji_undo(piece)
     horseSelect.style.width = "65%";
 }
 
-export { skill_zhanji, skill_zhanji_undo };
+export { zhan_ji, zhan_ji_undo };
 
 
