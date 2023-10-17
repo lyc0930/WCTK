@@ -1,6 +1,7 @@
 import { Pieces } from "../scripts/main.js";
 import { armors, horses } from "./data.mjs";
 import { saveState } from "./history.mjs";
+import { distance, allyPiecesOf } from "./utils.mjs";
 
 function zhan_ji(piece, _index = null)
 {
@@ -85,6 +86,20 @@ function zhan_ji_undo(piece)
     horseSelect.style.width = "65%";
 }
 
-export { zhan_ji, zhan_ji_undo };
+// 〖拥权〗
+function yong_quan(piece)
+{
+    var limit = 1;
+    // 若距离<1>范围内有其它己方角色
+    for (const allyPiece of allyPiecesOf(piece))
+    {
+        if (piece != allyPiece && distance(piece, allyPiece) <= limit)
+        {
+            return true;
+        }
+    }
+}
+
+export { zhan_ji, zhan_ji_undo, yong_quan };
 
 

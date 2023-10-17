@@ -2,6 +2,7 @@ import { Pieces } from "../scripts/main.js";
 import { distance, PathesOf, isPassable, isStayable, baseOf, enemyPiecesOf, piecesIn } from "./utils.mjs";
 import { highlightCells, highlightPieces, removeHighlight, isHighlighting } from "./highlight.mjs";
 import { move } from '../modules/actions.mjs';
+import { yong_quan } from "../modules/skills.mjs";
 
 // 移动阶段
 function movePhase(piece)
@@ -22,8 +23,7 @@ function movePhase(piece)
     {
         if (enemyPiece.name === "王异")
         {
-            console.log(distance(piece, enemyPiece));
-            if (distance(piece, enemyPiece) <= limit)
+            if (distance(piece, enemyPiece) <= limit && !yong_quan(piece))
             {
                 console.log("王异发动【拒敌】");
                 ju_di = true;
@@ -31,7 +31,6 @@ function movePhase(piece)
             break;
         }
     }
-
     if (ju_di)
     {
         piece.movePoints -= 1;
