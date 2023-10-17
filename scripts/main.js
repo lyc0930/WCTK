@@ -857,9 +857,6 @@ function initializeGame()
             return;
         }
 
-        event.preventDefault();
-        event.stopPropagation();
-
         var direction = null;
         // 没到顶且没到底
         if (window.scrollY <= 0)
