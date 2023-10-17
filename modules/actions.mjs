@@ -156,6 +156,7 @@ function move_fixed_steps(piece, isDraw = false)
     // 定义点击高亮区域行为
     function onclick(event)
     {
+        event.stopPropagation();
         const target = event.target;
         if (target.classList.contains("cell"))
         {
@@ -215,6 +216,7 @@ function leap_to_cells(piece, cells, isDraw = false)
     // 定义点击高亮区域行为
     function onclick(event)
     {
+        event.stopPropagation();
         const target = event.target;
         if (target.classList.contains("cell"))
         {

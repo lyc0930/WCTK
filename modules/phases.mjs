@@ -4,6 +4,8 @@ import { highlightCells, highlightPieces, removeHighlight, isHighlighting } from
 import { move } from '../modules/actions.mjs';
 import { yong_quan } from "../modules/skills.mjs";
 
+var movingPiece = null;
+
 // 移动阶段
 function movePhase(piece)
 {
@@ -15,6 +17,8 @@ function movePhase(piece)
 
     setCurrentPlayer(piece);
     setCurrentPhase("移动");
+
+    movingPiece = piece;
 
     // 基于体力值生成移动力
     piece.movePoints = piece.HP;
@@ -49,6 +53,40 @@ function movePhase(piece)
     movePhase_subphase(piece);
 }
 
+// 定义点击高亮区域行为
+function onclick(event)
+{
+    event.stopPropagation();
+    const target = event.target;
+    if (target.classList.contains("cell"))
+    {
+        move(movingPiece, target, true, true);
+    }
+    else if (target.classList.contains("piece") || target.classList.contains("flag"))
+    {
+        move(movingPiece, target.parentElement, true, true);
+    }
+    else if (target.classList.contains("avatar"))
+    {
+        move(movingPiece, target.parentElement.parentElement, true, true);
+    }
+    else
+    {
+        return;
+    }
+    removeHighlight("reachable", onclick);
+
+    // 还有移动力
+    if (movingPiece && movingPiece.movePoints > 0)
+    {
+        movePhase_subphase(movingPiece);
+    }
+    else
+    {
+        endMovePhase(event);
+    }
+}
+
 function movePhase_subphase(piece)
 {
     // 计算可到达的区域
@@ -65,40 +103,6 @@ function movePhase_subphase(piece)
         }
     }
 
-    // 定义点击高亮区域行为
-    function onclick(event)
-    {
-        const target = event.target;
-        if (target.classList.contains("cell"))
-        {
-            move(piece, target, true, true);
-        }
-        else if (target.classList.contains("piece") || target.classList.contains("flag"))
-        {
-            move(piece, target.parentElement, true, true);
-        }
-        else if (target.classList.contains("avatar"))
-        {
-            move(piece, target.parentElement.parentElement, true, true);
-        }
-        else
-        {
-            return;
-        }
-        event.stopPropagation();
-        removeHighlight("reachable", onclick);
-
-        // 还有移动力
-        if (piece.movePoints > 0)
-        {
-            movePhase_subphase(piece);
-        }
-        else
-        {
-            endMovePhase(event);
-        }
-    }
-
     // 高亮可到达的区域
     highlightCells(reachableCells, "reachable", onclick);
 
@@ -110,6 +114,7 @@ function movePhase_subphase(piece)
 // 定义结束移动阶段函数
 function endMovePhase(event = null)
 {
+    movingPiece = null;
     if (event != null)
     {
         if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
