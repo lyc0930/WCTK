@@ -1,5 +1,5 @@
 import { Pieces } from "../scripts/main.js";
-import { adjacentCells, PathesOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn } from "./utils.mjs";
+import { distance, PathesOf, isPassable, isStayable, baseOf, enemyPiecesOf, piecesIn } from "./utils.mjs";
 import { highlightCells, highlightPieces, removeHighlight, isHighlighting } from "./highlight.mjs";
 import { move } from '../modules/actions.mjs';
 
@@ -13,14 +13,35 @@ function movePhase(piece)
     }
 
     // 基于体力值生成移动力
+    piece.movePoints = piece.HP;
+
+    // 〖拒敌〗
+    var ju_di = false;
+    var limit = 4;
+    for (const enemyPiece of enemyPiecesOf(piece))
+    {
+        if (enemyPiece.name === "王异")
+        {
+            console.log(distance(piece, enemyPiece));
+            if (distance(piece, enemyPiece) <= limit)
+            {
+                console.log("王异发动【拒敌】");
+                ju_di = true;
+            }
+            break;
+        }
+    }
+
+    if (ju_di)
+    {
+        piece.movePoints -= 1;
+    }
+
     // 〖奔命〗
     if (piece.name === "孙乾")
     {
+        console.log("孙乾发动【奔命】");
         piece.movePoints = 4;
-    }
-    else
-    {
-        piece.movePoints = piece.HP;
     }
 
     movePhase_subphase(piece);

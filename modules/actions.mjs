@@ -66,18 +66,22 @@ function step(piece, cell, isDraw = false)
 {
     if (piece && isPassable(cell, piece) && adjacentCells(piece.parentElement, piece).includes(cell))
     {
-        if (isDraw)
+        const startRow = piece.parentElement.row;
+        const startCol = piece.parentElement.col;
+        const row = cell.row;
+        const col = cell.col;
+        // 如果起终点确实相邻
+        if (Math.abs(startRow - row) + Math.abs(startCol - col) === 1)
         {
-            const startRow = piece.parentElement.row;
-            const startCol = piece.parentElement.col;
-            const row = cell.row;
-            const col = cell.col;
-            // 如果起终点确实相邻
-            if (Math.abs(startRow - row) + Math.abs(startCol - col) === 1)
+            if (isDraw)
             {
                 drawArrow([[startRow, startCol], [row, col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
             }
-            else // 〖渡江〗
+        }
+        else // 〖渡江〗
+        {
+            console.log(`${piece.name}使用【渡江】`);
+            if (isDraw)
             {
                 drawTeleport([[startRow, startCol], [row, col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
             }

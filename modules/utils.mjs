@@ -1,5 +1,21 @@
 import { HERO_DATA, weapons, armors, horses } from './data.mjs';
 
+// 计算距离
+function distance(P, Q)
+{
+    var cellP = P;
+    var cellQ = Q;
+    if (P.classList.contains("piece"))
+    {
+        cellP = P.parentElement;
+    }
+    if (Q.classList.contains("piece"))
+    {
+        cellQ = Q.parentElement;
+    }
+    return Math.abs(cellP.row - cellQ.row) + Math.abs(cellP.col - cellQ.col);
+}
+
 // 计算路径
 function PathesOf(piece)
 {
@@ -484,4 +500,4 @@ function cls(delay = 0)
     }
 }
 
-export { PathesOf, isStayable, isPassable, adjacentCells, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls};
+export { distance, PathesOf, isStayable, isPassable, adjacentCells, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls};
