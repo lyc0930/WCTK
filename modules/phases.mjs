@@ -1,5 +1,5 @@
 import { currentPlayer, setCurrentPlayer, currentPhase, setCurrentPhase } from "../scripts/main.js";
-import { distance, PathesOf, isPassable, isStayable, baseOf, allPiecesOf, enemyPiecesOf, cls } from "./utils.mjs";
+import { distance, PathesOf, adjacentCells, isPassable, isStayable, baseOf, allPiecesOf, enemyPiecesOf, cls } from "./utils.mjs";
 import { highlightCells, highlightPieces, removeHighlight, isHighlighting } from "./highlight.mjs";
 import { move, step } from '../modules/actions.mjs';
 import { yong_quan, you_bing } from "../modules/skills.mjs";
@@ -230,18 +230,7 @@ function movePhase_you_bing(piece)
 function movePhase_subphase_you_bing(piece, object)
 {
     // 计算可到达的区域
-    const Pathes = PathesOf(piece);
-    const reachableCells = [];
-
-    for (const cell of document.getElementsByClassName("cell"))
-    {
-        const row = cell.row;
-        const col = cell.col;
-        if (Pathes[row][col] && (Pathes[row][col].length - 1 <= 1))
-        {
-            reachableCells.push(cell);
-        }
-    }
+    const reachableCells = adjacentCells(piece.parentElement, piece)
 
     // 定义点击高亮区域行为
     function onclick_you_bing(event)
@@ -263,7 +252,7 @@ function movePhase_subphase_you_bing(piece, object)
         }
 
         movingPiece.movePoints -= 1;
-        const s = step(movingPiece, target, true, true);
+        const s = step(movingPiece, target, true);
 
         you_bing(piece, object, s.direction);
 
@@ -283,6 +272,11 @@ function movePhase_subphase_you_bing(piece, object)
     // 定义结束移动阶段函数
     function endMovePhase_you_bing(event)
     {
+        if (movingPiece &&　movingPiece.movePoints > 0 && !isStayable(movingPiece.parentElement, movingPiece))
+        {
+            return;
+        }
+
         movingPiece = null;
         if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
         {
@@ -290,8 +284,8 @@ function movePhase_subphase_you_bing(piece, object)
             event.stopPropagation();
             removeHighlight("reachable", onclick);
             cls(1000);
-            document.removeEventListener("contextmenu", endMovePhase);
-            document.removeEventListener("click", endMovePhase);
+            document.removeEventListener("contextmenu", endMovePhase_you_bing);
+            document.removeEventListener("click", endMovePhase_you_bing);
             setCurrentPhase(null);
         }
     }
