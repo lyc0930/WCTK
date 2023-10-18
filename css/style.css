@@ -8,6 +8,11 @@
 @import "./context-menu.css";
 @import "./history.css";
 
+html,
+body {
+    overscroll-behavior: none;
+}
+
 body {
     display: flex;
     justify-content: space-around;

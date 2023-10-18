@@ -4,6 +4,11 @@
 @import "./text.css";
 @import "./history.css";
 
+html,
+body {
+    overscroll-behavior: none;
+}
+
 body {
     display: flex;
     flex-wrap: wrap;

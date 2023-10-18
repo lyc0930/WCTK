@@ -31,10 +31,11 @@ class StateHistory
             const historyTooltip = document.getElementById("history-tooltip");
             const icon = historyTooltip.querySelector("i");
             const label = historyTooltip.querySelector("label");
+            label.style.display = "block";
 
-            if (historyTooltip.style.visibility == "visible" && historyTooltip.style.opacity == "1" && icon.className == "fas fa-rotate-left")
+            var number = parseInt(label.textContent.slice(2, -1));
+            if (historyTooltip.style.visibility == "visible" && historyTooltip.style.opacity == "1" && icon.className == "fas fa-rotate-left" && !isNaN(number))
             {
-                var number = parseInt(label.textContent.slice(2, -1));
                 number++;
                 label.textContent = `后退${number}步`;
             }
@@ -46,11 +47,15 @@ class StateHistory
 
             historyTooltip.style.visibility = "visible";
             historyTooltip.style.opacity = "1";
+            historyTooltip.style.top = "50%";
+            historyTooltip.style.transform = "translate(-50%, -50%)";
 
             clearTimeout(this.tooltipTimeoutId);
 
             this.tooltipTimeoutId = setTimeout(() =>
             {
+                label.style.display = "none";
+                label.textContent = "";
                 historyTooltip.style.visibility = "hidden";
                 historyTooltip.style.opacity = "0";
             }, 2000);
@@ -70,10 +75,11 @@ class StateHistory
             const historyTooltip = document.getElementById("history-tooltip");
             const icon = historyTooltip.querySelector("i");
             const label = historyTooltip.querySelector("label");
+            label.style.display = "block";
 
-            if (historyTooltip.style.visibility == "visible" && historyTooltip.style.opacity == "1" && icon.className == "fas fa-rotate-right")
+            var number = parseInt(label.textContent.slice(2, -1));
+            if (historyTooltip.style.visibility == "visible" && historyTooltip.style.opacity == "1" && icon.className == "fas fa-rotate-right" && !isNaN(number))
             {
-                var number = parseInt(label.textContent.slice(2, -1));
                 number++;
                 label.textContent = `重做${number}步`;
             }
@@ -85,10 +91,15 @@ class StateHistory
 
             historyTooltip.style.visibility = "visible";
             historyTooltip.style.opacity = "1";
+            historyTooltip.style.top = "50%";
+            historyTooltip.style.transform = "translate(-50%, -50%)";
+
             clearTimeout(this.tooltipTimeoutId);
 
             this.tooltipTimeoutId = setTimeout(() =>
             {
+                label.style.display = "none";
+                label.textContent = "";
                 historyTooltip.style.visibility = "hidden";
                 historyTooltip.style.opacity = "0";
             }, 2000);

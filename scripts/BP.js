@@ -449,6 +449,8 @@ class BPHistory
             {
                 historyTooltip.style.visibility = "hidden";
                 historyTooltip.style.opacity = "0";
+                historyTooltip.style.top = "50%";
+                historyTooltip.style.left = "50%";
             }, 2000);
 
             return this.history[this.currentIndex];
@@ -488,6 +490,8 @@ class BPHistory
             {
                 historyTooltip.style.visibility = "hidden";
                 historyTooltip.style.opacity = "0";
+                historyTooltip.style.top = "50%";
+                historyTooltip.style.left = "50%";
             }, 2000);
 
             return this.history[this.currentIndex];

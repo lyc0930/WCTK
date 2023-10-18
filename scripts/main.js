@@ -826,6 +826,10 @@ function initializeGame()
         }
 
         var direction = null;
+
+        const historyTooltip = document.getElementById("history-tooltip");
+        const icon = historyTooltip.querySelector("i");
+
         // 没到顶且没到底
         if (window.scrollY <= 0)
         {
@@ -840,8 +844,26 @@ function initializeGame()
             return;
         }
 
+        historyTooltip.style.visibility = "visible";
+        historyTooltip.style.opacity = "1";
+
+        if (direction == "up")
+        {
+            historyTooltip.style.top = "0";
+            historyTooltip.style.transform = "translate(-50%, -100%)";
+            icon.className = "fas fa-rotate-left";
+        }
+        else
+        {
+            historyTooltip.style.top = `${document.body.scrollHeight}px`;
+            historyTooltip.style.transform = "translate(-50%, 0)";
+            icon.className = "fas fa-rotate-right";
+        }
+
+
         var startY = event.touches[0].clientY;
         var deltaY = 0;
+        var deltaY_sum = 0;
         const threshold = 100;
 
         function ontouchscroll(event)
@@ -852,6 +874,7 @@ function initializeGame()
                 if (event.cancelable) event.preventDefault();
                 event.stopPropagation();
                 deltaY += (event.touches[0].clientY - startY);
+                deltaY_sum += (event.touches[0].clientY - startY);
                 startY = event.touches[0].clientY;
                 while (deltaY > threshold)
                 {
@@ -862,6 +885,7 @@ function initializeGame()
                     }
                     deltaY -= threshold;
                 }
+                historyTooltip.style.top = `${30 * deltaY_sum / window.innerHeight}vh`;
             }
             // 纵向滑动已经到底后仍然向上滑动
             else if (direction == "down" && window.scrollY + window.innerHeight >= document.body.scrollHeight && event.touches[0].clientY < startY)
@@ -869,6 +893,7 @@ function initializeGame()
                 if (event.cancelable) event.preventDefault();
                 event.stopPropagation();
                 deltaY += (event.touches[0].clientY - startY);
+                deltaY_sum += (event.touches[0].clientY - startY);
                 startY = event.touches[0].clientY;
                 while (deltaY < -threshold)
                 {
@@ -879,15 +904,21 @@ function initializeGame()
                     }
                     deltaY += threshold;
                 }
+                historyTooltip.style.top = `${document.body.scrollHeight * (1 + 0.3 * deltaY_sum / window.innerHeight)}px`;
             }
+        }
+
+        function ontouchend(event)
+        {
+            historyTooltip.style.visibility = "hidden";
+            historyTooltip.style.opacity = "0";
+            document.removeEventListener("touchmove", ontouchscroll);
+            document.removeEventListener("touchend", ontouchend);
         }
 
         document.addEventListener("touchmove", ontouchscroll, { passive: false });
 
-        document.addEventListener("touchend", function (event)
-        {
-            document.removeEventListener("touchmove", ontouchscroll);
-        });
+        document.addEventListener("touchend", ontouchend);
     }, { passive: false });
 }
 // 启动游戏
