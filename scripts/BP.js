@@ -560,6 +560,8 @@ function recoverBPStatefrom(state)
             }
             else
             {
+                piece.picked = true;
+
                 piece.classList.add(cell.parentElement.parentElement.id.slice(0, -5) + "-piece");
                 removeContextMenu(piece);
                 addContextMenu(piece, {
