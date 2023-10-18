@@ -4,9 +4,7 @@ import { highlightCells, removeHighlight } from "./highlight.mjs";
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
 import { Pieces, currentPlayer, currentPhase } from "../scripts/main.js";
-import { addContextMenu, removeContextMenu, hideContextMenu, showSkillPanel, } from './context-menu.mjs';
-import { movePhase } from './phases.mjs';
-import { xunShan } from './basics.mjs';
+import { contextMenuItems, addContextMenu, removeContextMenu } from './context-menu.mjs';
 import { chong_sha } from './skills.mjs';
 
 //移动
@@ -51,11 +49,6 @@ function move(piece, cell, ifConsumeMovePoints = false, isDraw = false)
             moveLog += ` -> (${path[i].row + 1}, ${path[i].col + 1})`;
         }
         console.log(piece.name, moveLog);
-
-        if (isDraw)
-        {
-            cls(1000);
-        }
 
         return true;
     }
@@ -302,7 +295,12 @@ function slot(piece, cell, isDraw = false)
             const alivePanel = document.getElementById("alivePanel" + index);
             alivePanel.style.display = "flex";
 
+            piece.alive = true;
+
             console.log(`${piece.name}登场于(${row + 1}, ${col + 1})`);
+
+            removeContextMenu(piece);
+            addContextMenu(piece, contextMenuItems(piece));
         }
         else
         {
@@ -310,19 +308,6 @@ function slot(piece, cell, isDraw = false)
         }
 
         cell.appendChild(piece);
-        removeContextMenu(piece);
-        addContextMenu(piece, {
-            "查看技能": function () { showSkillPanel(piece); },
-            "break-line-1": "<hr>",
-            "移动阶段": function () { movePhase(piece); },
-            "break-line-2": "<hr>",
-            "迅【闪】": function () { xunShan(piece); },
-            "break-line-3": "<hr>",
-            "【暗度陈仓】（测试中）": function () { },
-            "【兵贵神速】（测试中）": function () { },
-            "【奇门遁甲】（测试中）": function () { },
-            "【诱敌深入】（测试中）": function () { },
-        });
         afterPositionChange(piece, cell);
 
         return true;
@@ -414,17 +399,11 @@ function bury(piece)
         const alivePanel = document.getElementById("alivePanel" + index);
         alivePanel.style.display = "none";
 
+        piece.alive = false;
+
         grave.appendChild(piece);
         removeContextMenu(piece);
-        addContextMenu(piece, {
-            "查看技能": function (event)
-            {
-                if (event.cancelable) event.preventDefault();
-                event.stopPropagation();
-                hideContextMenu();
-                showSkillPanel(piece);
-            }
-        });
+        addContextMenu(piece, contextMenuItems(piece));
         saveState();
     }
 }

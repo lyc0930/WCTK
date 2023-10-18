@@ -137,6 +137,29 @@ function chong_sha(piece, object, direction)
     }
 }
 
-export { zhan_ji, zhan_ji_undo, yong_quan, chong_sha };
+// 〖诱兵〗
+function you_bing(piece, object, direction)
+{
+    const cell = object.parentElement;
+    const row = cell.row;
+    const col = cell.col;
+    const cells = document.getElementsByClassName("cell");
+    const Direction = {
+        "-X": [0, -1],
+        "+X": [0, +1],
+        "-Y": [-1, 0],
+        "+Y": [+1, 0],
+    }
+    const targetCell = cells[(row + Direction[direction][0]) * 7 + (col + Direction[direction][1])];
+    // 当你于本阶段移动一步后，你控制该角色执行一次步数为1且方向与你此步移动相同的移动。
+    if (adjacentCells(cell, object).includes(targetCell))
+    {
+        console.log(`祖茂发动〖诱兵〗`);
+        object.moveSteps = 1;
+        move(object, targetCell, false, true);
+    }
+}
+
+export { zhan_ji, zhan_ji_undo, yong_quan, chong_sha, you_bing };
 
 

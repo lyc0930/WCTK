@@ -15,17 +15,26 @@
 }
 
 .landable {
-    background-color: rgba(0, 255, 0, 0.1);
+    background-color: rgba(20, 200, 43, 0.3);
 }
 
 .landable:hover {
-    background-color: rgba(0, 255, 0, 0.2);
+    background-color: rgba(20, 200, 43, 0.6);
 }
 
-.targetable {
-    background-color: rgba(0, 0, 255, 0.15);
+.cell.targetable {
+    background-color: rgb(255, 100, 0, 0.15);
 }
 
-.targetable:hover {
-    background-color: rgba(0, 0, 255, 0.3);
+.cell.targetable:hover {
+    background-color: rgb(255, 100, 0, 0.3);
+}
+
+.piece.targetable {
+    box-shadow: 0 0 0.4em 0.4em rgb(20, 200, 43, 0.5);
+}
+
+.piece.targetable:hover {
+    border-color: rgb(20, 200, 43);
+    box-shadow: 0 0 0.4em 0.4em rgb(20, 200, 43, 0.5);
 }

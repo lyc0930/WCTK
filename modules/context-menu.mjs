@@ -1,5 +1,7 @@
 import { HERO_DATA } from './data.mjs';
 import { isHighlighting } from './highlight.mjs';
+import { movePhase, movePhase_you_bing } from './phases.mjs';
+import { xunShan } from './basics.mjs';
 
 const MENU_LOGO = {
     "更换武将": "fa-users",
@@ -11,6 +13,33 @@ const MENU_LOGO = {
     "【兵贵神速】（测试中）": "fa-angles-right",
     "【奇门遁甲】（测试中）": "fa-arrows-rotate",
     "【诱敌深入】（测试中）": "fa-person-walking-arrow-right"
+}
+
+function contextMenuItems(piece)
+{
+    const items = {
+        "查看技能": function () { showSkillPanel(piece); }
+    };
+
+    if (piece.alive)
+    {
+        items["break-line-1"] = "<hr>";
+        items["移动阶段"] = function () { movePhase(piece); };
+
+        if (piece.name == "祖茂")
+        {
+            items["移动阶段（诱兵）"] = function () { movePhase_you_bing(piece); };
+        }
+
+        items["break-line-2"] = "<hr>";
+        items["迅【闪】"] = function () { xunShan(piece); };
+        items["break-line-3"] = "<hr>";
+        items["【暗度陈仓】（测试中）"] = function () { };
+        items["【兵贵神速】（测试中）"] = function () { };
+        items["【奇门遁甲】（测试中）"] = function () { };
+        items["【诱敌深入】（测试中）"] = function () { };
+    }
+    return items;
 }
 
 function addContextMenu(element, items = {})
@@ -521,4 +550,4 @@ function showHeroTable(piece)
     });
 }
 
-export { addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel };
+export { contextMenuItems, addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel };

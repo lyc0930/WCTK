@@ -11,17 +11,14 @@ function highlightCells(cells, className, listener = null)
     }
 }
 
-// 高亮显示区域
+// 高亮显示棋子
 function highlightPieces(pieces, className, listener = null)
 {
     for (const piece of pieces)
     {
-        piece.parentElement.classList.add(className);
+        piece.classList.add(className);
         if (className === "targetable")
         {
-            piece.removeEventListener("click", clickPiece);
-            piece.removeEventListener("mouseenter", onMouseEnterPiece);
-            piece.removeEventListener("mouseleave", onMouseLeavePiece);
             piece.addEventListener("click", listener);
         }
     }
@@ -42,10 +39,8 @@ function removeHighlight(className, listener = null)
     {
         for (const piece of document.getElementsByClassName("piece"))
         {
+            piece.classList.remove(className);
             piece.removeEventListener("click", listener);
-            piece.addEventListener("click", clickPiece);
-            piece.addEventListener("mouseenter", onMouseEnterPiece);
-            piece.addEventListener("mouseleave", onMouseLeavePiece);
         }
     }
 }

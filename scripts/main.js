@@ -5,9 +5,7 @@ import { stateHistory, saveState, recoverStatefrom } from '../modules/history.mj
 import { generateFlags, setCarrier } from '../modules/flags.mjs';
 import { HPColor, cls } from '../modules/utils.mjs';
 import { zhan_ji, zhan_ji_undo } from '../modules/skills.mjs';
-import { addContextMenu, removeContextMenu, hideContextMenu, showSkillPanel, } from '../modules/context-menu.mjs';
-import { movePhase } from '../modules/phases.mjs';
-import { xunShan } from '../modules/basics.mjs';
+import { contextMenuItems, addContextMenu, removeContextMenu } from '../modules/context-menu.mjs';
 
 
 export var Pieces = [];
@@ -125,6 +123,7 @@ function createPiece(color, name, index)
     piece.horses = ["", ""];
     piece.carrier = false;
     piece.acted = false;
+    piece.alive = true;
 
     const heroSelect = document.getElementById("heroSelect" + index);
     var heroOption = document.getElementById(piece.name + index);
@@ -324,18 +323,7 @@ function createPiece(color, name, index)
     piece.addEventListener("mouseenter", onMouseEnterPiece);
     piece.addEventListener("mouseleave", onMouseLeavePiece);
 
-    addContextMenu(piece, {
-        "查看技能": function () { showSkillPanel(piece); },
-        "break-line-1": "<hr>",
-        "移动阶段": function () { movePhase(piece); },
-        "break-line-2": "<hr>",
-        "迅【闪】": function () { xunShan(piece); },
-        "break-line-3": "<hr>",
-        "【暗度陈仓】（测试中）": function () { },
-        "【兵贵神速】（测试中）": function () { },
-        "【奇门遁甲】（测试中）": function () { },
-        "【诱敌深入】（测试中）": function () { },
-    });
+    addContextMenu(piece, contextMenuItems(piece));
 
     return piece;
 }
@@ -478,6 +466,10 @@ function initializeGame()
             {
                 zhan_ji_undo(piece);
             }
+
+            removeContextMenu(piece);
+            addContextMenu(piece, contextMenuItems(piece));
+
             saveState();
         });
 
