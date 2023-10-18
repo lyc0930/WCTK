@@ -188,7 +188,7 @@ function movePhase_you_bing(piece)
     var targetablePieces = [];
     for (const otherPiece of allPiecesOf(piece))
     {
-        if (otherPiece !== piece && distance(piece, otherPiece) <= 4 && !otherPiece.carrier)
+        if (otherPiece !== piece && distance(piece, otherPiece) <= 4 && !otherPiece.carrier && !yong_quan(otherPiece))
         {
             targetablePieces.push(otherPiece);
         }

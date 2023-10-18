@@ -8,6 +8,7 @@ const MENU_LOGO = {
     "选择": "fa-user-check",
     "查看技能": "fa-list-ul",
     "移动阶段": "fa-up-down-left-right",
+    "移动阶段（诱兵）": "fa-arrows-turn-right",
     "迅【闪】": "fa-arrow-right-from-bracket",
     "【暗度陈仓】（测试中）": "fa-person-arrow-down-to-line",
     "【兵贵神速】（测试中）": "fa-angles-right",
