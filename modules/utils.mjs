@@ -1,5 +1,5 @@
 import { HERO_DATA, weapons, armors, horses } from './data.mjs';
-import { currentPlayer, currentPhase } from "../scripts/main.js";
+import { currentPlayer, currentPhase } from "./global_variables.mjs";
 import { yong_quan } from "./skills.mjs";
 
 // 计算距离
@@ -452,11 +452,11 @@ function HPColor(HP, maxHP)
     return 'rgb(' + result.r + ',' + result.g + ',' + result.b + ')';
 }
 
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-
 function drawArrow(line, color = 'rgba(50, 50, 50)', isArrow = true)
 {
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
     var cellSize = canvas.width / 7; // 计算每个单元格的大小
     const width = 20;
     ctx.beginPath();
@@ -516,6 +516,9 @@ function drawArrow(line, color = 'rgba(50, 50, 50)', isArrow = true)
 
 function drawTeleport(line, color = 'rgba(50, 50, 50)')
 {
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
     var cellSize = canvas.width / 7; // 计算每个单元格的大小
 
     const Px = line[0][1] * cellSize + cellSize / 2;
@@ -565,6 +568,9 @@ function drawTeleport(line, color = 'rgba(50, 50, 50)')
 
 function cls(delay = 0)
 {
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
     if (delay > 0)
     {
         setTimeout(() =>
