@@ -1,6 +1,5 @@
-import { adjacentCells, PathesOf, isPassable, isStayable, baseOf, enemyBaseOf, piecesIn } from "./utils.mjs";
 import { isHighlighting } from "./highlight.mjs";
-import { move, move_fixed_steps } from '../modules/actions.mjs';
+import { move_fixed_steps } from '../modules/actions.mjs';
 
 // 迅【闪】
 function xunShan(piece, steps = 1)

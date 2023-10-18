@@ -1,5 +1,5 @@
-import { currentPlayer, setCurrentPlayer, currentPhase, setCurrentPhase } from "../scripts/main.js";
-import { distance, PathesOf, adjacentCells, isPassable, isStayable, baseOf, allPiecesOf, enemyPiecesOf, cls } from "./utils.mjs";
+import { setCurrentPlayer, setCurrentPhase } from "./global_variables.mjs";
+import { distance, PathesOf, adjacentCells, isStayable, allPiecesOf, enemyPiecesOf, cls } from "./utils.mjs";
 import { highlightCells, highlightPieces, removeHighlight, isHighlighting } from "./highlight.mjs";
 import { move, step } from '../modules/actions.mjs';
 import { yong_quan, you_bing } from "../modules/skills.mjs";

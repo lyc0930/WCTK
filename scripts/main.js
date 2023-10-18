@@ -1,27 +1,12 @@
 import { slot, bury } from '../modules/actions.mjs';
 import { terrain, HERO_DATA, weapons, armors, horses } from '../modules/data.mjs';
-import { highlightCells, highlightPieces, removeHighlight, isHighlighting } from '../modules/highlight.mjs';
+import { highlightCells, removeHighlight, isHighlighting } from '../modules/highlight.mjs';
 import { stateHistory, saveState, recoverStatefrom } from '../modules/history.mjs';
 import { generateFlags, setCarrier } from '../modules/flags.mjs';
 import { HPColor, cls } from '../modules/utils.mjs';
 import { zhan_ji, zhan_ji_undo } from '../modules/skills.mjs';
 import { contextMenuItems, addContextMenu, removeContextMenu } from '../modules/context-menu.mjs';
-
-
-export var Pieces = [];
-
-export var draggingPiece = null; // 正在拖动的棋子
-
-export var currentPlayer = null; // 当前回合玩家
-export function setCurrentPlayer (player) {
-    currentPlayer = player;
-}
-
-export var currentPhase = null; // 当前阶段
-export function setCurrentPhase(phase)
-{
-    currentPhase = phase;
-}
+import { Pieces } from '../modules/global_variables.mjs';
 
 function onMouseEnterPiece(event)
 {
@@ -153,7 +138,7 @@ function createPiece(color, name, index)
     piece.addEventListener("mousedown", function (event)
     {
         // 正在等待响应
-        if (isHighlighting() || draggingPiece != null)
+        if (isHighlighting())
         {
             return;
         }
@@ -164,6 +149,8 @@ function createPiece(color, name, index)
 
         const shiftX = event.clientX - (rect.left + 0.5 * rect.width);
         const shiftY = event.clientY - (rect.top + 0.5 * rect.height);
+
+        var draggingPiece = null; // 正在拖动的棋子
 
         const phantomPiece = document.createElement("div");
         phantomPiece.className = "phantom piece";
@@ -232,7 +219,7 @@ function createPiece(color, name, index)
         }
 
         // 正在等待响应
-        if (isHighlighting() || draggingPiece != null)
+        if (isHighlighting())
         {
             return;
         }
@@ -250,6 +237,8 @@ function createPiece(color, name, index)
 
         const shiftX = event.touches[0].clientX - (rect.left + 0.5 * rect.width);
         const shiftY = event.touches[0].clientY - (rect.top + 0.5 * rect.height);
+
+        var draggingPiece = null; // 正在拖动的棋子
 
         const phantomPiece = document.createElement("div");
         phantomPiece.className = "phantom piece";

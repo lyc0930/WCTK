@@ -1,4 +1,4 @@
-import { Pieces } from "../scripts/main.js";
+import { Pieces } from "./global_variables.mjs";
 import { baseOf, enemyBaseOf, piecesIn } from "./utils.mjs";
 
 const redFlag = document.createElement("img");

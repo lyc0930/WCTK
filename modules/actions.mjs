@@ -3,7 +3,7 @@ import { adjacentCells, PathesOf, isPassable, isStayable, isRideOn, baseOf, enem
 import { highlightCells, removeHighlight } from "./highlight.mjs";
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
-import { Pieces, currentPlayer, currentPhase } from "../scripts/main.js";
+import { Pieces, currentPhase } from "./global_variables.mjs";
 import { contextMenuItems, addContextMenu, removeContextMenu } from './context-menu.mjs';
 import { chong_sha } from './skills.mjs';
 

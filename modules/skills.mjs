@@ -1,4 +1,4 @@
-import { Pieces } from "../scripts/main.js";
+import { Pieces } from "./global_variables.mjs";
 import { armors, horses } from "./data.mjs";
 import { saveState } from "./history.mjs";
 import { move, leap_to_cells } from "./actions.mjs";
