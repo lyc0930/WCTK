@@ -14,8 +14,6 @@ export var Pieces = [];
 
 export var draggingPiece = null; // 正在拖动的棋子
 
-var selectedPiece = null; // 选中的棋子
-
 export var currentPlayer = null; // 当前回合玩家
 export function setCurrentPlayer (player) {
     currentPlayer = player;
@@ -29,6 +27,11 @@ export function setCurrentPhase(phase)
 
 function onMouseEnterPiece(event)
 {
+    if (isHighlighting())
+    {
+        return;
+    }
+
     const hoverRow = this.parentElement.row;
     const hoverCol = this.parentElement.col;
     var attackableCells = [];
@@ -318,33 +321,6 @@ function createPiece(color, name, index)
         piece.addEventListener("touchend", ontouchend, { once: true });
     }, { passive: false });
 
-    function onClickPiece(event)
-    {
-        // 正在等待响应
-        if (isHighlighting() || draggingPiece != null)
-        {
-            return;
-        }
-
-        // if (event.cancelable) event.preventDefault();
-
-        if (selectedPiece == null)
-        {
-            selectedPiece = this;
-            this.classList.add("selected");
-        }
-        else
-        {
-            if (document.getElementsByClassName("reachable").length <= 0 && document.getElementsByClassName("landable").length <= 0 && document.getElementsByClassName("targetable").length <= 0)
-            {
-                selectedPiece = null;
-                this.classList.remove("selected");
-            }
-
-        }
-    }
-
-    piece.addEventListener("click", onClickPiece);
     piece.addEventListener("mouseenter", onMouseEnterPiece);
     piece.addEventListener("mouseleave", onMouseLeavePiece);
 

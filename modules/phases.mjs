@@ -56,6 +56,11 @@ function movePhase(piece)
 // 定义点击高亮区域行为
 function onclick(event)
 {
+    if (!movingPiece)
+    {
+        return;
+    }
+
     event.stopPropagation();
     const target = event.target;
     if (target.classList.contains("cell"))
@@ -77,7 +82,7 @@ function onclick(event)
     removeHighlight("reachable", onclick);
 
     // 还有移动力
-    if (movingPiece && movingPiece.movePoints > 0)
+    if (movingPiece.movePoints > 0)
     {
         movePhase_subphase(movingPiece);
     }
@@ -114,13 +119,13 @@ function movePhase_subphase(piece)
 // 定义结束移动阶段函数
 function endMovePhase(event = null)
 {
-    movingPiece = null;
     if (event != null)
     {
         if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
         {
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
+            movingPiece = null;
             removeHighlight("reachable", onclick);
             document.removeEventListener("contextmenu", endMovePhase);
             document.removeEventListener("click", endMovePhase);
@@ -129,6 +134,7 @@ function endMovePhase(event = null)
     }
     else
     {
+        movingPiece = null;
         removeHighlight("reachable", onclick);
         document.removeEventListener("contextmenu", endMovePhase);
         document.removeEventListener("click", endMovePhase);

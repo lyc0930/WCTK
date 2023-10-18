@@ -54,7 +54,7 @@ function move(piece, cell, ifConsumeMovePoints = false, isDraw = false)
 
         if (isDraw)
         {
-            cls(1000 * path.length);
+            cls(1000);
         }
 
         return true;
