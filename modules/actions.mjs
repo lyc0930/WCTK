@@ -1,5 +1,5 @@
 import { HERO_DATA } from './data.mjs';
-import { adjacentCells, PathesOf, isPassable, isStayable, baseOf, enemyBaseOf, enemyPiecesOf, piecesIn, HPColor, drawArrow, drawTeleport, cls } from "./utils.mjs";
+import { adjacentCells, PathesOf, isPassable, isStayable, isRideOn, baseOf, enemyBaseOf, enemyPiecesOf, piecesIn, HPColor, drawArrow, drawTeleport, cls } from "./utils.mjs";
 import { highlightCells, removeHighlight } from "./highlight.mjs";
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
@@ -116,10 +116,11 @@ function step(piece, cell, isDraw = false)
 
         // 〖冲杀〗
         // 当你移动一步后，若你进入有敌方角色的区域；
+        // TODO: 张绣冲向一个同时存在{己方曹仁、敌方A、敌方B}的区域
         var subject = piece;
         for (const pieceInCell of piecesIn(cell))
         {
-            if (enemyPiecesOf(piece).includes(pieceInCell) && (currentPhase == "移动" && piece.name === "张绣" && subject === piece))
+            if (enemyPiecesOf(piece).includes(pieceInCell) && (currentPhase == "移动" && piece.name === "张绣" && subject === piece) && !isRideOn(pieceInCell, "阻动"))
             {
                 chong_sha(piece, pieceInCell, _step.direction);
             }

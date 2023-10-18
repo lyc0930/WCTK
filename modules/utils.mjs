@@ -48,7 +48,7 @@ function PathesOf(piece)
         var chong_sha_stop = false;
         for (const pieceInCell of piecesIn(currentCell))
         {
-            if (enemyPiecesOf(piece).includes(pieceInCell) && chong_sha)
+            if (enemyPiecesOf(piece).includes(pieceInCell) && chong_sha && !isRideOn(pieceInCell, "阻动"))
             {
                 chong_sha_stop = true;
                 break;
@@ -143,14 +143,39 @@ function isStayable(cell, piece = null)
     // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域
     var subject = piece;
     var chong_sha = (currentPhase == "移动" && piece.name === "张绣" && subject === piece);
-
     for (const pieceInCell of piecesIn(cell))
     {
-        if (pieceInCell !== piece && !(enemyPiecesOf(piece).includes(pieceInCell) && chong_sha && !yong_quan(pieceInCell)))
+        if (allyPiecesOf(piece).includes(pieceInCell))
         {
             return false;
         }
+        else // enemyPiecesOf(piece).includes(pieceInCell)
+        {
+            if (chong_sha)
+            {
+                if (!yong_quan(pieceInCell) && !isRideOn(pieceInCell, "阻动"))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
+
+    if (chong_sha) // cell中的棋子都是敌方不能动的棋子
+    {
+        for (const pieceInCell of piecesIn(cell))
+        {
+            if (enemyPiecesOf(piece).includes(pieceInCell))
+            {
+                return false;
+            }
+        }
+    }
+
     return true;
 }
 
@@ -165,17 +190,7 @@ function isPassable(cell, piece = null)
     else
     {
         // 【穿越马】
-        var cross_horse = false;
-        for (const horse of piece.horses)
-        {
-            if (horses[horse] == "穿越")
-            {
-                cross_horse = true;
-                break;
-            }
-        }
-
-        if (cross_horse)
+        if (isRideOn(piece, "穿越"))
         {
             var hold_by_enemy = false;
             for (const enemyPiece of enemyPiecesOf(piece))
@@ -257,7 +272,6 @@ function adjacentCells(cell, piece = null)
     return adjCells;
 }
 
-
 // 距离最近的可进入区域
 function nearestCellOf(piece)
 {
@@ -280,6 +294,19 @@ function nearestCellOf(piece)
         }
     }
     return nearestCells;
+}
+
+// 是否装备特定类型的坐骑
+function isRideOn(piece, horse_type)
+{
+    for (const horse of piece.horses)
+    {
+        if (horses[horse] == horse_type)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 // 所有棋子
@@ -551,4 +578,4 @@ function cls(delay = 0)
     }
 }
 
-export { distance, PathesOf, isStayable, isPassable, adjacentCells, nearestCellOf, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls};
+export { distance, PathesOf, isStayable, isPassable, adjacentCells, nearestCellOf, isRideOn, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls};

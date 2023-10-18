@@ -2,7 +2,7 @@ import { Pieces } from "../scripts/main.js";
 import { armors, horses } from "./data.mjs";
 import { saveState } from "./history.mjs";
 import { move, leap_to_cells } from "./actions.mjs";
-import { distance, allyPiecesOf, adjacentCells, nearestCellOf } from "./utils.mjs";
+import { distance, allyPiecesOf, adjacentCells, nearestCellOf, isRideOn } from "./utils.mjs";
 import { endMovePhase } from "./phases.mjs";
 
 function zhan_ji(piece, _index = null)
@@ -122,13 +122,13 @@ function chong_sha(piece, object, direction)
     }
     const targetCell = cells[(row + Direction[direction][0]) * 7 + (col + Direction[direction][1])];
     // 若该角色可以执行步数为1且方向与你相同的移动，你控制其执行之；
-    if (adjacentCells(cell, object).includes(targetCell))
+    if (adjacentCells(cell, object).includes(targetCell) && !isRideOn(object, "阻动"))
     {
         object.moveSteps = 1;
         move(object, targetCell, false, true);
     }
     // 若该角色不可以执行步数为1且方向与你相同的移动且其可以转移，你控制其转移至与其距离最近的可进入区域，
-    else
+    else if (!isRideOn(object, "阻动"))
     {
         endMovePhase(); // 先结束移动阶段
         const nearestCells = nearestCellOf(object);
@@ -152,7 +152,7 @@ function you_bing(piece, object, direction)
     }
     const targetCell = cells[(row + Direction[direction][0]) * 7 + (col + Direction[direction][1])];
     // 当你于本阶段移动一步后，你控制该角色执行一次步数为1且方向与你此步移动相同的移动。
-    if (adjacentCells(cell, object).includes(targetCell))
+    if (adjacentCells(cell, object).includes(targetCell) && !isRideOn(object, "阻动"))
     {
         console.log(`祖茂发动〖诱兵〗`);
         object.moveSteps = 1;
