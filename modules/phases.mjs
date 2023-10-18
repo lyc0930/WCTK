@@ -51,6 +51,10 @@ function movePhase(piece)
     }
 
     movePhase_subphase(piece);
+
+    // 空白处结束移动阶段
+    document.addEventListener("contextmenu", endMovePhase);
+    document.addEventListener("click", endMovePhase);
 }
 
 // 定义点击高亮区域行为
@@ -110,10 +114,6 @@ function movePhase_subphase(piece)
 
     // 高亮可到达的区域
     highlightCells(reachableCells, "reachable", onclick);
-
-    // 空白处结束移动阶段
-    document.addEventListener("contextmenu", endMovePhase);
-    document.addEventListener("click", endMovePhase);
 }
 
 // 定义结束移动阶段函数
@@ -197,6 +197,10 @@ function movePhase_you_bing(piece)
     if (targetablePieces.length <= 0)
     {
         movePhase_subphase(piece); // 正常移动
+
+        // 空白处结束移动阶段
+        document.addEventListener("contextmenu", endMovePhase);
+        document.addEventListener("click", endMovePhase);
     }
     else
     {
@@ -223,6 +227,11 @@ function movePhase_you_bing(piece)
             removeHighlight("targetable", onclick);
 
             movePhase_subphase_you_bing(piece, object);
+
+            // 空白处结束移动阶段
+            document.addEventListener("contextmenu", endMovePhase_you_bing);
+            document.addEventListener("click", endMovePhase_you_bing);
+
         }
     }
 }
@@ -269,33 +278,29 @@ function movePhase_subphase_you_bing(piece, object)
         }
     }
 
-    // 定义结束移动阶段函数
-    function endMovePhase_you_bing(event)
-    {
-        if (movingPiece &&　movingPiece.movePoints > 0 && !isStayable(movingPiece.parentElement, movingPiece))
-        {
-            return;
-        }
-
-        movingPiece = null;
-        if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
-        {
-            if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
-            removeHighlight("reachable", onclick);
-            cls(1000);
-            document.removeEventListener("contextmenu", endMovePhase_you_bing);
-            document.removeEventListener("click", endMovePhase_you_bing);
-            setCurrentPhase(null);
-        }
-    }
-
     // 高亮可到达的区域
     highlightCells(reachableCells, "reachable", onclick_you_bing);
+}
 
-    // 空白处结束移动阶段
-    document.addEventListener("contextmenu", endMovePhase_you_bing);
-    document.addEventListener("click", endMovePhase_you_bing);
+// 定义结束移动阶段函数
+function endMovePhase_you_bing(event)
+{
+    if (movingPiece && movingPiece.movePoints > 0 && !isStayable(movingPiece.parentElement, movingPiece, false))
+    {
+        return;
+    }
+
+    movingPiece = null;
+    if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
+    {
+        if (event.cancelable) event.preventDefault();
+        event.stopPropagation();
+        removeHighlight("reachable", onclick);
+        cls(1000);
+        document.removeEventListener("contextmenu", endMovePhase_you_bing);
+        document.removeEventListener("click", endMovePhase_you_bing);
+        setCurrentPhase(null);
+    }
 }
 
 export { movePhase, endMovePhase, movePhase_you_bing };

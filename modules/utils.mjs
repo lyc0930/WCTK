@@ -90,8 +90,14 @@ function PathesOf(piece)
 }
 
 // 可停留
-function isStayable(cell, piece = null)
+function isStayable(cell, piece = null, reentry = true)
 {
+    // 如果不是重新进入，且棋子已经在该区域，那么可以停留
+    if (cell === piece.parentElement && !reentry)
+    {
+        return true;
+    }
+
     var hold_by_enemy = false;
     for (const enemyPiece of enemyPiecesOf(piece))
     {
@@ -165,15 +171,9 @@ function isStayable(cell, piece = null)
         }
     }
 
-    if (chong_sha) // cell中的棋子都是敌方不能动的棋子
+    if (chong_sha && hold_by_enemy) // cell中的棋子都是敌方不能动的棋子
     {
-        for (const pieceInCell of piecesIn(cell))
-        {
-            if (enemyPiecesOf(piece).includes(pieceInCell))
-            {
-                return false;
-            }
-        }
+        return false;
     }
 
     return true;
