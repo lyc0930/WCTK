@@ -53,7 +53,6 @@ function movePhase(piece)
     movePhase_subphase(piece);
 
     // 空白处结束移动阶段
-    document.addEventListener("contextmenu", endMovePhase);
     document.addEventListener("click", endMovePhase);
 }
 
@@ -183,7 +182,6 @@ function movePhase_you_bing(piece)
         movePhase_subphase(piece); // 正常移动
 
         // 空白处结束移动阶段
-        document.addEventListener("contextmenu", endMovePhase);
         document.addEventListener("click", endMovePhase);
     }
     else
@@ -202,7 +200,6 @@ function movePhase_you_bing(piece)
             movePhase_subphase_you_bing(piece, object);
 
             // 空白处结束移动阶段
-            document.addEventListener("contextmenu", endMovePhase_you_bing);
             document.addEventListener("click", endMovePhase_you_bing);
 
         }
