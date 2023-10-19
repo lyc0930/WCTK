@@ -6,7 +6,8 @@
 
 html,
 body {
-    overscroll-behavior: none;
+    -ms-scroll-chaining: none;
+        overscroll-behavior: none;
 }
 
 body {
