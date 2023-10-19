@@ -24,6 +24,7 @@ body {
 label {
     text-wrap: nowrap;
     text-overflow: clip;
+    -webkit-touch-callout: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;

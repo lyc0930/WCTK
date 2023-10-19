@@ -48,6 +48,7 @@
     margin-top: 0.5em;
     margin-bottom: 0.5em;
     text-wrap: nowrap;
+    -webkit-touch-callout: none;
     -webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
@@ -85,7 +86,8 @@
 .skill-name {
     margin: 0.5em;
     text-wrap: nowrap;
-    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+-webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
@@ -93,7 +95,8 @@
 
 .skill-text {
     margin: 0.5em;
-    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+-webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
@@ -140,7 +143,8 @@
     font-family: 'fzlb';
     font-size: 2em;
     text-wrap: nowrap;
-    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+-webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
@@ -157,7 +161,8 @@
     padding: 0.1em 0.2em 0.1em 0.2em;
     border-radius: 0.2em;
     transition: all 25ms ease-out;
-    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+-webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;

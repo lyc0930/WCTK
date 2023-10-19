@@ -57,6 +57,7 @@
 
 .block>.fas:hover {
     transition: all 120ms ease-in-out;
+    -webkit-transform: scale(1.1);
     transform: scale(1.1);
     box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 0, 0.10);
 }
@@ -90,6 +91,7 @@ input[type="checkbox"]::before {
     content: "";
     height: 90%;
     aspect-ratio: 1;
+    -webkit-transform: scale(0) translateY(6%);
     transform: scale(0) translateY(6%);
     transition: 120ms transform ease-in-out;
     box-shadow: inset 2em 2em rgba(0, 0, 0, 0.35);
@@ -97,6 +99,7 @@ input[type="checkbox"]::before {
 
 input[type="checkbox"]:checked::before {
     border-radius: 20%;
+    -webkit-transform: scale(1) translateY(6%);
     transform: scale(1) translateY(6%);
 }
 
@@ -126,6 +129,7 @@ input[name="blueCheckbox"]::before {
 .hero-select {
     width: 65%;
     font-family: 'fzlb';
+    -webkit-touch-callout: none;
     -webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;

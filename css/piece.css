@@ -25,6 +25,7 @@
     height: 100%;
     -o-object-fit: contain;
        object-fit: contain;
+    -webkit-touch-callout: none;
     -webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
@@ -34,6 +35,7 @@
 body>.piece {
     width: 10vmin;
     height: 10vmin;
+    -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     border-width: .8vmin;
 }
@@ -43,6 +45,7 @@ body>.piece {
     height: 10vmin;
     top: 50%;
     left: 50%;
+    -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     border-width: .8vmin;
 }
@@ -52,6 +55,7 @@ body>.piece {
     height: 10vmin;
     top: 50%;
     left: 50%;
+    -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     border-width: .8vmin;
 }
@@ -204,6 +208,7 @@ body>.piece:hover {
     top: 50%;
     bottom: 50%;
     right: 0%;
+    -webkit-transform: translate(0, -50%);
     transform: translate(0, -50%);
     border-width: .48vmin;
     z-index: 92;
@@ -224,6 +229,7 @@ body>.piece:hover {
     bottom: 0%;
     left: 50%;
     right: 50%;
+    -webkit-transform: translate(-50%, 0);
     transform: translate(-50%, 0);
     border-width: .48vmin;
     z-index: 92;

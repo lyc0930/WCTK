@@ -48,6 +48,7 @@ class StateHistory
             historyTooltip.style.visibility = "visible";
             historyTooltip.style.opacity = "1";
             historyTooltip.style.top = "50%";
+            historyTooltip.style.webkitTransform = "translate(-50%, -50%)";
             historyTooltip.style.transform = "translate(-50%, -50%)";
 
             clearTimeout(this.tooltipTimeoutId);
@@ -92,6 +93,7 @@ class StateHistory
             historyTooltip.style.visibility = "visible";
             historyTooltip.style.opacity = "1";
             historyTooltip.style.top = "50%";
+            historyTooltip.style.webkitTransform = "translate(-50%, -50%)";
             historyTooltip.style.transform = "translate(-50%, -50%)";
 
             clearTimeout(this.tooltipTimeoutId);

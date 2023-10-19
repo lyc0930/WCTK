@@ -444,6 +444,7 @@ class BPHistory
             historyTooltip.style.visibility = "visible";
             historyTooltip.style.opacity = "1";
             historyTooltip.style.top = "50%";
+            historyTooltip.style.webkitTransform = "translate(-50%, -50%)";
             historyTooltip.style.transform = "translate(-50%, -50%)";
 
             clearTimeout(this.tooltipTimeoutId);
@@ -489,6 +490,7 @@ class BPHistory
             historyTooltip.style.visibility = "visible";
             historyTooltip.style.opacity = "1";
             historyTooltip.style.top = "50%";
+            historyTooltip.style.webkitTransform = "translate(-50%, -50%)";
             historyTooltip.style.transform = "translate(-50%, -50%)";
 
             clearTimeout(this.tooltipTimeoutId);
@@ -676,12 +678,14 @@ function initializeHistory()
         if (direction == "up")
         {
             historyTooltip.style.top = "0";
+            historyTooltip.style.webkitTransform = "translate(-50%, -100%)";
             historyTooltip.style.transform = "translate(-50%, -100%)";
             icon.className = "fas fa-rotate-left";
         }
         else
         {
             historyTooltip.style.top = `${document.body.scrollHeight}px`;
+            historyTooltip.style.webkitTransform = "translate(-50%, 0)";
             historyTooltip.style.transform = "translate(-50%, 0)";
             icon.className = "fas fa-rotate-right";
         }

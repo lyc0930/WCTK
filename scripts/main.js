@@ -371,7 +371,8 @@ function initializeGame()
     createChessboard();
     generateFlags();
 
-    document.addEventListener('contextmenu', event => event.preventDefault()); // 禁用右键菜单
+    const chessboard = document.getElementById("chessboard");
+    document.addEventListener('contextmenu', event => { event.preventDefault(); event.stopPropagation(); } ); // 禁用右键菜单
     document.addEventListener('mouseup', function (event)
     {
         if (event.button === 2)
@@ -740,8 +741,6 @@ function initializeGame()
     initializePieces();
 
     // 撤销重做
-    const chessboard = document.getElementById("chessboard");
-
     chessboard.addEventListener("wheel", function (event)
     {
         if (event.cancelable) event.preventDefault();
@@ -839,12 +838,14 @@ function initializeGame()
         if (direction == "up")
         {
             historyTooltip.style.top = "0";
+            historyTooltip.style.webkitTransform = "translate(-50%, -100%)";
             historyTooltip.style.transform = "translate(-50%, -100%)";
             icon.className = "fas fa-rotate-left";
         }
         else
         {
             historyTooltip.style.top = `${document.body.scrollHeight}px`;
+            historyTooltip.style.webkitTransform = "translate(-50%, 0)";
             historyTooltip.style.transform = "translate(-50%, 0)";
             icon.className = "fas fa-rotate-right";
         }
