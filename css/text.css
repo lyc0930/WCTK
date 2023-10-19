@@ -34,6 +34,7 @@
 .skill-text {
     font-family: 'fzzyjt';
     line-height: 1.5em;
+    text-align: justify;
 }
 
 .skill-label {

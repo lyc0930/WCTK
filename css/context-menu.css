@@ -85,22 +85,10 @@
 
 .skill-name {
     margin: 0.5em;
-    text-wrap: nowrap;
-    -webkit-touch-callout: none;
--webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
 }
 
 .skill-text {
     margin: 0.5em;
-    -webkit-touch-callout: none;
--webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
-    text-align: justify;
 }
 
 .hero-table {
@@ -144,7 +132,7 @@
     font-size: 2em;
     text-wrap: nowrap;
     -webkit-touch-callout: none;
--webkit-user-select: none;
+    -webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
@@ -162,7 +150,7 @@
     border-radius: 0.2em;
     transition: all 25ms ease-out;
     -webkit-touch-callout: none;
--webkit-user-select: none;
+    -webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
             user-select: none;
