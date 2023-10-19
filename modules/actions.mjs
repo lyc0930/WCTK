@@ -72,11 +72,11 @@ class Step
         {
             this.direction = null;
         }
-        else if (startRow === endRow)
+        else if (startRow === endRow && Math.abs(startCol - endCol) === 1)
         {
             this.direction = startCol < endCol ? "+X" : "-X";
         }
-        else if (startCol === endCol)
+        else if (startCol === endCol && Math.abs(startRow - endRow) === 1)
         {
             this.direction = startRow < endRow ? "+Y" : "-Y";
         }
@@ -229,15 +229,9 @@ function leap_to_cells(piece, cells, isDraw = false)
             return;
         }
         removeHighlight("landable", onclick);
-
-        // 还有移动力
-        if (piece.moveSteps > 0)
+        if (isDraw)
         {
-            move_fixed_steps(piece);
-        }
-        else
-        {
-            removeHighlight("landable", onclick);
+            cls(1000);
         }
     }
 

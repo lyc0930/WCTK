@@ -2,13 +2,15 @@ import { HERO_DATA } from './data.mjs';
 import { isHighlighting } from './highlight.mjs';
 import { movePhase, movePhase_you_bing } from './phases.mjs';
 import { xunShan } from './basics.mjs';
+import { shen_xing } from './skills.mjs';
 
 const MENU_LOGO = {
     "更换武将": "fa-users",
     "选择": "fa-user-check",
     "查看技能": "fa-list-ul",
     "移动阶段": "fa-up-down-left-right",
-    "移动阶段（诱兵）": "fa-arrows-turn-right",
+    "移动阶段〖诱兵〗": "fa-arrows-turn-right",
+    "移动阶段〖神行〗": "fa-route",
     "迅【闪】": "fa-arrow-right-from-bracket",
     "【暗度陈仓】（测试中）": "fa-person-arrow-down-to-line",
     "【兵贵神速】（测试中）": "fa-angles-right",
@@ -29,9 +31,12 @@ function contextMenuItems(piece)
 
         if (piece.name == "祖茂")
         {
-            items["移动阶段（诱兵）"] = function () { movePhase_you_bing(piece); };
+            items["移动阶段〖诱兵〗"] = function () { movePhase_you_bing(piece); };
         }
-
+        else if (piece.name == "左慈")
+        {
+            items["移动阶段〖神行〗"] = function () { shen_xing(piece); };
+        }
         items["break-line-2"] = "<hr>";
         items["迅【闪】"] = function () { xunShan(piece); };
         items["break-line-3"] = "<hr>";

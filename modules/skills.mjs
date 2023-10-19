@@ -2,7 +2,7 @@ import { Pieces } from "./global_variables.mjs";
 import { armors, horses } from "./data.mjs";
 import { saveState } from "./history.mjs";
 import { move, leap_to_cells } from "./actions.mjs";
-import { distance, allyPiecesOf, adjacentCells, nearestCellOf, isRideOn } from "./utils.mjs";
+import { distance, allyPiecesOf, adjacentCells, nearestCellOf, isRideOn, isStayable, piecesIn } from "./utils.mjs";
 import { endMovePhase } from "./phases.mjs";
 
 function zhan_ji(piece, _index = null)
@@ -160,6 +160,23 @@ function you_bing(piece, object, direction)
     }
 }
 
-export { zhan_ji, zhan_ji_undo, yong_quan, chong_sha, you_bing };
+// 〖神行〗
+function shen_xing(piece)
+{
+    // 移动阶段开始前，你可以跳过此阶段，然后转移至一个可进入空区域。
+    console.log(`左慈发动〖神行〗`);
+    const targetCells = [];
+    for (const cell of document.getElementsByClassName("cell"))
+    {
+        if (isStayable(cell, piece) && piecesIn(cell).length == 0)
+        {
+            targetCells.push(cell);
+        }
+    }
+    leap_to_cells(piece, targetCells, true);
+}
+
+
+export { zhan_ji, zhan_ji_undo, yong_quan, chong_sha, you_bing, shen_xing };
 
 
