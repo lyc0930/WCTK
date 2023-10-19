@@ -3,6 +3,7 @@ import { isHighlighting } from './highlight.mjs';
 import { movePhase, movePhase_you_bing } from './phases.mjs';
 import { xunShan } from './basics.mjs';
 import { shen_xing } from './skills.mjs';
+import { AnDuChenCang, BingGuiShenSu, QiMenDunJia, YouDiShenRu } from './scrolls.mjs';
 
 const MENU_LOGO = {
     "更换武将": "fa-users",
@@ -12,10 +13,10 @@ const MENU_LOGO = {
     "移动阶段〖诱兵〗": "fa-arrows-turn-right",
     "移动阶段〖神行〗": "fa-route",
     "迅【闪】": "fa-arrow-right-from-bracket",
-    "【暗度陈仓】（测试中）": "fa-person-arrow-down-to-line",
-    "【兵贵神速】（测试中）": "fa-angles-right",
-    "【奇门遁甲】（测试中）": "fa-arrows-rotate",
-    "【诱敌深入】（测试中）": "fa-person-walking-arrow-right"
+    "【暗度陈仓】": "fa-person-arrow-down-to-line",
+    "【兵贵神速】": "fa-angles-right",
+    "【奇门遁甲】": "fa-arrows-rotate",
+    "【诱敌深入】": "fa-person-walking-arrow-right"
 }
 
 function contextMenuItems(piece)
@@ -40,10 +41,10 @@ function contextMenuItems(piece)
         items["break-line-2"] = "<hr>";
         items["迅【闪】"] = function () { xunShan(piece); };
         items["break-line-3"] = "<hr>";
-        items["【暗度陈仓】（测试中）"] = function () { };
-        items["【兵贵神速】（测试中）"] = function () { };
-        items["【奇门遁甲】（测试中）"] = function () { };
-        items["【诱敌深入】（测试中）"] = function () { };
+        items["【暗度陈仓】"] = function () { AnDuChenCang(piece); };
+        items["【兵贵神速】"] = function () { BingGuiShenSu(piece); };
+        items["【奇门遁甲】"] = function () { QiMenDunJia(piece); };
+        items["【诱敌深入】"] = function () { YouDiShenRu(piece); };
     }
     return items;
 }

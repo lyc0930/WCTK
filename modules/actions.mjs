@@ -141,7 +141,7 @@ function move_fixed_steps(piece, isDraw = false)
     {
         const row = cell.row;
         const col = cell.col;
-        if (Pathes[row][col] && (Pathes[row][col].length - 1 == piece.moveSteps))
+        if (Pathes[row][col] && (Pathes[row][col].length - 1 <= piece.moveSteps))
         {
             reachableCells.push(cell);
         }
@@ -173,11 +173,15 @@ function move_fixed_steps(piece, isDraw = false)
         // 还有移动力
         if (piece.moveSteps > 0)
         {
-            move_fixed_steps(piece);
+            move_fixed_steps(piece, isDraw);
         }
         else
         {
             removeHighlight("reachable", onclick);
+            if (isDraw)
+            {
+                cls(1000);
+            }
         }
     }
 
@@ -316,10 +320,9 @@ function swap(pieceP, pieceQ)
     const cellP = pieceP.parentElement;
     const cellQ = pieceQ.parentElement;
 
-    // 临时存放于墓地
-    const grave = document.getElementsByClassName("grave")[0];
-    grave.appendChild(pieceP);
-    grave.appendChild(pieceQ);
+    // 临时存放于body
+    document.body.appendChild(pieceP);
+    document.body.appendChild(pieceQ);
 
     // 交换
     if ((pieceP && isStayable(cellQ, pieceP)) && pieceQ && isStayable(cellP, pieceQ))

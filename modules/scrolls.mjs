@@ -1,14 +1,21 @@
 import { baseOf, allyPiecesOf, adjacentCells, isStayable, allPiecesOf } from "./utils.mjs";
-import { highlightCells, highlightPieces } from "./highlight.mjs";
+import { isHighlighting, highlightCells, highlightPieces, removeHighlight } from "./highlight.mjs";
+import { leap_to_cells, move_fixed_steps, swap } from "./actions.mjs";
 
+// 【暗度陈仓】
 function AnDuChenCang(user, limit = 3)
 {
+    // 正在等待响应
+    if (isHighlighting())
+    {
+        return;
+    }
+
     console.log(`${user.name}使用【暗度陈仓】`);
     const userRow = user.parentElement.row;
     const userCol = user.parentElement.col;
     var landableCells = [];
     landableCells.push(baseOf(user));
-    leapingPiece = user;
     for (const allyPiece of allyPiecesOf(user))
     {
         if (allyPiece != user)
@@ -22,23 +29,37 @@ function AnDuChenCang(user, limit = 3)
             }
         }
     }
-    highlightCells(landableCells, "landable", clickCell_leap);
+    leap_to_cells(user, landableCells, true);
 }
 
+// 【兵贵神速】
 function BingGuiShenSu(user)
 {
+    // 正在等待响应
+    if (isHighlighting())
+    {
+        return;
+    }
+
     console.log(`${user.name}使用【兵贵神速】`);
+    // 执行一次步数为2的移动
     user.moveSteps = 2;
-    moveSteps(user, true);
+
+    move_fixed_steps(user, true);
 }
 
 function QiMenDunJia(user, limit = 2)
 {
+    // 正在等待响应
+    if (isHighlighting())
+    {
+        return;
+    }
+
     console.log(`${user.name}使用【奇门遁甲】`);
     const userRow = user.parentElement.row;
     const userCol = user.parentElement.col;
     var targetablePieces = [];
-    leapingPiece = user;
 
     for (const allPiece of allPiecesOf(user))
     {
@@ -50,11 +71,41 @@ function QiMenDunJia(user, limit = 2)
             }
         }
     }
-    highlightPieces(targetablePieces, "targetable", clickPiece_swap);
+
+    function click_to_swap(event)
+    {
+        event.stopPropagation();
+
+        var target = null;
+        if (event.target.classList.contains("avatar"))
+        {
+            target = event.target.parentElement;
+        }
+        else if (event.target.classList.contains("piece"))
+        {
+            target = event.target;
+        }
+        else
+        {
+            return;
+        }
+
+        removeHighlight("targetable", click_to_swap);
+
+        swap(user, target);
+    }
+
+    highlightPieces(targetablePieces, "targetable", click_to_swap);
 }
 
 function YouDiShenRu(user, limit = 4)
 {
+    // 正在等待响应
+    if (isHighlighting())
+    {
+        return;
+    }
+
     console.log(`${user.name}使用【诱敌深入】`);
     const userRow = user.parentElement.row;
     const userCol = user.parentElement.col;
@@ -67,7 +118,32 @@ function YouDiShenRu(user, limit = 4)
             targetablePieces.push(allPiece);
         }
     }
-    highlightPieces(targetablePieces, "targetable", clickPiece_control);
+
+    function click_to_move(event)
+    {
+        event.stopPropagation();
+
+        var target = null;
+        if (event.target.classList.contains("avatar"))
+        {
+            target = event.target.parentElement;
+        }
+        else if (event.target.classList.contains("piece"))
+        {
+            target = event.target;
+        }
+        else
+        {
+            return;
+        }
+
+        removeHighlight("targetable", click_to_move);
+
+        target.moveSteps = 1;
+        move_fixed_steps(target, true);
+    }
+
+    highlightPieces(targetablePieces, "targetable", click_to_move);
 }
 
 export { AnDuChenCang, BingGuiShenSu, QiMenDunJia, YouDiShenRu };
