@@ -141,7 +141,7 @@ input[name="blueCheckbox"]::before {
     font-family: 'fzlb';
 }
 
-@media screen and (min-aspect-ratio: 1.25) {
+@media screen and (orientation:landscape) {
     .menu-list {
         /* width: clamp(10em, 20%, calc(48vw - 46.5vmin)); */
         min-width: 10em;
@@ -176,7 +176,7 @@ input[name="blueCheckbox"]::before {
 
 }
 
-@media screen and (max-aspect-ratio: 1.25) {
+@media screen and (orientation:portrait) {
     .menu-list {
         width: clamp(10em, 45%, 20em);
         justify-content: flex-start;
