@@ -911,6 +911,7 @@ function initializeGame()
         document.addEventListener("touchend", ontouchend);
     }, { passive: false });
 }
+
 // 启动游戏
 initializeGame();
 saveState();

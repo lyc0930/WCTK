@@ -24,11 +24,23 @@ body {
 label {
     text-wrap: nowrap;
     text-overflow: clip;
+    touch-action: none;
+    pointer-events: none;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+}
+
+img {
+    touch-action: none;
+    pointer-events: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 
 #mainboard {
