@@ -1,6 +1,7 @@
-import { baseOf, allyPiecesOf, adjacentCells, isStayable, allPiecesOf } from "./utils.mjs";
+import { baseOf, allyPiecesOf, adjacentCells, isStayable, allPiecesOf, isRideOn } from "./utils.mjs";
 import { isHighlighting, highlightCells, highlightPieces, removeHighlight } from "./highlight.mjs";
 import { leap_to_cells, move_fixed_steps, swap } from "./actions.mjs";
+import { yong_quan } from "./skills.mjs";
 
 // 【暗度陈仓】
 function AnDuChenCang(user, limit = 3)
@@ -65,7 +66,7 @@ function QiMenDunJia(user, limit = 2)
     {
         if (allPiece != user)
         {
-            if (Math.abs(allPiece.parentElement.row - userRow) + Math.abs(allPiece.parentElement.col - userCol) <= limit)
+            if ((Math.abs(allPiece.parentElement.row - userRow) + Math.abs(allPiece.parentElement.col - userCol) <= limit) && !yong_quan(allPiece) && !isRideOn(allPiece, "阻动"))
             {
                 targetablePieces.push(allPiece);
             }
@@ -113,7 +114,7 @@ function YouDiShenRu(user, limit = 4)
 
     for (const allPiece of allPiecesOf(user))
     {
-        if (Math.abs(allPiece.parentElement.row - userRow) + Math.abs(allPiece.parentElement.col - userCol) <= limit)
+        if ((Math.abs(allPiece.parentElement.row - userRow) + Math.abs(allPiece.parentElement.col - userCol) <= limit) && !yong_quan(allPiece) && !isRideOn(allPiece, "阻动"))
         {
             targetablePieces.push(allPiece);
         }
