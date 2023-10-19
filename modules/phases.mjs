@@ -278,6 +278,18 @@ function movePhase_you_bing(piece)
         // 计算可到达的区域
         const reachableCells = adjacentCells(piece.parentElement, piece)
 
+        if (piece.movePoints == 1) // 最后一步
+        {
+            // 移除所有不能停留的区域
+            for (const cell of reachableCells)
+            {
+                if (!isStayable(cell, piece))
+                {
+                    reachableCells.splice(reachableCells.indexOf(cell), 1);
+                }
+            }
+        }
+
         // 高亮可到达的区域
         highlightCells(reachableCells, "reachable", onclick_you_bing);
     }
