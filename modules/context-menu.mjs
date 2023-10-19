@@ -65,7 +65,7 @@ function addContextMenu(element, items = {})
         "contextmenu": function (event)
         {
             if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
         },
         "mousedown": function (event)
         {
@@ -75,7 +75,7 @@ function addContextMenu(element, items = {})
             }
 
             if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
 
             // 记录初始位置
             const startX = event.clientX + window.scrollX;
@@ -96,7 +96,7 @@ function addContextMenu(element, items = {})
                 if (Math.abs(moveX) <= 10 && Math.abs(moveY) <= 10)
                 {
                     if (event.cancelable) event.preventDefault();
-                    event.stopPropagation();
+                    // event.stopPropagation();
                     updateContextMenu(menu, items);
                     positionMenu(menu, event);
                     if (menu.style.visibility != 'visible')
@@ -124,7 +124,7 @@ function addContextMenu(element, items = {})
             }
 
             if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
 
             hideContextMenu();
 
@@ -147,7 +147,7 @@ function addContextMenu(element, items = {})
                 "touchmove": function (event)
                 {
                     if (event.cancelable) event.preventDefault();
-                    event.stopPropagation();
+                    // event.stopPropagation();
 
                     // 计算移动距离
                     const moveX = event.touches[0].clientX + window.scrollX - startX;
@@ -165,7 +165,7 @@ function addContextMenu(element, items = {})
                 "touchend": function (event)
                 {
                     if (event.cancelable) event.preventDefault();
-                    event.stopPropagation();
+                    // event.stopPropagation();
                     element.removeEventListener("touchmove", element.touchEventListener["touchmove"]);
                     element.removeEventListener("touchend", element.touchEventListener["touchend"]);
                     clearTimeout(timeoutId);
@@ -224,7 +224,7 @@ function addSkillPanel(piece)
         "mouseover": function (event)
         {
             if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
 
             const timeoutId = setTimeout(function ()
             {
@@ -234,7 +234,7 @@ function addSkillPanel(piece)
             function onmouseout(event)
             {
                 if (event.cancelable) event.preventDefault();
-                event.stopPropagation();
+                // event.stopPropagation();
                 clearTimeout(timeoutId);
                 hideSkillPanel();
             }
@@ -255,7 +255,7 @@ function addSkillPanel(piece)
             }
 
             if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
 
             // 记录初始位置
             const startX = event.touches[0].clientX + window.scrollX;
@@ -267,7 +267,7 @@ function addSkillPanel(piece)
                 "touchmove": function (event)
                 {
                     if (event.cancelable) event.preventDefault();
-                    event.stopPropagation();
+                    // event.stopPropagation();
 
                     // 计算移动距离
                     const moveX = event.touches[0].clientX + window.scrollX - startX;

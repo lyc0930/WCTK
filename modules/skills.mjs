@@ -27,7 +27,7 @@ function zhan_ji(piece, _index = null)
     }
     armorSelect_zhanji.addEventListener("change", function (event)
     {
-        const index = event.target.id.slice(-1);
+        const index = this.id.slice(-1);
         const piece = Pieces[index - 1];
         piece.armors[1] = armorSelect_zhanji.value;
         saveState();
@@ -54,7 +54,7 @@ function zhan_ji(piece, _index = null)
     }
     horseSelect_zhanji.addEventListener("change", function (event)
     {
-        const index = event.target.id.slice(-1);
+        const index = this.id.slice(-1);
         const piece = Pieces[index - 1];
         piece.horses[1] = horseSelect_zhanji.value;
         saveState();
@@ -210,31 +210,19 @@ function jie_yue(piece, limit = 3)
         // 定义点击高亮元素行为
         function click_to_pull(event)
         {
-            event.stopPropagation();
-            var target = null;
-            if (event.target.classList.contains("avatar"))
-            {
-                target = event.target.parentElement;
-            }
-            else if (event.target.classList.contains("piece"))
-            {
-                target = event.target;
-            }
-            else
-            {
-                return;
-            }
+            // event.stopPropagation();
+
             console.log(`于禁发动〖节钺〗`);
             removeHighlight("targetable", click_to_pull);
 
             // 将其转移至该角色所在的方向上与你的距离最近的可进入区域，
-            const signRow = Math.sign(target.parentElement.row - piece.parentElement.row);
-            const signCol = Math.sign(target.parentElement.col - piece.parentElement.col);
+            const signRow = Math.sign(this.parentElement.row - piece.parentElement.row);
+            const signCol = Math.sign(this.parentElement.col - piece.parentElement.col);
             var nearestCells = [];
             var minDistance = 100;
             for (const cell of document.getElementsByClassName("cell"))
             {
-                if (isStayable(cell, target, false) && Math.sign(cell.row - piece.parentElement.row) == signRow && Math.sign(cell.col - piece.parentElement.col) == signCol)
+                if (isStayable(cell, this, false) && Math.sign(cell.row - piece.parentElement.row) == signRow && Math.sign(cell.col - piece.parentElement.col) == signCol)
                 {
                     const d = distance(piece, cell);
                     if (d < minDistance)
@@ -250,11 +238,11 @@ function jie_yue(piece, limit = 3)
             }
             if (nearestCells.length > 1)
             {
-                leap_to_cells(target, nearestCells, true);
+                leap_to_cells(this, nearestCells, true);
             }
             else // 只有一个最近的可进入区域
             {
-                leap(target, nearestCells[0], true);
+                leap(this, nearestCells[0], true);
                 cls(1000);
             }
         }

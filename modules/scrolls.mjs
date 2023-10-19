@@ -75,25 +75,11 @@ function QiMenDunJia(user, limit = 2)
 
     function click_to_swap(event)
     {
-        event.stopPropagation();
-
-        var target = null;
-        if (event.target.classList.contains("avatar"))
-        {
-            target = event.target.parentElement;
-        }
-        else if (event.target.classList.contains("piece"))
-        {
-            target = event.target;
-        }
-        else
-        {
-            return;
-        }
+        // event.stopPropagation();
 
         removeHighlight("targetable", click_to_swap);
 
-        swap(user, target);
+        swap(user, this);
     }
 
     highlightPieces(targetablePieces, "targetable", click_to_swap);
@@ -122,26 +108,12 @@ function YouDiShenRu(user, limit = 4)
 
     function click_to_move(event)
     {
-        event.stopPropagation();
-
-        var target = null;
-        if (event.target.classList.contains("avatar"))
-        {
-            target = event.target.parentElement;
-        }
-        else if (event.target.classList.contains("piece"))
-        {
-            target = event.target;
-        }
-        else
-        {
-            return;
-        }
+        // event.stopPropagation();
 
         removeHighlight("targetable", click_to_move);
 
-        target.moveSteps = 1;
-        move_fixed_steps(target, true);
+        this.moveSteps = 1;
+        move_fixed_steps(this, true);
     }
 
     highlightPieces(targetablePieces, "targetable", click_to_move);

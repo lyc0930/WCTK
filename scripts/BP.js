@@ -71,7 +71,7 @@ function pick(piece)
         "查看技能": function (event)
         {
             if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
             hideContextMenu();
             showSkillPanel(piece);
         }
@@ -143,7 +143,7 @@ function createHeroCandidate(name, index)
         function onmousemove(event)
         {
             if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
 
             if (draggingPiece === null)
             {
@@ -173,7 +173,7 @@ function createHeroCandidate(name, index)
             if (draggingPiece != null)
             {
                 if (event.cancelable) event.preventDefault();
-                event.stopPropagation();
+                // event.stopPropagation();
 
                 draggingPiece.style.left = null;
                 draggingPiece.style.top = null;
@@ -241,7 +241,7 @@ function createHeroCandidate(name, index)
         }
 
         event.preventDefault();
-        event.stopPropagation();
+        // event.stopPropagation();
 
         piece.style.width = "12vmin";
         piece.style.height = "12vmin";
@@ -257,7 +257,7 @@ function createHeroCandidate(name, index)
             "ontouchmove": function (event)
             {
                 if (event.cancelable) event.preventDefault();
-                event.stopPropagation();
+                // event.stopPropagation();
                 if (event.touches.length > 1)
                 {
                     return;
@@ -297,7 +297,7 @@ function createHeroCandidate(name, index)
 
                 if (draggingPiece != null)
                 {
-                    event.stopPropagation();
+                    // event.stopPropagation();
 
                     draggingPiece.style.left = null;
                     draggingPiece.style.top = null;
@@ -702,7 +702,7 @@ function initializeHistory()
             if (direction == "up" && window.scrollY <= 0 && event.touches[0].clientY > startY)
             {
                 if (event.cancelable) event.preventDefault();
-                event.stopPropagation();
+                // event.stopPropagation();
                 deltaY += (event.touches[0].clientY - startY);
                 deltaY_sum += (event.touches[0].clientY - startY);
                 startY = event.touches[0].clientY;
@@ -721,7 +721,7 @@ function initializeHistory()
             else if (direction == "down" && window.scrollY + window.innerHeight >= document.body.scrollHeight && event.touches[0].clientY < startY)
             {
                 if (event.cancelable) event.preventDefault();
-                event.stopPropagation();
+                // event.stopPropagation();
                 deltaY += (event.touches[0].clientY - startY);
                 deltaY_sum += (event.touches[0].clientY - startY);
                 startY = event.touches[0].clientY;
@@ -758,7 +758,7 @@ createHeroTable();
 document.body.addEventListener("contextmenu", function (event)
 {
     if (event.cancelable) event.preventDefault();
-    event.stopPropagation();
+    // event.stopPropagation();
 });
 
 initializeHistory();

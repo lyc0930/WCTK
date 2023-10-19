@@ -150,24 +150,8 @@ function move_fixed_steps(piece, isDraw = false)
     // 定义点击高亮区域行为
     function onclick(event)
     {
-        event.stopPropagation();
-        const target = event.target;
-        if (target.classList.contains("cell"))
-        {
-            move(piece, target, false, isDraw);
-        }
-        else if (target.classList.contains("piece") || target.classList.contains("flag"))
-        {
-            move(piece, target.parentElement, false, isDraw);
-        }
-        else if (target.classList.contains("avatar"))
-        {
-            move(piece, target.parentElement.parentElement, false, isDraw);
-        }
-        else
-        {
-            return;
-        }
+        // event.stopPropagation();
+        move(piece, this, false, isDraw);
         removeHighlight("reachable", onclick);
 
         // 还有移动力
@@ -194,7 +178,7 @@ function leap(piece, cell, isDraw = false)
 {
     const row = cell.row;
     const col = cell.col;
-    if (piece && isStayable(cell, piece))
+    if (piece && isStayable(cell, piece, false))
     {
         console.log(piece.name, `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) |> (${row + 1}, ${col + 1})`);
         if (isDraw)
@@ -214,24 +198,8 @@ function leap_to_cells(piece, cells, isDraw = false)
     // 定义点击高亮区域行为
     function onclick(event)
     {
-        event.stopPropagation();
-        const target = event.target;
-        if (target.classList.contains("cell"))
-        {
-            leap(piece, target, isDraw);
-        }
-        else if (target.classList.contains("piece") || target.classList.contains("flag"))
-        {
-            leap(piece, target.parentElement, isDraw);
-        }
-        else if (target.classList.contains("avatar"))
-        {
-            leap(piece, target.parentElement.parentElement, isDraw);
-        }
-        else
-        {
-            return;
-        }
+        // event.stopPropagation();
+        leap(piece, this, isDraw);
         removeHighlight("landable", onclick);
         if (isDraw)
         {

@@ -143,7 +143,7 @@ function createPiece(color, name, index)
             return;
         }
         if (event.cancelable) event.preventDefault();
-        event.stopPropagation();
+        // event.stopPropagation();
 
         const rect = piece.getBoundingClientRect();
 
@@ -159,7 +159,7 @@ function createPiece(color, name, index)
         function onmousemove(event)
         {
             if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
             if (draggingPiece === null)
             {
                 draggingPiece = piece;
@@ -177,7 +177,7 @@ function createPiece(color, name, index)
 
         function onmouseup(event)
         {
-            event.stopPropagation();
+            // event.stopPropagation();
             document.removeEventListener('mousemove', onmousemove);
 
             phantomPiece.remove();
@@ -247,7 +247,7 @@ function createPiece(color, name, index)
         function ontouchmove(event)
         {
             if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
             if (event.touches.length > 1)
             {
                 return;
@@ -274,7 +274,7 @@ function createPiece(color, name, index)
                 return;
             }
             if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
             piece.removeEventListener("touchmove", ontouchmove);
 
             phantomPiece.remove();
@@ -425,7 +425,7 @@ function initializeGame()
         }
         heroSelect.addEventListener("change", function (event)
         {
-            const index = event.target.id.slice(-1);
+            const index = this.id.slice(-1);
             const piece = Pieces[index - 1];
             piece.name = heroSelect.value;
             const avatar = piece.querySelector(".avatar");
@@ -480,7 +480,7 @@ function initializeGame()
 
         carrierCheckbox.addEventListener("change", function (event)
         {
-            const index = event.target.id.slice(-1);
+            const index = this.id.slice(-1);
             const piece = Pieces[index - 1];
             piece.carrier = this.checked;
             setCarrier(piece.classList.contains("red-piece") ? "Red" : "Blue", this.checked ? piece : null);
@@ -499,7 +499,7 @@ function initializeGame()
 
         actedCheckbox.addEventListener("change", function (event)
         {
-            const index = event.target.id.slice(-1);
+            const index = this.id.slice(-1);
             const piece = Pieces[index - 1];
             if (!actedCheckbox.checked)
             {
@@ -551,7 +551,7 @@ function initializeGame()
 
         HPMinus.addEventListener("click", function (event)
         {
-            const index = event.target.id.slice(-1);
+            const index = this.id.slice(-1);
             const piece = Pieces[index - 1];
             const labelHP = document.getElementById("HP" + index);
             var HP = piece.HP;
@@ -589,7 +589,7 @@ function initializeGame()
 
         HPPlus.addEventListener("click", function (event)
         {
-            const index = event.target.id.slice(-1);
+            const index = this.id.slice(-1);
             const piece = Pieces[index - 1];
             const labelHP = document.getElementById("HP" + index);
             var HP = piece.HP;
@@ -634,7 +634,7 @@ function initializeGame()
 
         weaponSelect.addEventListener("change", function (event)
         {
-            const index = event.target.id.slice(-1);
+            const index = this.id.slice(-1);
             const piece = Pieces[index - 1];
             piece.weapons[0] = weaponSelect.value;
             piece.range = weapons[weaponSelect.value];
@@ -668,7 +668,7 @@ function initializeGame()
 
         armorSelect.addEventListener("change", function (event)
         {
-            const index = event.target.id.slice(-1);
+            const index = this.id.slice(-1);
             const piece = Pieces[index - 1];
             piece.armors[0] = armorSelect.value;
             saveState();
@@ -701,7 +701,7 @@ function initializeGame()
 
         horseSelect.addEventListener("change", function (event)
         {
-            const index = event.target.id.slice(-1);
+            const index = this.id.slice(-1);
             const piece = Pieces[index - 1];
             piece.horses[0] = horseSelect.value;
             saveState();
@@ -862,7 +862,7 @@ function initializeGame()
             if (direction == "up" && window.scrollY <= 0 && event.touches[0].clientY > startY)
             {
                 if (event.cancelable) event.preventDefault();
-                event.stopPropagation();
+                // event.stopPropagation();
                 deltaY += (event.touches[0].clientY - startY);
                 deltaY_sum += (event.touches[0].clientY - startY);
                 startY = event.touches[0].clientY;
@@ -881,7 +881,7 @@ function initializeGame()
             else if (direction == "down" && window.scrollY + window.innerHeight >= document.body.scrollHeight && event.touches[0].clientY < startY)
             {
                 if (event.cancelable) event.preventDefault();
-                event.stopPropagation();
+                // event.stopPropagation();
                 deltaY += (event.touches[0].clientY - startY);
                 deltaY_sum += (event.touches[0].clientY - startY);
                 startY = event.touches[0].clientY;

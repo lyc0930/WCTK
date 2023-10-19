@@ -66,23 +66,7 @@ function onclick(event)
     }
 
     event.stopPropagation();
-    const target = event.target;
-    if (target.classList.contains("cell"))
-    {
-        move(movingPiece, target, true, true);
-    }
-    else if (target.classList.contains("piece") || target.classList.contains("flag"))
-    {
-        move(movingPiece, target.parentElement, true, true);
-    }
-    else if (target.classList.contains("avatar"))
-    {
-        move(movingPiece, target.parentElement.parentElement, true, true);
-    }
-    else
-    {
-        return;
-    }
+    move(movingPiece, this, true, true);
     removeHighlight("reachable", onclick);
 
     // 还有移动力
@@ -124,7 +108,7 @@ function endMovePhase(event = null)
         if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
         {
             if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
             movingPiece = null;
             removeHighlight("reachable", onclick);
             cls(1000);
@@ -210,22 +194,11 @@ function movePhase_you_bing(piece)
         // 定义点击高亮元素行为
         function onclick(event)
         {
-            event.stopPropagation();
-            if (event.target.classList.contains("avatar"))
-            {
-                object = event.target.parentElement;
-            }
-            else if (event.target.classList.contains("piece"))
-            {
-                object = event.target;
-            }
-            else
-            {
-                return;
-            }
+            // event.stopPropagation();
             console.log(`祖茂发动〖诱兵〗`);
             removeHighlight("targetable", onclick);
 
+            object = this;
             movePhase_subphase_you_bing(piece, object);
 
             // 空白处结束移动阶段
@@ -238,24 +211,10 @@ function movePhase_you_bing(piece)
     // 定义点击高亮区域行为
     function onclick_you_bing(event)
     {
-        event.stopPropagation();
-        var target = event.target;
-
-        if (target.classList.contains("piece") || target.classList.contains("flag"))
-        {
-            target = target.parentElement;
-        }
-        else if (target.classList.contains("avatar"))
-        {
-            target = target.parentElement.parentElement;
-        }
-        else if (!target.classList.contains("cell"))
-        {
-            return;
-        }
+        // event.stopPropagation();
 
         movingPiece.movePoints -= 1;
-        const s = step(movingPiece, target, true);
+        const s = step(movingPiece, this, true);
 
         you_bing(piece, object, s.direction);
 
@@ -306,7 +265,7 @@ function movePhase_you_bing(piece)
         if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
         {
             if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
+            // event.stopPropagation();
             removeHighlight("reachable", onclick_you_bing);
             cls(1000);
             document.removeEventListener("contextmenu", endMovePhase_you_bing);
