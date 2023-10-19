@@ -2,7 +2,7 @@ import { Pieces } from "./global_variables.mjs";
 import { armors, horses } from "./data.mjs";
 import { saveState } from "./history.mjs";
 import { move, leap_to_cells, leap } from "./actions.mjs";
-import { distance, allPiecesOf, allyPiecesOf, adjacentCells, nearestCellOf, isRideOn, isOnSameLine, isStayable, piecesIn } from "./utils.mjs";
+import { distance, allPiecesOf, allyPiecesOf, adjacentCells, nearestCellOf, isRideOn, isOnSameLine, isStayable, piecesIn, cls } from "./utils.mjs";
 import { endMovePhase } from "./phases.mjs";
 import { highlightPieces, removeHighlight } from "./highlight.mjs";
 
@@ -234,7 +234,7 @@ function jie_yue(piece, limit = 3)
             var minDistance = 100;
             for (const cell of document.getElementsByClassName("cell"))
             {
-                if (isStayable(cell, target) && Math.sign(cell.row - piece.parentElement.row) == signRow && Math.sign(cell.col - piece.parentElement.col) == signCol)
+                if (isStayable(cell, target, false) && Math.sign(cell.row - piece.parentElement.row) == signRow && Math.sign(cell.col - piece.parentElement.col) == signCol)
                 {
                     const d = distance(piece, cell);
                     if (d < minDistance)
@@ -254,8 +254,8 @@ function jie_yue(piece, limit = 3)
             }
             else // 只有一个最近的可进入区域
             {
-                console.log(nearestCells[0]);
                 leap(target, nearestCells[0], true);
+                cls(1000);
             }
         }
     }
