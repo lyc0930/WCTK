@@ -95,17 +95,21 @@ function isStayable(cell, piece = null, reentry = true)
     // 如果不是重新进入，且棋子已经在该区域，那么可以停留
     if (cell === piece.parentElement && !reentry)
     {
-        if (cell.classList.contains("camp") || cell.classList.contains("base"))
-        {
-            return true;
-        }
-        else if (cell.classList.contains("ridge"))
+        if (cell.classList.contains("ridge"))
         {
             return false;
+        }
+        else if (cell.classList.contains("camp") || cell.classList.contains("base"))
+        {
+            return true;
         }
         else if (piecesIn(cell).length > 1)
         {
             return false;
+        }
+        else
+        {
+            return true;
         }
     }
 
