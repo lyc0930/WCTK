@@ -41,10 +41,11 @@ function contextMenuItems(piece)
         items["break-line-2"] = "<hr>";
         items["迅【闪】"] = function () { xunShan(piece); };
         items["break-line-3"] = "<hr>";
-        items["【暗度陈仓】"] = function () { AnDuChenCang(piece); };
+        // 〖奇才〗
+        items["【暗度陈仓】"] = function () { AnDuChenCang(piece, (piece.name == "黄月英") ? 4 : 3); };
         items["【兵贵神速】"] = function () { BingGuiShenSu(piece); };
-        items["【奇门遁甲】"] = function () { QiMenDunJia(piece); };
-        items["【诱敌深入】"] = function () { YouDiShenRu(piece); };
+        items["【奇门遁甲】"] = function () { QiMenDunJia(piece, (piece.name == "黄月英") ? 3 : 2); };
+        items["【诱敌深入】"] = function () { YouDiShenRu(piece, (piece.name == "黄月英") ? 5 : 4); };
     }
     return items;
 }
