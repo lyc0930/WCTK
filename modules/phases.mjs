@@ -234,12 +234,6 @@ function movePhase_you_bing(piece)
 
         }
     }
-}
-
-function movePhase_subphase_you_bing(piece, object)
-{
-    // 计算可到达的区域
-    const reachableCells = adjacentCells(piece.parentElement, piece)
 
     // 定义点击高亮区域行为
     function onclick_you_bing(event)
@@ -278,28 +272,35 @@ function movePhase_subphase_you_bing(piece, object)
         }
     }
 
-    // 高亮可到达的区域
-    highlightCells(reachableCells, "reachable", onclick_you_bing);
-}
 
-// 定义结束移动阶段函数
-function endMovePhase_you_bing(event)
-{
-    if (movingPiece && movingPiece.movePoints > 0 && !isStayable(movingPiece.parentElement, movingPiece, false))
+    function movePhase_subphase_you_bing(piece, object)
     {
-        return;
+        // 计算可到达的区域
+        const reachableCells = adjacentCells(piece.parentElement, piece)
+
+        // 高亮可到达的区域
+        highlightCells(reachableCells, "reachable", onclick_you_bing);
     }
 
-    movingPiece = null;
-    if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
+    // 定义结束移动阶段函数
+    function endMovePhase_you_bing(event)
     {
-        if (event.cancelable) event.preventDefault();
-        event.stopPropagation();
-        removeHighlight("reachable", onclick);
-        cls(1000);
-        document.removeEventListener("contextmenu", endMovePhase_you_bing);
-        document.removeEventListener("click", endMovePhase_you_bing);
-        setCurrentPhase(null);
+        if (movingPiece && movingPiece.movePoints > 0 && !isStayable(movingPiece.parentElement, movingPiece, false))
+        {
+            return;
+        }
+
+        movingPiece = null;
+        if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+            removeHighlight("reachable", onclick_you_bing);
+            cls(1000);
+            document.removeEventListener("contextmenu", endMovePhase_you_bing);
+            document.removeEventListener("click", endMovePhase_you_bing);
+            setCurrentPhase(null);
+        }
     }
 }
 
