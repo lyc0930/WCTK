@@ -320,6 +320,22 @@ function isRideOn(piece, horse_type)
     return false;
 }
 
+// 是否位于同一直线
+function isOnSameLine(P, Q)
+{
+    var cellP = P;
+    var cellQ = Q;
+    if (P.classList.contains("piece"))
+    {
+        cellP = P.parentElement;
+    }
+    if (Q.classList.contains("piece"))
+    {
+        cellQ = Q.parentElement;
+    }
+    return cellP.row === cellQ.row || cellP.col === cellQ.col;
+}
+
 // 所有棋子
 function allPiecesOf(piece)
 {
@@ -595,4 +611,4 @@ function cls(delay = 0)
     }
 }
 
-export { distance, PathesOf, isStayable, isPassable, adjacentCells, nearestCellOf, isRideOn, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls};
+export { distance, PathesOf, isStayable, isPassable, adjacentCells, nearestCellOf, isRideOn, isOnSameLine, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls};

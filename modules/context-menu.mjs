@@ -2,7 +2,7 @@ import { HERO_DATA } from './data.mjs';
 import { isHighlighting } from './highlight.mjs';
 import { movePhase, movePhase_you_bing } from './phases.mjs';
 import { xunShan } from './basics.mjs';
-import { shen_xing } from './skills.mjs';
+import { shen_xing, jie_yue } from './skills.mjs';
 import { AnDuChenCang, BingGuiShenSu, QiMenDunJia, YouDiShenRu } from './scrolls.mjs';
 
 const MENU_LOGO = {
@@ -12,6 +12,7 @@ const MENU_LOGO = {
     "移动阶段": "fa-up-down-left-right",
     "移动阶段〖诱兵〗": "fa-arrows-turn-right",
     "移动阶段〖神行〗": "fa-route",
+    "节钺": "fa-person-walking-arrow-loop-left",
     "迅【闪】": "fa-arrow-right-from-bracket",
     "【暗度陈仓】": "fa-person-arrow-down-to-line",
     "【兵贵神速】": "fa-angles-right",
@@ -37,6 +38,12 @@ function contextMenuItems(piece)
         else if (piece.name == "左慈")
         {
             items["移动阶段〖神行〗"] = function () { shen_xing(piece); };
+        }
+
+        if (piece.name == "于禁")
+        {
+            items["break-line-4"] = "<hr>";
+            items["节钺"] = function () { jie_yue(piece); };
         }
         items["break-line-2"] = "<hr>";
         items["迅【闪】"] = function () { xunShan(piece); };

@@ -1,9 +1,10 @@
 import { Pieces } from "./global_variables.mjs";
 import { armors, horses } from "./data.mjs";
 import { saveState } from "./history.mjs";
-import { move, leap_to_cells } from "./actions.mjs";
-import { distance, allyPiecesOf, adjacentCells, nearestCellOf, isRideOn, isStayable, piecesIn } from "./utils.mjs";
+import { move, leap_to_cells, leap } from "./actions.mjs";
+import { distance, allPiecesOf, allyPiecesOf, adjacentCells, nearestCellOf, isRideOn, isOnSameLine, isStayable, piecesIn } from "./utils.mjs";
 import { endMovePhase } from "./phases.mjs";
+import { highlightPieces, removeHighlight } from "./highlight.mjs";
 
 function zhan_ji(piece, _index = null)
 {
@@ -132,7 +133,15 @@ function chong_sha(piece, object, direction)
     {
         endMovePhase(); // 先结束移动阶段
         const nearestCells = nearestCellOf(object);
-        leap_to_cells(object, nearestCells, false);
+        if (nearestCells.length > 1)
+        {
+            leap_to_cells(object, nearestCells, false);
+        }
+        else // 只有一个最近的可进入区域
+        {
+            console.log(nearestCells[0]);
+            leap(object, nearestCells[0], false);
+        }
         // 然后你对该角色造成1点普通伤害
     }
 }
@@ -176,7 +185,84 @@ function shen_xing(piece)
     leap_to_cells(piece, targetCells, true);
 }
 
+// 〖节钺〗
+function jie_yue(piece, limit = 3)
+{
+    // 出牌阶段限一次，你可以选择一名与你的距离为<3>以内且与你位于同一直线的其他角色，
+    var targetablePieces = [];
+    for (const otherPiece of allPiecesOf(piece))
+    {
+        if (otherPiece !== piece && distance(piece, otherPiece) <= limit && isOnSameLine(piece, otherPiece) && !yong_quan(otherPiece))
+        {
+            targetablePieces.push(otherPiece);
+        }
+    }
 
-export { zhan_ji, zhan_ji_undo, yong_quan, chong_sha, you_bing, shen_xing };
+    if (targetablePieces.length <= 0) // 没有合法目标
+    {
+        return;
+    }
+    else
+    {
+        // 高亮可选择的角色
+        highlightPieces(targetablePieces, "targetable", click_to_pull);
+
+        // 定义点击高亮元素行为
+        function click_to_pull(event)
+        {
+            event.stopPropagation();
+            var target = null;
+            if (event.target.classList.contains("avatar"))
+            {
+                target = event.target.parentElement;
+            }
+            else if (event.target.classList.contains("piece"))
+            {
+                target = event.target;
+            }
+            else
+            {
+                return;
+            }
+            console.log(`于禁发动〖节钺〗`);
+            removeHighlight("targetable", click_to_pull);
+
+            // 将其转移至该角色所在的方向上与你的距离最近的可进入区域，
+            const signRow = Math.sign(target.parentElement.row - piece.parentElement.row);
+            const signCol = Math.sign(target.parentElement.col - piece.parentElement.col);
+            var nearestCells = [];
+            var minDistance = 100;
+            for (const cell of document.getElementsByClassName("cell"))
+            {
+                if (isStayable(cell, target) && Math.sign(cell.row - piece.parentElement.row) == signRow && Math.sign(cell.col - piece.parentElement.col) == signCol)
+                {
+                    const d = distance(piece, cell);
+                    if (d < minDistance)
+                    {
+                        minDistance = d;
+                        nearestCells = [cell];
+                    }
+                    else if (d === minDistance)
+                    {
+                        nearestCells.push(cell);
+                    }
+                }
+            }
+            if (nearestCells.length > 1)
+            {
+                leap_to_cells(target, nearestCells, true);
+            }
+            else // 只有一个最近的可进入区域
+            {
+                console.log(nearestCells[0]);
+                leap(target, nearestCells[0], true);
+            }
+        }
+    }
+
+    // 若如此做，本回合你不能对其使用牌。
+}
+
+export { zhan_ji, zhan_ji_undo, yong_quan, chong_sha, you_bing, shen_xing, jie_yue };
 
 

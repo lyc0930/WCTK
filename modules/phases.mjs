@@ -206,7 +206,6 @@ function movePhase_you_bing(piece)
     {
         // 高亮可选择的角色
         highlightPieces(targetablePieces, "targetable", onclick);
-        // console.log("祖茂发动〖诱兵〗");
 
         // 定义点击高亮元素行为
         function onclick(event)
@@ -224,6 +223,7 @@ function movePhase_you_bing(piece)
             {
                 return;
             }
+            console.log(`祖茂发动〖诱兵〗`);
             removeHighlight("targetable", onclick);
 
             movePhase_subphase_you_bing(piece, object);
