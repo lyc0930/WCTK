@@ -743,16 +743,17 @@ function initializeGame()
     // 撤销重做
     chessboard.addEventListener("wheel", function (event)
     {
-        if (event.cancelable) event.preventDefault();
-        if (event.deltaY < 0)
+        if (event.deltaY < 0 && stateHistory.currentIndex > 0)
         {
+            if (event.cancelable) event.preventDefault();
             const previousState = stateHistory.undo();
             if (previousState)
             {
                 recoverStatefrom(previousState);
             }
-        } else if (event.deltaY > 0)
+        } else if (event.deltaY > 0 && stateHistory.currentIndex < stateHistory.history.length - 1)
         {
+            if (event.cancelable) event.preventDefault();
             const nextState = stateHistory.redo();
             if (nextState)
             {
@@ -818,12 +819,11 @@ function initializeGame()
         const historyTooltip = document.getElementById("history-tooltip");
         const icon = historyTooltip.querySelector("i");
 
-        // 没到顶且没到底
-        if (window.scrollY <= 0)
+        if (window.scrollY <= 0 && stateHistory.currentIndex > 0)
         {
             direction = "up";
         }
-        else if (window.scrollY + window.innerHeight >= document.body.scrollHeight)
+        else if (window.scrollY + window.innerHeight >= document.body.scrollHeight && stateHistory.currentIndex < stateHistory.history.length - 1)
         {
             direction = "down";
         }
@@ -831,6 +831,8 @@ function initializeGame()
         {
             return;
         }
+
+        if (event.cancelable) event.preventDefault();
 
         historyTooltip.style.visibility = "visible";
         historyTooltip.style.opacity = "1";

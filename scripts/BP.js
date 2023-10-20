@@ -659,11 +659,11 @@ function initializeHistory()
         const icon = historyTooltip.querySelector("i");
 
         // 没到顶且没到底
-        if (window.scrollY <= 0)
+        if (window.scrollY <= 0 && history.currentIndex > 0)
         {
             direction = "up";
         }
-        else if (window.scrollY + window.innerHeight >= document.body.scrollHeight)
+        else if (window.scrollY + window.innerHeight >= document.body.scrollHeight && history.currentIndex < history.history.length - 1)
         {
             direction = "down";
         }
@@ -671,6 +671,8 @@ function initializeHistory()
         {
             return;
         }
+
+        if (event.cancelable) event.preventDefault();
 
         historyTooltip.style.visibility = "visible";
         historyTooltip.style.opacity = "1";
