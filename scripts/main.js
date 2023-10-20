@@ -807,111 +807,116 @@ function initializeGame()
         }
     });
 
-    document.addEventListener("touchstart", function (event)
-    {
-        if (event.touches.length > 1)
-        {
-            return;
-        }
+//     document.addEventListener("touchstart", function (event)
+//     {
+//         if (event.touches.length > 1 || isHighlighting())
+//         {
+//             return;
+//         }
 
-        var direction = null;
+//         var direction = null;
 
-        const historyTooltip = document.getElementById("history-tooltip");
-        const icon = historyTooltip.querySelector("i");
+//         const historyTooltip = document.getElementById("history-tooltip");
+//         const icon = historyTooltip.querySelector("i");
 
-        if (window.scrollY <= 0 && stateHistory.currentIndex > 0)
-        {
-            direction = "up";
-        }
-        else if (window.scrollY + window.innerHeight >= document.body.scrollHeight && stateHistory.currentIndex < stateHistory.history.length - 1)
-        {
-            direction = "down";
-        }
-        else
-        {
-            return;
-        }
+//         if (window.scrollY <= 0 && stateHistory.currentIndex > 0)
+//         {
+//             direction = "up";
+//         }
+//         else if (window.scrollY + window.innerHeight >= document.body.scrollHeight && stateHistory.currentIndex < stateHistory.history.length - 1)
+//         {
+//             direction = "down";
+//         }
+//         else
+//         {
+//             return;
+//         }
 
-        if (event.cancelable) event.preventDefault();
+//         // if (event.cancelable) event.preventDefault();
 
-        historyTooltip.style.visibility = "visible";
-        historyTooltip.style.opacity = "1";
+//         historyTooltip.style.visibility = "visible";
+//         historyTooltip.style.opacity = "1";
 
-        if (direction == "up")
-        {
-            historyTooltip.style.top = "0";
-            historyTooltip.style.webkitTransform = "translate(-50%, -100%)";
-            historyTooltip.style.transform = "translate(-50%, -100%)";
-            icon.className = "fas fa-rotate-left";
-        }
-        else
-        {
-            historyTooltip.style.top = `${document.body.scrollHeight}px`;
-            historyTooltip.style.webkitTransform = "translate(-50%, 0)";
-            historyTooltip.style.transform = "translate(-50%, 0)";
-            icon.className = "fas fa-rotate-right";
-        }
+//         if (direction == "up")
+//         {
+//             historyTooltip.style.top = "0";
+//             historyTooltip.style.webkitTransform = "translate(-50%, -100%)";
+//             historyTooltip.style.transform = "translate(-50%, -100%)";
+//             icon.className = "fas fa-rotate-left";
+//         }
+//         else
+//         {
+//             historyTooltip.style.top = `${document.body.scrollHeight}px`;
+//             historyTooltip.style.webkitTransform = "translate(-50%, 0)";
+//             historyTooltip.style.transform = "translate(-50%, 0)";
+//             icon.className = "fas fa-rotate-right";
+//         }
 
 
-        var startY = event.touches[0].clientY;
-        var deltaY = 0;
-        var deltaY_sum = 0;
-        const threshold = 100;
+//         var startY = event.touches[0].clientY;
+//         var deltaY = 0;
+//         var deltaY_sum = 0;
+//         const threshold = 100;
 
-        function ontouchscroll(event)
-        {
-            // 纵向滑动已经到顶后仍然向下滑动
-            if (direction == "up" && window.scrollY <= 0 && event.touches[0].clientY > startY)
-            {
-                if (event.cancelable) event.preventDefault();
-                // event.stopPropagation();
-                deltaY += (event.touches[0].clientY - startY);
-                deltaY_sum += (event.touches[0].clientY - startY);
-                startY = event.touches[0].clientY;
-                while (deltaY > threshold)
-                {
-                    const previousState = stateHistory.undo();
-                    if (previousState)
-                    {
-                        recoverStatefrom(previousState);
-                    }
-                    deltaY -= threshold;
-                }
-                historyTooltip.style.top = `${30 * deltaY_sum / window.innerHeight}vh`;
-            }
-            // 纵向滑动已经到底后仍然向上滑动
-            else if (direction == "down" && window.scrollY + window.innerHeight >= document.body.scrollHeight && event.touches[0].clientY < startY)
-            {
-                if (event.cancelable) event.preventDefault();
-                // event.stopPropagation();
-                deltaY += (event.touches[0].clientY - startY);
-                deltaY_sum += (event.touches[0].clientY - startY);
-                startY = event.touches[0].clientY;
-                while (deltaY < -threshold)
-                {
-                    const nextState = stateHistory.redo();
-                    if (nextState)
-                    {
-                        recoverStatefrom(nextState);
-                    }
-                    deltaY += threshold;
-                }
-                historyTooltip.style.top = `${document.body.scrollHeight * (1 + 0.3 * deltaY_sum / window.innerHeight)}px`;
-            }
-        }
+//         function ontouchscroll(event)
+//         {
+//             // 纵向滑动已经到顶后仍然向下滑动
+//             if (direction == "up" && window.scrollY <= 0 && event.touches[0].clientY > startY)
+//             {
+//                 if (event.cancelable) event.preventDefault();
+//                 event.stopPropagation();
+//                 deltaY += (event.touches[0].clientY - startY);
+//                 deltaY_sum += (event.touches[0].clientY - startY);
+//                 startY = event.touches[0].clientY;
+//                 while (deltaY > threshold)
+//                 {
+//                     const previousState = stateHistory.undo();
+//                     if (previousState)
+//                     {
+//                         recoverStatefrom(previousState);
+//                     }
+//                     deltaY -= threshold;
+//                 }
+//                 historyTooltip.style.top = `${30 * deltaY_sum / window.innerHeight}vh`;
+//             }
+//             // 纵向滑动已经到底后仍然向上滑动
+//             else if (direction == "down" && window.scrollY + window.innerHeight >= document.body.scrollHeight && event.touches[0].clientY < startY)
+//             {
+//                 if (event.cancelable) event.preventDefault();
+//                 event.stopPropagation();
+//                 deltaY += (event.touches[0].clientY - startY);
+//                 deltaY_sum += (event.touches[0].clientY - startY);
+//                 startY = event.touches[0].clientY;
+//                 while (deltaY < -threshold)
+//                 {
+//                     const nextState = stateHistory.redo();
+//                     if (nextState)
+//                     {
+//                         recoverStatefrom(nextState);
+//                     }
+//                     deltaY += threshold;
+//                 }
+//                 historyTooltip.style.top = `${document.body.scrollHeight * (1 + 0.3 * deltaY_sum / window.innerHeight)}px`;
+//             }
+//             else
+//             {
+//                 document.removeEventListener("touchmove", ontouchscroll);
+//                 document.removeEventListener("touchend", ontouchscrollend);
+//             }
+//         }
 
-        function ontouchend(event)
-        {
-            historyTooltip.style.visibility = "hidden";
-            historyTooltip.style.opacity = "0";
-            document.removeEventListener("touchmove", ontouchscroll);
-            document.removeEventListener("touchend", ontouchend);
-        }
+//         function ontouchscrollend(event)
+//         {
+//             historyTooltip.style.visibility = "hidden";
+//             historyTooltip.style.opacity = "0";
+//             document.removeEventListener("touchmove", ontouchscroll);
+//             document.removeEventListener("touchend", ontouchscrollend);
+//         }
 
-        document.addEventListener("touchmove", ontouchscroll, { passive: false });
+//         document.addEventListener("touchmove", ontouchscroll, { passive: false });
 
-        document.addEventListener("touchend", ontouchend);
-    }, { passive: false });
+//         document.addEventListener("touchend", ontouchscrollend);
+//     }, { passive: false });
 }
 
 // 启动游戏
