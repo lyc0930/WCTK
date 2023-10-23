@@ -178,7 +178,7 @@ function leap(piece, cell, isDraw = false)
 {
     const row = cell.row;
     const col = cell.col;
-    if (piece && isStayable(cell, piece, false))
+    if (piece && isStayable(cell, piece))
     {
         record(`${piece.name} (${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) ▷ (${row + 1}, ${col + 1})`);
         if (isDraw)

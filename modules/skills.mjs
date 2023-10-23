@@ -230,7 +230,8 @@ function jie_yue(piece, limit = 3)
             var minDistance = 100;
             for (const cell of document.getElementsByClassName("cell"))
             {
-                if (isStayable(cell, this, false) && Math.sign(cell.row - piece.parentElement.row) == signRow && Math.sign(cell.col - piece.parentElement.col) == signCol)
+                // TODO reentry
+                if (isStayable(cell, this) && Math.sign(cell.row - piece.parentElement.row) == signRow && Math.sign(cell.col - piece.parentElement.col) == signCol)
                 {
                     const d = distance(piece, cell);
                     if (d < minDistance)

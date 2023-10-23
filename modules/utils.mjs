@@ -166,6 +166,10 @@ function isStayable(cell, piece = null, reentry = true)
     var chong_sha = (currentPhase == "移动" && piece.name === "张绣" && subject === piece);
     for (const pieceInCell of piecesIn(cell))
     {
+        if (piece === pieceInCell)
+        {
+            continue;
+        }
         if (allyPiecesOf(piece).includes(pieceInCell))
         {
             return false;
