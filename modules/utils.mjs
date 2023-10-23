@@ -483,6 +483,7 @@ function HPColor(HP, maxHP)
     return 'rgb(' + result.r + ',' + result.g + ',' + result.b + ')';
 }
 
+// 绘制移动
 function drawArrow(line, color = 'rgba(50, 50, 50)', isArrow = true)
 {
     const canvas = document.getElementById('canvas');
@@ -545,6 +546,7 @@ function drawArrow(line, color = 'rgba(50, 50, 50)', isArrow = true)
     }
 }
 
+// 绘制转移
 function drawTeleport(line, color = 'rgba(50, 50, 50)')
 {
     const canvas = document.getElementById('canvas');
@@ -597,6 +599,7 @@ function drawTeleport(line, color = 'rgba(50, 50, 50)')
     ctx.stroke();
 }
 
+// 清空画布
 function cls(delay = 0)
 {
     const canvas = document.getElementById('canvas');
@@ -615,4 +618,10 @@ function cls(delay = 0)
     }
 }
 
-export { distance, PathesOf, isStayable, isPassable, adjacentCells, nearestCellOf, isRideOn, isOnSameLine, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls};
+// 对局记录
+function record(message)
+{
+    console.info(message);
+}
+
+export { distance, PathesOf, isStayable, isPassable, adjacentCells, nearestCellOf, isRideOn, isOnSameLine, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls, record};

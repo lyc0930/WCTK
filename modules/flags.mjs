@@ -1,5 +1,5 @@
 import { Pieces } from "./global_variables.mjs";
-import { baseOf, enemyBaseOf, piecesIn } from "./utils.mjs";
+import { baseOf, enemyBaseOf, piecesIn, record } from "./utils.mjs";
 
 const redFlag = document.createElement("img");
 var redCarrier = null;
@@ -61,14 +61,14 @@ function setRedCarrier(piece, log = true)
 
         if (log)
         {
-            console.log(`${piece.name}成为主帅`);
+            record(`${piece.name}成为主帅`);
         }
 
         if (piece.parentElement === enemyBaseOf(piece)) // 在敌方大本营获得帅旗
         {
             var score = 5;
             const base = baseOf(piece);
-            console.log(`${piece.name}送至帅旗, 红方+${score}分`);
+            record(`${piece.name}送至帅旗, 红方+${score}分`);
             const alliesInBase = Array.from(piecesIn(base)).filter(piece => piece.classList.contains("red-piece"));
             if (alliesInBase.length === 1)
             {
@@ -92,7 +92,7 @@ function setRedCarrier(piece, log = true)
             oldCheckbox.checked = false;
             if (log)
             {
-                console.log(`${redCarrier.name}掉落帅旗`);
+                record(`${redCarrier.name}掉落帅旗`);
             }
             redCarrier = null;
         }
@@ -121,14 +121,14 @@ function setBlueCarrier(piece, log = true)
         checkBox.checked = true;
         if (log)
         {
-            console.log(`${piece.name}成为主帅`);
+            record(`${piece.name}成为主帅`);
         }
 
         if (piece.parentElement === enemyBaseOf(piece)) // 在敌方大本营获得帅旗
         {
             var score = 5;
             const base = baseOf(piece);
-            console.log(`${piece.name}送至帅旗, 蓝方+${score}分`);
+            record(`${piece.name}送至帅旗, 蓝方+${score}分`);
             const alliesInBase = Array.from(piecesIn(base)).filter(piece => piece.classList.contains("blue-piece"));
             if (alliesInBase.length === 1)
             {
@@ -152,7 +152,7 @@ function setBlueCarrier(piece, log = true)
             oldCheckbox.checked = false;
             if (log)
             {
-                console.log(`${blueCarrier.name}掉落帅旗`);
+                record(`${blueCarrier.name}掉落帅旗`);
             }
             blueCarrier = null;
         }

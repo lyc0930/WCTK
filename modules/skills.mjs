@@ -2,7 +2,7 @@ import { Pieces } from "./global_variables.mjs";
 import { armors, horses } from "./data.mjs";
 import { saveState } from "./history.mjs";
 import { move, leap_to_cells, leap } from "./actions.mjs";
-import { distance, allPiecesOf, allyPiecesOf, adjacentCells, nearestCellOf, isRideOn, isOnSameLine, isStayable, piecesIn, cls } from "./utils.mjs";
+import { distance, allPiecesOf, allyPiecesOf, adjacentCells, nearestCellOf, isRideOn, isOnSameLine, isStayable, piecesIn, cls, record } from "./utils.mjs";
 import { endMovePhase } from "./phases.mjs";
 import { highlightPieces, removeHighlight } from "./highlight.mjs";
 
@@ -110,7 +110,7 @@ function yong_quan(piece)
 // 〖冲杀〗
 function chong_sha(piece, object, direction)
 {
-    console.log(`张绣发动〖冲杀〗`);
+    record(`张绣发动〖冲杀〗`);
     const cell = object.parentElement;
     const row = cell.row;
     const col = cell.col;
@@ -139,7 +139,6 @@ function chong_sha(piece, object, direction)
         }
         else // 只有一个最近的可进入区域
         {
-            console.log(nearestCells[0]);
             leap(object, nearestCells[0], false);
         }
         // 然后你对该角色造成1点普通伤害
@@ -163,7 +162,7 @@ function you_bing(piece, object, direction)
     // 当你于本阶段移动一步后，你控制该角色执行一次步数为1且方向与你此步移动相同的移动。
     if (adjacentCells(cell, object).includes(targetCell) && !yong_quan(object) && !isRideOn(object, "阻动"))
     {
-        console.log(`祖茂发动〖诱兵〗`);
+        record(`祖茂发动〖诱兵〗`);
         object.moveSteps = 1;
         move(object, targetCell, false, true);
     }
@@ -173,7 +172,7 @@ function you_bing(piece, object, direction)
 function shen_xing(piece)
 {
     // 移动阶段开始前，你可以跳过此阶段，然后转移至一个可进入空区域。
-    console.log(`左慈发动〖神行〗`);
+    record(`左慈发动〖神行〗`);
     const targetCells = [];
     for (const cell of document.getElementsByClassName("cell"))
     {
@@ -212,7 +211,7 @@ function jie_yue(piece, limit = 3)
         {
             // event.stopPropagation();
 
-            console.log(`于禁发动〖节钺〗`);
+            record(`于禁发动〖节钺〗`);
             removeHighlight("targetable", click_to_pull);
 
             // 将其转移至该角色所在的方向上与你的距离最近的可进入区域，

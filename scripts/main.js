@@ -3,7 +3,7 @@ import { terrain, HERO_DATA, weapons, armors, horses } from '../modules/data.mjs
 import { highlightCells, removeHighlight, isHighlighting } from '../modules/highlight.mjs';
 import { stateHistory, saveState, recoverStatefrom } from '../modules/history.mjs';
 import { generateFlags, setCarrier } from '../modules/flags.mjs';
-import { HPColor, cls } from '../modules/utils.mjs';
+import { HPColor, cls, record } from '../modules/utils.mjs';
 import { zhan_ji, zhan_ji_undo } from '../modules/skills.mjs';
 import { contextMenuItems, addContextMenu, removeContextMenu } from '../modules/context-menu.mjs';
 import { Pieces } from '../modules/global_variables.mjs';
@@ -511,14 +511,14 @@ function initializeGame()
                     const avatar = piece.querySelector(".avatar");
                     avatar.src = "./assets/Avatar/active/" + HERO_DATA[piece.name]["拼音"] + ".png";
                 }
-                console.log(`新轮次开始`);
+                record(`新轮次开始`);
             }
             else
             {
                 piece.acted = true;
                 const avatar = piece.querySelector(".avatar");
                 avatar.src = "./assets/Avatar/inactive/" + HERO_DATA[piece.name]["拼音"] + ".png";
-                console.log(`${piece.name}回合结束`);
+                record(`${piece.name}回合结束`);
             }
             saveState();
         }

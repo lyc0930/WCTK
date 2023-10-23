@@ -1,5 +1,5 @@
 import { setCurrentPlayer, setCurrentPhase } from "./global_variables.mjs";
-import { distance, PathesOf, adjacentCells, isStayable, allPiecesOf, enemyPiecesOf, cls } from "./utils.mjs";
+import { distance, PathesOf, adjacentCells, isStayable, allPiecesOf, enemyPiecesOf, cls, record } from "./utils.mjs";
 import { highlightCells, highlightPieces, removeHighlight, isHighlighting } from "./highlight.mjs";
 import { move, step } from '../modules/actions.mjs';
 import { yong_quan, you_bing } from "../modules/skills.mjs";
@@ -32,7 +32,7 @@ function movePhase(piece)
         {
             if (distance(piece, enemyPiece) <= limit && !yong_quan(piece))
             {
-                console.log("王异发动【拒敌】");
+                record("王异发动【拒敌】");
                 ju_di = true;
             }
             break;
@@ -46,7 +46,7 @@ function movePhase(piece)
     // 〖奔命〗
     if (piece.name === "孙乾")
     {
-        console.log("孙乾发动【奔命】");
+        record("孙乾发动【奔命】");
         piece.movePoints = 4;
     }
 
@@ -156,7 +156,7 @@ function movePhase_you_bing(piece)
         {
             if (distance(piece, enemyPiece) <= limit && !yong_quan(piece))
             {
-                console.log("王异发动【拒敌】");
+                record("王异发动【拒敌】");
                 ju_di = true;
             }
             break;
@@ -193,7 +193,7 @@ function movePhase_you_bing(piece)
         function onclick(event)
         {
             // event.stopPropagation();
-            console.log(`祖茂发动〖诱兵〗`);
+            record(`祖茂发动〖诱兵〗`);
             removeHighlight("targetable", onclick);
 
             object = this;

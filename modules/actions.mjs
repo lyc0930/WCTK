@@ -1,5 +1,5 @@
 import { HERO_DATA } from './data.mjs';
-import { adjacentCells, PathesOf, isPassable, isStayable, isRideOn, baseOf, enemyBaseOf, enemyPiecesOf, piecesIn, HPColor, drawArrow, drawTeleport, cls } from "./utils.mjs";
+import { adjacentCells, PathesOf, isPassable, isStayable, isRideOn, baseOf, enemyBaseOf, enemyPiecesOf, piecesIn, HPColor, drawArrow, drawTeleport, cls, record } from "./utils.mjs";
 import { highlightCells, removeHighlight } from "./highlight.mjs";
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
@@ -46,9 +46,9 @@ function move(piece, cell, ifConsumeMovePoints = false, isDraw = false)
         for (var i = 1; i < path.length; i++)
         {
             step(piece, path[i], isDraw);
-            moveLog += ` -> (${path[i].row + 1}, ${path[i].col + 1})`;
+            moveLog += ` ▶ (${path[i].row + 1}, ${path[i].col + 1})`;
         }
-        console.log(piece.name, moveLog);
+        record(`${piece.name} ${moveLog}`);
 
         return true;
     }
@@ -103,7 +103,7 @@ function step(piece, cell, isDraw = false)
         }
         else // 〖渡江〗
         {
-            console.log(`${piece.name}使用【渡江】`);
+            record(`${piece.name}发动【渡江】`);
             if (isDraw)
             {
                 drawTeleport([[_step.start.row, _step.start.col], [_step.end.row, _step.end.col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
@@ -180,7 +180,7 @@ function leap(piece, cell, isDraw = false)
     const col = cell.col;
     if (piece && isStayable(cell, piece, false))
     {
-        console.log(piece.name, `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) |> (${row + 1}, ${col + 1})`);
+        record(`${piece.name} (${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) ▷ (${row + 1}, ${col + 1})`);
         if (isDraw)
         {
             drawTeleport([[piece.parentElement.row, piece.parentElement.col], [row, col]], piece.classList.contains("red-piece") ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
@@ -264,14 +264,14 @@ function slot(piece, cell, isDraw = false)
 
             piece.alive = true;
 
-            console.log(`${piece.name}登场于(${row + 1}, ${col + 1})`);
+            record(`${piece.name}登场于(${row + 1}, ${col + 1})`);
 
             removeContextMenu(piece);
             addContextMenu(piece, contextMenuItems(piece));
         }
         else
         {
-            console.log(piece.name, `(${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) |> (${row + 1}, ${col + 1})`);
+            record(`${piece.name} (${piece.parentElement.row + 1}, ${piece.parentElement.col + 1}) ▷ (${row + 1}, ${col + 1})`);
         }
 
         cell.appendChild(piece);
@@ -295,11 +295,11 @@ function swap(pieceP, pieceQ)
     // 交换
     if ((pieceP && isStayable(cellQ, pieceP)) && pieceQ && isStayable(cellP, pieceQ))
     {
-        console.log(pieceP.name, `(${cellP.row + 1}, ${cellP.col + 1}) |> (${cellQ.row + 1}, ${cellQ.col + 1})`);
+        record(`${pieceP.name} (${cellP.row + 1}, ${cellP.col + 1}) ▷ (${cellQ.row + 1}, ${cellQ.col + 1})`);
         cellQ.appendChild(pieceP);
         afterPositionChange(pieceP, cellQ);
 
-        console.log(pieceQ.name, `(${cellQ.row + 1}, ${cellQ.col + 1}) |> (${cellP.row + 1}, ${cellP.col + 1})`);
+        record(`${pieceQ.name} (${cellQ.row + 1}, ${cellQ.col + 1}) ▷ (${cellP.row + 1}, ${cellP.col + 1})`);
         cellP.appendChild(pieceQ);
         afterPositionChange(pieceQ, cellP);
 
@@ -326,7 +326,7 @@ function bury(piece)
         carrierCheckbox.disabled = true;
 
         var score = 3;
-        console.log(`${piece.name}死亡, ${piece.classList.contains("red-piece") ? '蓝方' : '红方'}+${score}分`);
+        record(`${piece.name}死亡, ${piece.classList.contains("red-piece") ? '蓝方' : '红方'}+${score}分`);
         if (piece === redCarrier)
         {
             setCarrier("Red", null);
@@ -404,7 +404,7 @@ function afterPositionChange(piece, cell)
                 setCarrier("Red", null);
                 base.appendChild(redFlag);
             }
-            console.log(`${piece.name}送至帅旗, 红方+${score}分`);
+            record(`${piece.name}送至帅旗, 红方+${score}分`);
         }
         else if (piece.classList.contains("blue-piece"))
         {
@@ -419,7 +419,7 @@ function afterPositionChange(piece, cell)
                 setCarrier("Blue", null);
                 base.appendChild(blueFlag);
             }
-            console.log(`${piece.name}送至帅旗, 蓝方+${score}分`);
+            record(`${piece.name}送至帅旗, 蓝方+${score}分`);
         }
         else
         {

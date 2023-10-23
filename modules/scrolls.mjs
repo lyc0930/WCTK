@@ -1,4 +1,4 @@
-import { baseOf, allyPiecesOf, adjacentCells, isStayable, allPiecesOf, isRideOn } from "./utils.mjs";
+import { baseOf, allyPiecesOf, adjacentCells, isStayable, allPiecesOf, isRideOn, record } from "./utils.mjs";
 import { isHighlighting, highlightCells, highlightPieces, removeHighlight } from "./highlight.mjs";
 import { leap_to_cells, move_fixed_steps, swap } from "./actions.mjs";
 import { yong_quan } from "./skills.mjs";
@@ -12,7 +12,7 @@ function AnDuChenCang(user, limit = 3)
         return;
     }
 
-    console.log(`${user.name}使用【暗度陈仓】`);
+    record(`${user.name}使用【暗度陈仓】`);
     const userRow = user.parentElement.row;
     const userCol = user.parentElement.col;
     var landableCells = [];
@@ -42,7 +42,7 @@ function BingGuiShenSu(user)
         return;
     }
 
-    console.log(`${user.name}使用【兵贵神速】`);
+    record(`${user.name}使用【兵贵神速】`);
     // 执行一次步数为2的移动
     user.moveSteps = 2;
 
@@ -57,7 +57,7 @@ function QiMenDunJia(user, limit = 2)
         return;
     }
 
-    console.log(`${user.name}使用【奇门遁甲】`);
+    record(`${user.name}使用【奇门遁甲】`);
     const userRow = user.parentElement.row;
     const userCol = user.parentElement.col;
     var targetablePieces = [];
@@ -93,7 +93,7 @@ function YouDiShenRu(user, limit = 4)
         return;
     }
 
-    console.log(`${user.name}使用【诱敌深入】`);
+    record(`${user.name}使用【诱敌深入】`);
     const userRow = user.parentElement.row;
     const userCol = user.parentElement.col;
     var targetablePieces = [];
