@@ -2,7 +2,7 @@ import { Pieces } from "./global_variables.mjs";
 import { armors, horses } from "./data.mjs";
 import { saveState } from "./history.mjs";
 import { move, leap_to_cells, leap } from "./actions.mjs";
-import { distance, allPiecesOf, allyPiecesOf, adjacentCells, nearestCellOf, isRideOn, isOnSameLine, isStayable, piecesIn, cls, record } from "./utils.mjs";
+import { distance, allPiecesOf, allyPiecesOf, baseOf, adjacentCells, nearestCellOf, isRideOn, isOnSameLine, isStayable, piecesIn, cls, record } from "./utils.mjs";
 import { endMovePhase } from "./phases.mjs";
 import { highlightPieces, removeHighlight } from "./highlight.mjs";
 
@@ -87,6 +87,15 @@ function zhan_ji_undo(piece)
     }
 
     horseSelect.style.width = "65%";
+}
+
+// 〖归营〗
+function gui_ying(piece)
+{
+    // 结束阶段，你可以转移至己方大本营，
+    record(`孙乾发动〖归营〗`);
+    leap(piece, baseOf(piece), true);
+    // 然后你摸一张牌。
 }
 
 // 〖拥权〗
@@ -250,6 +259,6 @@ function jie_yue(piece, limit = 3)
     // 若如此做，本回合你不能对其使用牌。
 }
 
-export { zhan_ji, zhan_ji_undo, yong_quan, chong_sha, you_bing, shen_xing, jie_yue };
+export { zhan_ji, zhan_ji_undo, gui_ying, yong_quan, chong_sha, you_bing, shen_xing, jie_yue };
 
 
