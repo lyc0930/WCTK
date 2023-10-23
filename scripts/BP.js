@@ -240,8 +240,7 @@ function createHeroCandidate(name, index)
             return;
         }
 
-        event.preventDefault();
-        // event.stopPropagation();
+        event.stopPropagation();
 
         piece.style.width = "12vmin";
         piece.style.height = "12vmin";
@@ -653,104 +652,126 @@ function initializeHistory()
             return;
         }
 
-        var direction = null;
+        var edge = null;
 
         const historyTooltip = document.getElementById("history-tooltip");
         const icon = historyTooltip.querySelector("i");
+        const label = historyTooltip.querySelector("label");
 
-        // 没到顶且没到底
-        if (window.scrollY <= 0 && history.currentIndex > 0)
+        if (window.scrollY <= 0)
         {
-            direction = "up";
+            edge = "top";
         }
-        else if (window.scrollY + window.innerHeight >= document.body.scrollHeight && history.currentIndex < history.history.length - 1)
+        else if (window.scrollY + window.innerHeight >= document.body.scrollHeight)
         {
-            direction = "down";
+            edge = "bottom";
         }
         else
         {
             return;
         }
 
-        if (event.cancelable) event.preventDefault();
-
         historyTooltip.style.visibility = "visible";
         historyTooltip.style.opacity = "1";
 
-        if (direction == "up")
+        if (edge == "top")
         {
             historyTooltip.style.top = "0";
             historyTooltip.style.webkitTransform = "translate(-50%, -100%)";
             historyTooltip.style.transform = "translate(-50%, -100%)";
             icon.className = "fas fa-rotate-left";
+            label.textContent = "后退0步";
         }
-        else
+        else if (edge == "bottom")
         {
             historyTooltip.style.top = `${document.body.scrollHeight}px`;
-            historyTooltip.style.webkitTransform = "translate(-50%, 0)";
-            historyTooltip.style.transform = "translate(-50%, 0)";
+            historyTooltip.style.webkitTransform = "translate(-50%, 100%)";
+            historyTooltip.style.transform = "translate(-50%, 100%)";
             icon.className = "fas fa-rotate-right";
+            label.textContent = "重做0步";
         }
 
-
-        var startY = event.touches[0].clientY;
-        var deltaY = 0;
-        var deltaY_sum = 0;
+        const startIndex = history.currentIndex;
+        const startINDEX = INDEX;
+        const startY = event.touches[0].clientY;
         const threshold = 100;
+
+        var direction = null;
 
         function ontouchscroll(event)
         {
-            // 纵向滑动已经到顶后仍然向下滑动
-            if (direction == "up" && window.scrollY <= 0 && event.touches[0].clientY > startY)
+            var deltaY = (event.touches[0].clientY - startY);
+
+            if (direction == null)
             {
-                if (event.cancelable) event.preventDefault();
-                // event.stopPropagation();
-                deltaY += (event.touches[0].clientY - startY);
-                deltaY_sum += (event.touches[0].clientY - startY);
-                startY = event.touches[0].clientY;
-                while (deltaY > threshold)
+                // 纵向滑动已经到顶
+                if (edge == "top" && deltaY > 0)
                 {
-                    const previousState = history.undo();
-                    if (previousState)
-                    {
-                        recoverBPStatefrom(previousState);
-                    }
-                    deltaY -= threshold;
+                    direction = "pull-down";
                 }
-                historyTooltip.style.top = `${30 * deltaY_sum / window.innerHeight}vh`;
+                // 纵向滑动已经到底
+                else if (edge == "bottom" && deltaY < 0)
+                {
+                    direction = "pull-up";
+                }
+                else
+                {
+                    return;
+                }
             }
-            // 纵向滑动已经到底后仍然向上滑动
-            else if (direction == "down" && window.scrollY + window.innerHeight >= document.body.scrollHeight && event.touches[0].clientY < startY)
+
+            if (event.cancelable) event.preventDefault();
+
+            // 纵向滑动已经到顶
+            if (direction == "pull-down" && deltaY > 0)
             {
-                if (event.cancelable) event.preventDefault();
-                // event.stopPropagation();
-                deltaY += (event.touches[0].clientY - startY);
-                deltaY_sum += (event.touches[0].clientY - startY);
-                startY = event.touches[0].clientY;
-                while (deltaY < -threshold)
+                var deltaIndex = parseInt(deltaY / threshold);
+                if (startIndex - deltaIndex >= 0 && startINDEX - deltaIndex >= 0)
                 {
-                    const nextState = history.redo();
-                    if (nextState)
+                    const state = history.history[startIndex - deltaIndex];
+                    history.currentIndex = startIndex - deltaIndex;
+                    INDEX = startINDEX - deltaIndex;
+                    if (state)
                     {
-                        recoverBPStatefrom(nextState);
+                        recoverBPStatefrom(state);
                     }
-                    deltaY += threshold;
+
+                    label.textContent = `后退${deltaIndex}步`;
+                    label.style.display = (deltaIndex != 0) ? "block" : "none";
                 }
-                historyTooltip.style.top = `${document.body.scrollHeight * (1 + 0.3 * deltaY_sum / window.innerHeight)}px`;
+                historyTooltip.style.top = `${30 * deltaY / window.innerHeight}vh`;
+            }
+            // 纵向滑动已经到底
+            else if (direction == "pull-up" && deltaY < 0)
+            {
+                var deltaIndex = parseInt(- deltaY / threshold);
+                if (startIndex + deltaIndex < history.history.length && startINDEX + deltaIndex < 16)
+                {
+                    const state = history.history[startIndex + deltaIndex];
+                    history.currentIndex = startIndex + deltaIndex;
+                    INDEX = startINDEX + deltaIndex;
+                    if (state)
+                    {
+                        recoverBPStatefrom(state);
+                    }
+                    label.textContent = `重做${deltaIndex}步`;
+                    label.style.display = (deltaIndex != 0) ? "block" : "none";
+                }
+                historyTooltip.style.top = `${document.body.scrollHeight * (1 + 0.3 * deltaY / window.innerHeight)}px`;
             }
         }
 
-        function ontouchend(event)
+        function ontouchscrollend(event)
         {
             historyTooltip.style.visibility = "hidden";
             historyTooltip.style.opacity = "0";
             document.removeEventListener("touchmove", ontouchscroll);
-            document.removeEventListener("touchend", ontouchend);
+            document.removeEventListener("touchend", ontouchscrollend);
         }
 
         document.addEventListener("touchmove", ontouchscroll, { passive: false });
 
-        document.addEventListener("touchend", ontouchend);
+        document.addEventListener("touchend", ontouchscrollend);
     }, { passive: false });
 }
 

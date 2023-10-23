@@ -807,116 +807,131 @@ function initializeGame()
         }
     });
 
-//     document.addEventListener("touchstart", function (event)
-//     {
-//         if (event.touches.length > 1 || isHighlighting())
-//         {
-//             return;
-//         }
+    document.addEventListener("touchstart", function (event)
+    {
+        if (event.touches.length > 1 || isHighlighting())
+        {
+            return;
+        }
 
-//         var direction = null;
+        var edge = null;
 
-//         const historyTooltip = document.getElementById("history-tooltip");
-//         const icon = historyTooltip.querySelector("i");
+        const historyTooltip = document.getElementById("history-tooltip");
+        const icon = historyTooltip.querySelector("i");
+        const label = historyTooltip.querySelector("label");
 
-//         if (window.scrollY <= 0 && stateHistory.currentIndex > 0)
-//         {
-//             direction = "up";
-//         }
-//         else if (window.scrollY + window.innerHeight >= document.body.scrollHeight && stateHistory.currentIndex < stateHistory.history.length - 1)
-//         {
-//             direction = "down";
-//         }
-//         else
-//         {
-//             return;
-//         }
+        if (window.scrollY <= 0)
+        {
+            edge = "top";
+        }
+        else if (window.scrollY + window.innerHeight >= document.body.scrollHeight)
+        {
+            edge = "bottom";
+        }
+        else
+        {
+            return;
+        }
 
-//         // if (event.cancelable) event.preventDefault();
+        historyTooltip.style.visibility = "visible";
+        historyTooltip.style.opacity = "1";
 
-//         historyTooltip.style.visibility = "visible";
-//         historyTooltip.style.opacity = "1";
+        if (edge == "top")
+        {
+            historyTooltip.style.top = "0";
+            historyTooltip.style.webkitTransform = "translate(-50%, -100%)";
+            historyTooltip.style.transform = "translate(-50%, -100%)";
+            icon.className = "fas fa-rotate-left";
+            label.textContent = "后退0步";
+        }
+        else if (edge == "bottom")
+        {
+            historyTooltip.style.top = `${document.body.scrollHeight}px`;
+            historyTooltip.style.webkitTransform = "translate(-50%, 100%)";
+            historyTooltip.style.transform = "translate(-50%, 100%)";
+            icon.className = "fas fa-rotate-right";
+            label.textContent = "重做0步";
+        }
 
-//         if (direction == "up")
-//         {
-//             historyTooltip.style.top = "0";
-//             historyTooltip.style.webkitTransform = "translate(-50%, -100%)";
-//             historyTooltip.style.transform = "translate(-50%, -100%)";
-//             icon.className = "fas fa-rotate-left";
-//         }
-//         else
-//         {
-//             historyTooltip.style.top = `${document.body.scrollHeight}px`;
-//             historyTooltip.style.webkitTransform = "translate(-50%, 0)";
-//             historyTooltip.style.transform = "translate(-50%, 0)";
-//             icon.className = "fas fa-rotate-right";
-//         }
+        const startIndex = stateHistory.currentIndex;
+        const startY = event.touches[0].clientY;
+        const threshold = 100;
 
+        var direction = null;
 
-//         var startY = event.touches[0].clientY;
-//         var deltaY = 0;
-//         var deltaY_sum = 0;
-//         const threshold = 100;
+        function ontouchscroll(event)
+        {
+            var deltaY = (event.touches[0].clientY - startY);
 
-//         function ontouchscroll(event)
-//         {
-//             // 纵向滑动已经到顶后仍然向下滑动
-//             if (direction == "up" && window.scrollY <= 0 && event.touches[0].clientY > startY)
-//             {
-//                 if (event.cancelable) event.preventDefault();
-//                 event.stopPropagation();
-//                 deltaY += (event.touches[0].clientY - startY);
-//                 deltaY_sum += (event.touches[0].clientY - startY);
-//                 startY = event.touches[0].clientY;
-//                 while (deltaY > threshold)
-//                 {
-//                     const previousState = stateHistory.undo();
-//                     if (previousState)
-//                     {
-//                         recoverStatefrom(previousState);
-//                     }
-//                     deltaY -= threshold;
-//                 }
-//                 historyTooltip.style.top = `${30 * deltaY_sum / window.innerHeight}vh`;
-//             }
-//             // 纵向滑动已经到底后仍然向上滑动
-//             else if (direction == "down" && window.scrollY + window.innerHeight >= document.body.scrollHeight && event.touches[0].clientY < startY)
-//             {
-//                 if (event.cancelable) event.preventDefault();
-//                 event.stopPropagation();
-//                 deltaY += (event.touches[0].clientY - startY);
-//                 deltaY_sum += (event.touches[0].clientY - startY);
-//                 startY = event.touches[0].clientY;
-//                 while (deltaY < -threshold)
-//                 {
-//                     const nextState = stateHistory.redo();
-//                     if (nextState)
-//                     {
-//                         recoverStatefrom(nextState);
-//                     }
-//                     deltaY += threshold;
-//                 }
-//                 historyTooltip.style.top = `${document.body.scrollHeight * (1 + 0.3 * deltaY_sum / window.innerHeight)}px`;
-//             }
-//             else
-//             {
-//                 document.removeEventListener("touchmove", ontouchscroll);
-//                 document.removeEventListener("touchend", ontouchscrollend);
-//             }
-//         }
+            if (direction == null)
+            {
+                // 纵向滑动已经到顶
+                if (edge == "top" && deltaY > 0)
+                {
+                    direction = "pull-down";
+                }
+                // 纵向滑动已经到底
+                else if (edge == "bottom" && deltaY < 0)
+                {
+                    direction = "pull-up";
+                }
+                else
+                {
+                    return;
+                }
+            }
 
-//         function ontouchscrollend(event)
-//         {
-//             historyTooltip.style.visibility = "hidden";
-//             historyTooltip.style.opacity = "0";
-//             document.removeEventListener("touchmove", ontouchscroll);
-//             document.removeEventListener("touchend", ontouchscrollend);
-//         }
+            if (event.cancelable) event.preventDefault();
 
-//         document.addEventListener("touchmove", ontouchscroll, { passive: false });
+            // 纵向滑动已经到顶
+            if (direction == "pull-down" && deltaY > 0)
+            {
+                var index = startIndex - parseInt(deltaY / threshold);
+                if (index >= 0)
+                {
+                    const state = stateHistory.history[index];
+                    stateHistory.currentIndex = index;
+                    if (state)
+                    {
+                        recoverStatefrom(state);
+                    }
 
-//         document.addEventListener("touchend", ontouchscrollend);
-//     }, { passive: false });
+                    label.textContent = `后退${parseInt(deltaY / threshold)}步`;
+                    label.style.display = (parseInt(deltaY / threshold) != 0) ? "block" : "none";
+                }
+                historyTooltip.style.top = `${30 * deltaY / window.innerHeight}vh`;
+            }
+            // 纵向滑动已经到底
+            else if (direction == "pull-up" && deltaY < 0)
+            {
+                var index = startIndex - parseInt(deltaY / threshold);
+                if (index < stateHistory.history.length)
+                {
+                    const state = stateHistory.history[index];
+                    stateHistory.currentIndex = index;
+                    if (state)
+                    {
+                        recoverStatefrom(state);
+                    }
+                    label.textContent = `重做${parseInt(- deltaY / threshold)}步`;
+                    label.style.display = (parseInt(deltaY / threshold) != 0) ? "block" : "none";
+                }
+                historyTooltip.style.top = `${document.body.scrollHeight * (1 + 0.3 * deltaY / window.innerHeight)}px`;
+            }
+        }
+
+        function ontouchscrollend(event)
+        {
+            historyTooltip.style.visibility = "hidden";
+            historyTooltip.style.opacity = "0";
+            document.removeEventListener("touchmove", ontouchscroll);
+            document.removeEventListener("touchend", ontouchscrollend);
+        }
+
+        document.addEventListener("touchmove", ontouchscroll, { passive: false });
+
+        document.addEventListener("touchend", ontouchscrollend);
+    }, { passive: false });
 }
 
 // 启动游戏
