@@ -38,7 +38,7 @@ function onMouseLeavePiece(event)
 }
 
 // 创建棋盘
-function createChessboard()
+function createChessboard(mode = "野战")
 {
     const chessboard = document.getElementById("chessboard");
 
@@ -317,71 +317,9 @@ function createPiece(color, name, index)
     return piece;
 }
 
-// 初始化棋盘上的棋子
-function initializePieces()
+// 创建菜单
+function createMenuList()
 {
-    const chessboard = document.getElementById("chessboard");
-    const HERO_DATAList = Object.keys(HERO_DATA);
-    var initHeroes = [];
-    for (var i = 0; i < 6; i++)
-    {
-        var index = Math.floor(Math.random() * (HERO_DATAList.length - i));
-        initHeroes.push(HERO_DATAList[index]);
-        HERO_DATAList[index] = HERO_DATAList[HERO_DATAList.length - 1 - i];
-    }
-    for (var i = 0; i < chessboard.children.length; i++)
-    {
-        if (chessboard.children[i].classList.contains("camp") || chessboard.children[i].classList.contains("base"))
-        {
-            if (chessboard.children[i].classList.contains("Red"))
-            {
-                const redPiece = createPiece("red", initHeroes.pop(), 6 - initHeroes.length);
-                Pieces.push(redPiece);
-                chessboard.children[i].appendChild(redPiece);
-                if (chessboard.children[i].classList.contains("base"))
-                {
-                    setCarrier("Red", redPiece);
-                }
-
-            }
-        }
-    }
-    for (var i = 0; i < chessboard.children.length; i++)
-    {
-        if (chessboard.children[i].classList.contains("camp") || chessboard.children[i].classList.contains("base"))
-        {
-            if (chessboard.children[i].classList.contains("Blue"))
-            {
-                const bluePiece = createPiece("blue", initHeroes.pop(), 6 - initHeroes.length);
-                Pieces.push(bluePiece);
-                chessboard.children[i].appendChild(bluePiece);
-                if (chessboard.children[i].classList.contains("base"))
-                {
-                    setCarrier("Blue", bluePiece);
-                }
-            }
-        }
-    }
-}
-
-// 初始化游戏
-function initializeGame()
-{
-
-    createChessboard();
-    generateFlags();
-
-    const chessboard = document.getElementById("chessboard");
-    document.addEventListener('contextmenu', event => { event.preventDefault(); event.stopPropagation(); }); // 禁用右键菜单
-    document.addEventListener('mouseup', function (event)
-    {
-        if (event.button === 2)
-        {
-            event.preventDefault()
-            cls();
-        }
-    });
-
     const redMenuList = document.createElement("div");
     redMenuList.className = "menu-list";
     redMenuList.id = "redMenuList";
@@ -476,7 +414,7 @@ function initializeGame()
         carrierCheckbox.type = "checkbox";
         carrierCheckbox.className = "checkbox";
         carrierCheckbox.id = "carrierCheckbox" + i;
-        carrierCheckbox.name = (i<=3 ? 'red' : 'blue') + "Checkbox";
+        carrierCheckbox.name = (i <= 3 ? 'red' : 'blue') + "Checkbox";
 
         carrierCheckbox.addEventListener("change", function (event)
         {
@@ -737,8 +675,74 @@ function initializeGame()
 
     document.body.appendChild(redMenuList);
     document.body.appendChild(blueMenuList);
+}
 
-    initializePieces();
+// 初始化棋盘上的棋子
+function initializePieces(names = [])
+{
+    const chessboard = document.getElementById("chessboard");
+    const HERO_DATAList = Object.keys(HERO_DATA);
+    var initHeroes = names;
+    for (var i = names.length; i < 6; i++)
+    {
+        var index = Math.floor(Math.random() * (HERO_DATAList.length - i));
+        initHeroes.push(HERO_DATAList[index]);
+        HERO_DATAList[index] = HERO_DATAList[HERO_DATAList.length - 1 - i];
+    }
+    for (var i = 0; i < chessboard.children.length; i++)
+    {
+        if (chessboard.children[i].classList.contains("camp") || chessboard.children[i].classList.contains("base"))
+        {
+            if (chessboard.children[i].classList.contains("Red"))
+            {
+                const redPiece = createPiece("red", initHeroes.shift(), 6 - initHeroes.length);
+                Pieces.push(redPiece);
+                chessboard.children[i].appendChild(redPiece);
+                if (chessboard.children[i].classList.contains("base"))
+                {
+                    setCarrier("Red", redPiece);
+                }
+
+            }
+        }
+    }
+    for (var i = 0; i < chessboard.children.length; i++)
+    {
+        if (chessboard.children[i].classList.contains("camp") || chessboard.children[i].classList.contains("base"))
+        {
+            if (chessboard.children[i].classList.contains("Blue"))
+            {
+                const bluePiece = createPiece("blue", initHeroes.shift(), 6 - initHeroes.length);
+                Pieces.push(bluePiece);
+                chessboard.children[i].appendChild(bluePiece);
+                if (chessboard.children[i].classList.contains("base"))
+                {
+                    setCarrier("Blue", bluePiece);
+                }
+            }
+        }
+    }
+}
+
+// 初始化游戏
+function initializeGame(mode = "野战", names = [])
+{
+    createChessboard(mode);
+    generateFlags();
+
+    const chessboard = document.getElementById("chessboard");
+    document.addEventListener('contextmenu', event => { event.preventDefault(); event.stopPropagation(); }); // 禁用右键菜单
+    document.addEventListener('mouseup', function (event)
+    {
+        if (event.button === 2)
+        {
+            event.preventDefault()
+            cls();
+        }
+    });
+
+    createMenuList();
+    initializePieces(names);
 
     // 撤销重做
     chessboard.addEventListener("wheel", function (event)
@@ -935,5 +939,5 @@ function initializeGame()
 }
 
 // 启动游戏
-initializeGame();
+initializeGame("野战", []);
 saveState();
