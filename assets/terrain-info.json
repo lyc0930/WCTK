@@ -83,7 +83,7 @@
         "color": "#FCFF00",
         "icon": "class='fad fa-square'"
     },
-    "据马刺": {
+    "拒马刺": {
         "className": "caltrop",
         "地形效果": "当一名角色移动一步前，若拒马刺不是此次移动的起点且此步移动的方向与此地形的指示箭头方向不同，终止此次移动。",
         "neutral": true,

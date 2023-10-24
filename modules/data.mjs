@@ -1,18 +1,9 @@
 import hero_data from "../assets/hero-data.json" assert { type: 'json' };
+import map from "../assets/map.json" assert { type: 'json' };
 import terrain_info from "../assets/terrain-info.json" assert { type: 'json' };
 
 // 地形
-const TERRAIN = {
-    "野战": [
-        ["驿站", "平原", "树林", "山岭", "平原", "军营-蓝方", "大本营-蓝方"],
-        ["平原", "平原", "树林", "湖泊", "树林", "平原", "军营-蓝方"],
-        ["树林", "平原", "山岭", "平原", "平原", "箭塔", "平原"],
-        ["平原", "山岭", "湖泊", "平原", "湖泊", "山岭", "平原"],
-        ["平原", "箭塔", "平原", "平原", "山岭", "平原", "平原"],
-        ["军营-红方", "平原", "树林", "湖泊", "树林", "平原", "平原"],
-        ["大本营-红方", "军营-红方", "平原", "山岭", "平原", "树林", "驿站"]
-    ]
-};
+const TERRAIN = map;
 
 // 地形信息
 const TERRAIN_INFO = terrain_info;
