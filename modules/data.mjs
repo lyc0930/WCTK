@@ -19,7 +19,7 @@ const TERRAIN_INFO = terrain_info;
 // 英雄数据
 const HERO_DATA = hero_data;
 
-function format(text)
+function format_skill(text)
 {
     const skillLabels = ["锁定技", "限定技"];
     for (let label of skillLabels)
@@ -60,14 +60,37 @@ for (let name in HERO_DATA)
 {
     for (let skillName in HERO_DATA[name]["技能"])
     {
-        HERO_DATA[name]["技能"][skillName] = format(HERO_DATA[name]["技能"][skillName]);
+        HERO_DATA[name]["技能"][skillName] = format_skill(HERO_DATA[name]["技能"][skillName]);
     }
+}
+
+function format_terrain(text)
+{
+    const terrain_names = Object.keys(terrain_info);
+    for (let name of terrain_names)
+    {
+        text = text.replace(name, `<span style="color: ${terrain_info[name]["color"]}">` + name + "</span>");
+    }
+
+    text = text.replace(/“([\u4e00-\u9fa5]+)”/g, "“<span class='skill-term'>$1</span>”");
+
+    text = text.replace("黑桃", '<i class="fas fa-spade" style="color: #000000;"></i>');
+    text = text.replace("红桃", '<i class="fas fa-heart" style="color: #ff2e2e;"></i>');
+    text = text.replace("梅花", '<i class="fas fa-club" style="color: #000000;"></i>');
+    text = text.replace("方块", '<i class="fas fa-diamond" style="color: #ff2e2e;"></i>');
+
+    text = text.replace("若结果为黑色", "若结果为<span class='skill-color-black'>黑色</span>");
+    text = text.replace("若结果为红色", "若结果为<span class='skill-color-red'>红色</span>");
+
+    text = text.replace("。", "。<br>")
+
+    return text;
 }
 
 // format every terrain info
 for (let name in TERRAIN_INFO)
 {
-    TERRAIN_INFO[name]["地形效果"] = format(TERRAIN_INFO[name]["地形效果"]);
+    TERRAIN_INFO[name]["地形效果"] = format_terrain(TERRAIN_INFO[name]["地形效果"]);
 }
 
 

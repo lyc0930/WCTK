@@ -717,7 +717,7 @@ function initializePieces(names = [])
     }
     for (var i = 0; i < chessboard.children.length; i++)
     {
-        if (chessboard.children[i].classList.contains("camp") || chessboard.children[i].classList.contains("base"))
+        if (chessboard.children[i].classList.contains("barrack") || chessboard.children[i].classList.contains("base"))
         {
             if (chessboard.children[i].classList.contains("Red"))
             {
@@ -734,7 +734,7 @@ function initializePieces(names = [])
     }
     for (var i = 0; i < chessboard.children.length; i++)
     {
-        if (chessboard.children[i].classList.contains("camp") || chessboard.children[i].classList.contains("base"))
+        if (chessboard.children[i].classList.contains("barrack") || chessboard.children[i].classList.contains("base"))
         {
             if (chessboard.children[i].classList.contains("Blue"))
             {

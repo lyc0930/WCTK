@@ -1,0 +1,226 @@
+{
+    "平原": {
+        "className": "plain",
+        "地形效果": "无地形效果。",
+        "neutral": true,
+        "color": "#A9C18E",
+        "icon": "class='far fa-clone'"
+    },
+    "树林": {
+        "className": "grove",
+        "地形效果": "位于此地形的角色需要使用或打出【闪】时，其可以进行判定，若结果为红桃，视为其使用或打出了一张普【闪】。位于此地形的角色受到火焰伤害时，此伤害值+1。",
+        "neutral": true,
+        "color": "#1B8643",
+        "icon": "class='fas fa-tree'"
+    },
+    "山岭": {
+        "className": "ridge",
+        "地形效果": "该地形不能成为移动路径的终点或转移的目标点。",
+        "neutral": true,
+        "color": "#606060",
+        "icon": "class='fas fa-mountain'"
+    },
+    "湖泊": {
+        "className": "lake",
+        "地形效果": "位于此地形的角色的摸牌阶段开始前，跳过此阶段。位于此地形的角色的结束阶段，该角色回复1点体力。",
+        "neutral": true,
+        "color": "#1EC5F1",
+        "icon": "class='fas fa-water'"
+    },
+    "箭塔": {
+        "className": "arrow-tower",
+        "地形效果": "位于此地形的角色的出牌阶段内，若其装备区有武器或视为装备着武器，此阶段内武器失效，且其于此阶段内使用的第一张【杀】无距离限制；否则其于此阶段内使用的第一张【杀】可以选择与其位于同一直线的其他角色为目标。",
+        "neutral": true,
+        "color": "#CCB700",
+        "icon": "class='fas fa-tower-observation'"
+    },
+    "驿站": {
+        "className": "post-station",
+        "地形效果": "位于此地形的角色的结束阶段，该角色观看牌堆顶的一张牌，然后将此牌交给一名角色。",
+        "neutral": true,
+        "color": "#CD853F",
+        "icon": "class='fas fa-signs-post'"
+    },
+    "军营": {
+        "className": "barrack",
+        "地形效果": "此地形区分阵营。可以容纳任意名角色。",
+        "neutral": false,
+        "color": "#000000",
+        "icon": "class='fas fa-tents'"
+    },
+    "大本营": {
+        "className": "base",
+        "地形效果": "此地形区分阵营。游戏开始时，生成对应阵营的帅旗。当另一阵营的帅旗进入此地形时，将此帅旗转移至该阵营的大本营，并使该阵营获得5分。可以容纳任意名角色。",
+        "neutral": false,
+        "color": "#000000",
+        "icon": "class='fas fa-tent'"
+    },
+    "城墙": {
+        "className": "wall",
+        "地形效果": "位于此地形的角色的出牌阶段限一次，其可以将一张黑色牌当一张普【杀】使用。位于护城河地形的角色使用的普【杀】对位于此地形的目标角色的结算开始时，此【杀】对此目标无效。",
+        "neutral": true,
+        "color": "#708090",
+        "icon": "class='fad fa-square'"
+    },
+    "护城河": {
+        "className": "moat",
+        "地形效果": "位于此地形的角色不能使用或打出【闪】。位于此地形的角色的出牌阶段限一次，其可以弃置一张牌，然后其摸一张牌。",
+        "neutral": true,
+        "color": "#00CED1",
+        "icon": "class='fad fa-square'"
+    },
+    "投石车": {
+        "className": "catapult",
+        "地形效果": "位于此地形的角色的出牌阶段内，其使用【杀】可以选择位于城墙地形的角色。当位于此地形的角色使用的【杀】被位于城墙地形的目标角色使用的【闪】响应时，弃置目标角色装备区里的所有牌。",
+        "neutral": true,
+        "color": "#999999",
+        "icon": "class='fad fa-square'"
+    },
+    "粮仓": {
+        "className": "granary",
+        "地形效果": "位于此地形的角色的移动阶段开始时，其多获得1点移动力。位于此地形的角色受到火焰伤害时，此伤害值+1。",
+        "neutral": true,
+        "color": "#FCFF00",
+        "icon": "class='fad fa-square'"
+    },
+    "据马刺": {
+        "className": "caltrop",
+        "地形效果": "当一名角色移动一步前，若拒马刺不是此次移动的起点且此步移动的方向与此地形的指示箭头方向不同，终止此次移动。",
+        "neutral": true,
+        "color": "#705D78",
+        "icon": "class='fad fa-square'"
+    },
+    "水寨": {
+        "className": "water-stockade",
+        "地形效果": "位于此地形的角色的准备阶段，其弃置一张手牌。位于此地形的角色的摸牌阶段，其多摸一张牌。",
+        "neutral": true,
+        "color": "#005C8B",
+        "icon": "class='fad fa-square'"
+    },
+    "瞭望塔": {
+        "className": "watchtower",
+        "地形效果": "位于此地形的角色的出牌阶段限一次，其可以观看牌堆底的一张牌。",
+        "neutral": true,
+        "color": "#DDD700",
+        "icon": "class='fad fa-square'"
+    },
+    "江面": {
+        "className": "river",
+        "地形效果": "在“起风”结算中，所有位于此地形的角色向风向方向移动一格（不能执行则不移动）。",
+        "neutral": true,
+        "color": "#1EF1EE",
+        "icon": "class='fad fa-square'"
+    },
+    "礁石": {
+        "className": "reef",
+        "地形效果": "该地形不能成为移动路径的终点或转移的目标点。当位于江面的角色执行“起风”结算的移动时，若一名角色因此地形而无法移动，其失去1点体力。",
+        "neutral": true,
+        "color": "#2F4F4F",
+        "icon": "class='fad fa-square'"
+    },
+    "祭坛": {
+        "className": "altar",
+        "地形效果": "位于此地形的角色的出牌阶段限一次，其可以将一张手牌置于牌堆底，然后其摸一张牌。",
+        "neutral": true,
+        "color": "#8A2BE2",
+        "icon": "class='fad fa-square'"
+    },
+    "沙地": {
+        "className": "sand",
+        "地形效果": "位于此地形的角色成为其他角色使用【杀】的目标后，若此目标角色与此【杀】的使用者的距离大于1，此目标角色不能响应此【杀】。位于此地形的角色受到火焰伤害时，防止之。",
+        "neutral": true,
+        "color": "#ACA766",
+        "icon": "class='fad fa-square'"
+    },
+    "烽火台": {
+        "className": "beacon",
+        "地形效果": "位于此地形的角色的结束阶段，将此地形改为由己方阵营控制，然后：如果此地形原先未被控制，其明置敌方阵营的一名角色的手牌（若己方阵营有被明置手牌的角色，则改为选择暗置己方阵营的一名角色的手牌）；如果此区域原先由敌方阵营控制，则依次执行上述操作两次。",
+        "neutral": true,
+        "color": "#F77838",
+        "icon": "class='fad fa-square'"
+    },
+    "哨卡": {
+        "className": "outpost",
+        "地形效果": "此地形区分阵营。与哨卡阵营不同的角色无法因非地形效果拆除哨卡。当一名角色移动一步后，若其位于阵营不同的哨卡，终止此次移动。当一名角色移动结束时，若其位于阵营不同的哨卡，此次移动无法触发“骑兵”效果。此地形可以通过在平原地形建造“工事”得到。",
+        "neutral": false,
+        "color": "#99B17E",
+        "icon": "class='fad fa-square'"
+    },
+    "掷火器": {
+        "className": "fire-thrower",
+        "地形效果": "位于此地形的角色出牌阶段限一次，该角色可以弃置一张红色手牌，然后其视为使用一张普【杀】，此【杀】可以选择距离3以内的一名其他角色或一个有“工事”的区域为目标：若目标为其他角色，则此【杀】造成伤害前，此伤害改为火焰伤害；若目标为有“工事”的区域，则此【杀】的效果改为拆除该区域的“工事”。此地形可以通过在树林地形建造“工事”得到。",
+        "neutral": true,
+        "color": "#054C06",
+        "icon": "class='fad fa-square'"
+    },
+    "土城": {
+        "className": "bunker",
+        "地形效果": "若一个区域为此地形且有角色，其敌对阵营角色无法以任何形式进入此区域。当位于此地形的角色受到黑【杀】造成的伤害时，防止之。此地形可以通过在沙地地形建造“工事”得到。",
+        "neutral": true,
+        "color": "#9C9756",
+        "icon": "class='fad fa-square'"
+    },
+    "战鼓": {
+        "className": "drum",
+        "地形效果": "位于此地形的角色的出牌阶段限一次，其可以将一张手牌交给位于擂台地形的己方阵营角色。",
+        "neutral": true,
+        "color": "#995C4E",
+        "icon": "class='fad fa-square'"
+    },
+    "擂台": {
+        "className": "arena",
+        "地形效果": "与位于此地形的角色阵营相同的另一名角色不能以任何形式进入擂台。擂台上的角色使用牌或发动技能的目标不能是不位于擂台地形的角色；不位于擂台地形的角色使用牌的目标不能是位于擂台地形的角色；不位于战鼓地形和擂台地形的角色发动技能的目标不能是位于擂台地形的角色。",
+        "neutral": true,
+        "color": "#800000",
+        "icon": "class='fad fa-square'"
+    },
+    "大纛": {
+        "className": "banner",
+        "地形效果": "每回合限一次，当一名角色于其回合内途经此地形时（即此地形既不是起点也不是终点），该角色获得效果：本回合你使用的下一张【杀】的伤害基数+1。",
+        "neutral": true,
+        "color": "#C34347",
+        "icon": "class='fad fa-square'"
+    },
+    "马厩": {
+        "className": "stable",
+        "地形效果": "位于此地形的角色的结束阶段，其可以执行一次步数至多为3的移动。",
+        "neutral": true,
+        "color": "#D2691E",
+        "icon": "class='fad fa-horse'"
+    },
+    "校场": {
+        "className": "ground",
+        "地形效果": "此地形区分阵营。游戏开始时，在此地形放置一个对应阵营的“步旅”。",
+        "neutral": false,
+        "color": "#FFAE90",
+        "icon": "class='fad fa-square'"
+    },
+    "前锋校场": {
+        "className": "vanguard-ground",
+        "地形效果": "位于此地形的角色的结束阶段，将此地形改为由己方阵营控制。被控制的前锋校场视为该阵营的校场。",
+        "neutral": true,
+        "color": "#FFAE90",
+        "icon": "class='fad fa-square'"
+    },
+    "点将台": {
+        "className": "command-platform",
+        "地形效果": "此地形区分阵营。位于此地形的对应阵营角色的回合开始时，选择一个没有“步旅”的对应阵营校场（若该角色的体力上限为3，则改为选择两个），在目标校场放置一个“步旅”。",
+        "neutral": false,
+        "color": "#AD3523",
+        "icon": "class='fad fa-square'"
+    },
+    "粮道": {
+        "className": "grain-path",
+        "地形效果": "此地形区分阵营。位于此地形的角色出牌阶段限一次，其可以弃置一张方块牌，然后移除对应阵营的所有“步旅”。",
+        "neutral": false,
+        "color": "#9ADD32",
+        "icon": "class='fad fa-square'"
+    },
+    "高地": {
+        "className": "highland",
+        "地形效果": "位于此地形的角色使用射【杀】无距离限制。位于此地形的角色移动己方“步旅”至敌方“步旅”所在区域时，仅移除敌方“步旅”。",
+        "neutral": true,
+        "color": "#B49265",
+        "icon": "class='fad fa-square'"
+    }
+}

@@ -11,7 +11,7 @@ const MENU_LOGO = {
     "查看技能": "class='fas fa-list-ul'",
     "移动阶段": "class='fas fa-up-down-left-right'",
     "移动阶段〖诱兵〗": "class='fas fa-arrows-turn-right'",
-    "移动阶段〖神行〗": "class='fas fa-route'",
+    "移动阶段〖神行〗": "class='fas fa-smog'",
     "〖节钺〗": "class='fas fa-person-walking-arrow-loop-left'",
     "〖归营〗": "class='fas fa-tent-arrow-down-to-line'",
     "迅【闪】": "class='fas fa-arrow-right-from-bracket'",
@@ -20,14 +20,12 @@ const MENU_LOGO = {
     "【奇门遁甲】": "class='fas fa-arrows-rotate'",
     "【诱敌深入】": "class='fas fa-person-walking-arrow-right'",
     "更换地图（测试中）": "class='fas fa-grip'",
-    "平原": "class='far fa-square'",
-    "树林": "class='fas fa-tree'",
-    "山岭": "class='fas fa-mountain'",
-    "湖泊": "class='fas fa-water'",
-    "箭塔": "class='fas fa-tower-observation'",
-    "驿站": "class='fas fa-horse'",
-    "军营": "class='fas fa-tents'",
-    "大本营": "class='fas fa-tent'",
+}
+
+for (let name in TERRAIN_INFO)
+{
+    var icon = TERRAIN_INFO[name]["icon"];
+    MENU_LOGO[name] = icon;
 }
 
 function contextMenuItems(element)
@@ -420,6 +418,25 @@ function showTerrainPanel(cell)
 
     const terrainEffectName = document.createElement("label");
     terrainEffectName.classList.add("skill-name");
+    if (TERRAIN_INFO[cell.terrain]["neutral"])
+    {
+        terrainEffectName.style.color = TERRAIN_INFO[cell.terrain]["color"];
+    }
+    else
+    {
+        if (cell.classList.contains("Red"))
+        {
+            terrainEffectName.style.color = "rgba(255, 46, 46, 0.8)";
+        }
+        else if (cell.classList.contains("Blue"))
+        {
+            terrainEffectName.style.color = "rgba(46, 46, 255, 0.8)";
+        }
+        else
+        {
+            terrainEffectName.style.color = TERRAIN_INFO[cell.terrain]["color"];
+        }
+    }
     terrainEffectName.innerHTML = cell.terrain;
 
     terrainEffectItem.appendChild(terrainEffectName);
@@ -433,6 +450,35 @@ function showTerrainPanel(cell)
     terrainPanel.style.visibility = 'visible';
     terrainPanel.style.opacity = 1;
 
+    // all cells in the same terrain
+    const cells = document.getElementsByClassName("cell");
+    for (const c of cells)
+    {
+        if (TERRAIN_INFO[cell.terrain]["neutral"])
+        {
+            if (c.terrain == cell.terrain)
+            {
+                c.style.boxShadow = "0 0 0.25em 0.25em" + TERRAIN_INFO[cell.terrain]["color"];
+                c.style.zIndex = 10;
+            }
+        }
+        else
+        {
+            if (c.terrain == cell.terrain)
+            {
+                if (c.classList.contains("Red") && cell.classList.contains("Red"))
+                {
+                    c.style.boxShadow = "0 0 0.25em 0.25em rgba(255, 46, 46, 0.8)";
+                    c.style.zIndex = 10;
+                }
+                else if (c.classList.contains("Blue") && cell.classList.contains("Blue"))
+                {
+                    c.style.boxShadow = "0 0 0.25em 0.25em rgba(46, 46, 255, 0.8)";
+                    c.style.zIndex = 10;
+                }
+            }
+        }
+    }
 }
 
 function hideTerrainPanel()
@@ -445,6 +491,14 @@ function hideTerrainPanel()
     {
         terrainEffectPanel.innerHTML = "";
         terrainEffectPanel.ontrasitionend = null;
+    }
+
+    // all cells in the same terrain
+    const cells = document.getElementsByClassName("cell");
+    for (const c of cells)
+    {
+        c.style.boxShadow = "none";
+        c.style.zIndex = "auto";
     }
 }
 

@@ -99,7 +99,7 @@ function isStayable(cell, piece = null, reentry = true)
         {
             return false;
         }
-        else if (cell.classList.contains("camp") || cell.classList.contains("base"))
+        else if (cell.classList.contains("barrack") || cell.classList.contains("base"))
         {
             return true;
         }
@@ -152,7 +152,7 @@ function isStayable(cell, piece = null, reentry = true)
             return false;
         }
     }
-    if (cell.classList.contains("camp") || cell.classList.contains("base"))
+    if (cell.classList.contains("barrack") || cell.classList.contains("base"))
     {
         return true;
     }
