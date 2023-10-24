@@ -44,7 +44,7 @@ function PathesOf(piece)
         // 〖冲杀〗
         // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域（并Stop）；
         var subject = piece;
-        var chong_sha = (currentPhase == "移动" && piece.name === "张绣" && subject === piece);
+        var chong_sha = (piece === currentPlayer && currentPhase == "移动" && piece.name === "张绣" && subject === piece);
         var chong_sha_stop = false;
         for (const pieceInCell of piecesIn(currentCell))
         {
@@ -163,7 +163,7 @@ function isStayable(cell, piece = null, reentry = true)
     // 〖冲杀〗
     // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域
     var subject = piece;
-    var chong_sha = (currentPhase == "移动" && piece.name === "张绣" && subject === piece);
+    var chong_sha = (piece === currentPlayer && currentPhase == "移动" && piece.name === "张绣" && subject === piece);
     for (const pieceInCell of piecesIn(cell))
     {
         if (piece === pieceInCell)
