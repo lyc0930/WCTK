@@ -23,3 +23,19 @@
 .ridge {
     border: .3vmin outset rgba(255, 255, 255, 0.8);
 }
+
+.base {
+    border: .2vmin solid gray;
+}
+
+.camp {
+    border: .2vmin solid gray;
+}
+
+.cell.Red {
+    border-color: rgba(255, 0, 0, 0.3);
+}
+
+.cell.Blue {
+    border-color: rgba(0, 0, 255, 0.3);
+}

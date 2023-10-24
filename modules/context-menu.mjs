@@ -1,4 +1,4 @@
-import { HERO_DATA } from './data.mjs';
+import { HERO_DATA, TERRAIN_INFO } from './data.mjs';
 import { isHighlighting } from './highlight.mjs';
 import { movePhase, movePhase_you_bing } from './phases.mjs';
 import { xunShan } from './basics.mjs';
@@ -6,77 +6,110 @@ import { shen_xing, jie_yue, gui_ying } from './skills.mjs';
 import { AnDuChenCang, BingGuiShenSu, QiMenDunJia, YouDiShenRu } from './scrolls.mjs';
 
 const MENU_LOGO = {
-    "更换武将": "fa-users",
-    "选择": "fa-user-check",
-    "查看技能": "fa-list-ul",
-    "移动阶段": "fa-up-down-left-right",
-    "移动阶段〖诱兵〗": "fa-arrows-turn-right",
-    "移动阶段〖神行〗": "fa-route",
-    "〖节钺〗": "fa-person-walking-arrow-loop-left",
-    "〖归营〗": "fa-tent-arrow-down-to-line",
-    "迅【闪】": "fa-arrow-right-from-bracket",
-    "【暗度陈仓】": "fa-person-arrow-down-to-line",
-    "【兵贵神速】": "fa-angles-right",
-    "【奇门遁甲】": "fa-arrows-rotate",
-    "【诱敌深入】": "fa-person-walking-arrow-right"
+    "更换武将": "class='fas fa-users'",
+    "选择": "class='fas fa-user-check'",
+    "查看技能": "class='fas fa-list-ul'",
+    "移动阶段": "class='fas fa-up-down-left-right'",
+    "移动阶段〖诱兵〗": "class='fas fa-arrows-turn-right'",
+    "移动阶段〖神行〗": "class='fas fa-route'",
+    "〖节钺〗": "class='fas fa-person-walking-arrow-loop-left'",
+    "〖归营〗": "class='fas fa-tent-arrow-down-to-line'",
+    "迅【闪】": "class='fas fa-arrow-right-from-bracket'",
+    "【暗度陈仓】": "class='fas fa-person-arrow-down-to-line'",
+    "【兵贵神速】": "class='fas fa-angles-right'",
+    "【奇门遁甲】": "class='fas fa-arrows-rotate'",
+    "【诱敌深入】": "class='fas fa-person-walking-arrow-right'",
+    "更换地图（测试中）": "class='fas fa-grip'",
+    "平原": "class='far fa-square'",
+    "树林": "class='fas fa-tree'",
+    "山岭": "class='fas fa-mountain'",
+    "湖泊": "class='fas fa-water'",
+    "箭塔": "class='fas fa-tower-observation'",
+    "驿站": "class='fas fa-horse'",
+    "军营": "class='fas fa-tents'",
+    "大本营": "class='fas fa-tent'",
 }
 
-function contextMenuItems(piece)
+function contextMenuItems(element)
 {
-    const items = {
-        "查看技能": function () { showSkillPanel(piece); }
-    };
-
-    if (piece.alive)
+    if (element.classList.contains("piece"))
     {
-        items["break-line-1"] = "<hr>";
-        items["移动阶段"] = function () { movePhase(piece); };
+        const piece = element;
+        const items = {
+            "查看技能": function () { showSkillPanel(piece); }
+        };
 
-        if (piece.name == "祖茂")
+        if (piece.alive)
         {
-            items["移动阶段〖诱兵〗"] = function () { movePhase_you_bing(piece); };
-        }
-        else if (piece.name == "左慈")
-        {
-            items["移动阶段〖神行〗"] = function () { shen_xing(piece); };
-        }
+            items["break-line-1"] = "<hr>";
+            items["移动阶段"] = function () { movePhase(piece); };
 
-        if (piece.name == "于禁")
-        {
-            items["break-line-4"] = "<hr>";
-            items["〖节钺〗"] = function () { jie_yue(piece); };
-        }
-        else if (piece.name == "孙乾")
-        {
-            items["break-line-4"] = "<hr>";
-            items["〖归营〗"] = function () { gui_ying(piece); };
-        }
+            if (piece.name == "祖茂")
+            {
+                items["移动阶段〖诱兵〗"] = function () { movePhase_you_bing(piece); };
+            }
+            else if (piece.name == "左慈")
+            {
+                items["移动阶段〖神行〗"] = function () { shen_xing(piece); };
+            }
 
-        items["break-line-2"] = "<hr>";
-        items["迅【闪】"] = function () { xunShan(piece); };
-        items["break-line-3"] = "<hr>";
-        // 〖奇才〗
-        items["【暗度陈仓】"] = function () { AnDuChenCang(piece, (piece.name == "黄月英") ? 4 : 3); };
-        items["【兵贵神速】"] = function () { BingGuiShenSu(piece); };
-        items["【奇门遁甲】"] = function () { QiMenDunJia(piece, (piece.name == "黄月英") ? 3 : 2); };
-        items["【诱敌深入】"] = function () { YouDiShenRu(piece, (piece.name == "黄月英") ? 5 : 4); };
+            if (piece.name == "于禁")
+            {
+                items["break-line-4"] = "<hr>";
+                items["〖节钺〗"] = function () { jie_yue(piece); };
+            }
+            else if (piece.name == "孙乾")
+            {
+                items["break-line-4"] = "<hr>";
+                items["〖归营〗"] = function () { gui_ying(piece); };
+            }
+
+            items["break-line-2"] = "<hr>";
+            items["迅【闪】"] = function () { xunShan(piece); };
+            items["break-line-3"] = "<hr>";
+            // 〖奇才〗
+            items["【暗度陈仓】"] = function () { AnDuChenCang(piece, (piece.name == "黄月英") ? 4 : 3); };
+            items["【兵贵神速】"] = function () { BingGuiShenSu(piece); };
+            items["【奇门遁甲】"] = function () { QiMenDunJia(piece, (piece.name == "黄月英") ? 3 : 2); };
+            items["【诱敌深入】"] = function () { YouDiShenRu(piece, (piece.name == "黄月英") ? 5 : 4); };
+        }
+        return items;
     }
-    return items;
+    else if (element.classList.contains("cell"))
+    {
+        const cell = element;
+        const items = {
+            [cell.terrain]: function () { showTerrainPanel(cell); },
+            "break-line-1": "<hr>",
+            "更换地图（测试中）": function () { console.log("更换地图（测试中）"); }
+        };
+        return items;
+    }
+    return {};
 }
 
-function addContextMenu(element, items = {})
+function addContextMenu(element, items = {}, disable = function () { return false; })
 {
     const menu = document.getElementById("context-menu");
 
     element.contextmenuEventListener = {
         "contextmenu": function (event)
         {
+            if (disable())
+            {
+                return;
+            }
             if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
         },
         "mousedown": function (event)
         {
             if (event.button != 2)
+            {
+                return;
+            }
+
+            if (disable())
             {
                 return;
             }
@@ -124,13 +157,18 @@ function addContextMenu(element, items = {})
                 return;
             }
 
+            if (disable())
+            {
+                return;
+            }
+
             // 正在等待响应
             if (isHighlighting())
             {
                 return;
             }
 
-            if (event.cancelable) event.preventDefault();
+            // if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
 
             hideContextMenu();
@@ -171,7 +209,7 @@ function addContextMenu(element, items = {})
                 },
                 "touchend": function (event)
                 {
-                    if (event.cancelable) event.preventDefault();
+                    // if (event.cancelable) event.preventDefault();
                     // event.stopPropagation();
                     element.removeEventListener("touchmove", element.touchEventListener["touchmove"]);
                     element.removeEventListener("touchend", element.touchEventListener["touchend"]);
@@ -191,28 +229,24 @@ function addContextMenu(element, items = {})
 
     element.addEventListener("touchstart", element.contextmenuEventListener["touchstart"], { passive: false });
 
-    document.addEventListener("click", (event) =>
-    {
-        if (event.button === 0 && menu != null)
-        {
-            hideContextMenu();
-        }
-    });
 }
 
 function removeContextMenu(element)
 {
-    element.removeEventListener("contextmenu", element.contextmenuEventListener["contextmenu"]);
-    element.removeEventListener("mousedown", element.contextmenuEventListener["mousedown"]);
-    element.removeEventListener("touchstart", element.contextmenuEventListener["touchstart"]);
-    element.contextmenuEventListener = null;
+    if (element.contextmenuEventListener != null)
+    {
+        element.removeEventListener("contextmenu", element.contextmenuEventListener["contextmenu"]);
+        element.removeEventListener("mousedown", element.contextmenuEventListener["mousedown"]);
+        element.removeEventListener("touchstart", element.contextmenuEventListener["touchstart"]);
+        element.contextmenuEventListener = null;
+    }
 }
 
 function hideContextMenu()
 {
     const menu = document.getElementById("context-menu");
 
-    if (menu.style.visibility != 'hidden')
+    if (menu && menu.style.visibility != 'hidden')
     {
         menu.style.visibility = 'hidden';
         menu.style.opacity = 0;
@@ -360,11 +394,6 @@ function showSkillPanel(piece)
     updateSkillPanel(skillPanel, piece.name);
     skillPanel.style.visibility = 'visible';
     skillPanel.style.opacity = 1;
-
-    document.addEventListener("click", function (event)
-    {
-        hideSkillPanel();
-    });
 }
 
 function hideSkillPanel()
@@ -380,6 +409,45 @@ function hideSkillPanel()
     }
 }
 
+function showTerrainPanel(cell)
+{
+    const terrainPanel = document.getElementById("terrain-panel");
+
+    terrainPanel.innerHTML = "";
+
+    const terrainEffectItem = document.createElement("div");
+    terrainEffectItem.classList.add("skill-item");
+
+    const terrainEffectName = document.createElement("label");
+    terrainEffectName.classList.add("skill-name");
+    terrainEffectName.innerHTML = cell.terrain;
+
+    terrainEffectItem.appendChild(terrainEffectName);
+    const terrainEffectText = document.createElement("p");
+    terrainEffectText.classList.add("terrainEffect-text");
+    terrainEffectText.innerHTML = TERRAIN_INFO[cell.terrain]["地形效果"];
+    terrainEffectItem.appendChild(terrainEffectText);
+
+    terrainPanel.appendChild(terrainEffectItem);
+
+    terrainPanel.style.visibility = 'visible';
+    terrainPanel.style.opacity = 1;
+
+}
+
+function hideTerrainPanel()
+{
+    const terrainEffectPanel = document.getElementById("terrain-panel");
+
+    terrainEffectPanel.style.visibility = 'hidden';
+    terrainEffectPanel.style.opacity = 0;
+    terrainEffectPanel.ontrasitionend = function ()
+    {
+        terrainEffectPanel.innerHTML = "";
+        terrainEffectPanel.ontrasitionend = null;
+    }
+}
+
 function updateContextMenu(menu, items = {})
 {
     menu.innerHTML = "";
@@ -390,7 +458,7 @@ function updateContextMenu(menu, items = {})
             const menuItem = document.createElement("div");
             menuItem.classList.add("context-menu-item");
             const itemLabel = document.createElement("label");
-            itemLabel.innerHTML = `<i class="fas ${MENU_LOGO[item]}" style="color: #333333;"></i> ${item}`;
+            itemLabel.innerHTML = `<i ${MENU_LOGO[item]} ></i> ${item}`;
             menuItem.appendChild(itemLabel);
             menuItem.addEventListener("click", function (event)
             {
@@ -564,12 +632,22 @@ function showHeroTable(piece)
             };
         }
     }
+}
 
-    document.addEventListener("click", function (event)
+document.addEventListener("click", function (event)
+{
+    if (event.button === 0)
+    {
+        hideContextMenu();
+    }
+    hideSkillPanel();
+    hideTerrainPanel();
+
+    const heroTable = document.getElementById("hero-table");
+    if (heroTable)
     {
         heroTable.style.visibility = 'hidden';
         heroTable.style.opacity = 0;
-    });
-}
-
+    }
+});
 export { contextMenuItems, addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel };

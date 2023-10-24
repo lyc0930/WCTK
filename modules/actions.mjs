@@ -1,6 +1,6 @@
 import { HERO_DATA } from './data.mjs';
 import { adjacentCells, PathesOf, isPassable, isStayable, isRideOn, baseOf, enemyBaseOf, enemyPiecesOf, piecesIn, HPColor, drawArrow, drawTeleport, cls, record } from "./utils.mjs";
-import { highlightCells, removeHighlight } from "./highlight.mjs";
+import { highlightCells, isHighlighting, removeHighlight } from "./highlight.mjs";
 import { saveState } from "./history.mjs";
 import { redFlag, blueFlag, redCarrier, blueCarrier, setCarrier } from "./flags.mjs";
 import { Pieces, currentPhase } from "./global_variables.mjs";
@@ -148,11 +148,13 @@ function move_fixed_steps(piece, isDraw = false)
     }
 
     // 定义点击高亮区域行为
-    function onclick(event)
+    function click_to_move(event)
     {
-        // event.stopPropagation();
+        if (event.cancelable) event.preventDefault();
+        event.stopPropagation();
+
         move(piece, this, false, isDraw);
-        removeHighlight("reachable", onclick);
+        removeHighlight("reachable", click_to_move);
 
         // 还有移动力
         if (piece.moveSteps > 0)
@@ -161,7 +163,7 @@ function move_fixed_steps(piece, isDraw = false)
         }
         else
         {
-            removeHighlight("reachable", onclick);
+            removeHighlight("reachable", click_to_move);
             if (isDraw)
             {
                 cls(1000);
@@ -170,7 +172,7 @@ function move_fixed_steps(piece, isDraw = false)
     }
 
     // 高亮可到达的区域
-    highlightCells(reachableCells, "reachable", onclick);
+    highlightCells(reachableCells, "reachable", click_to_move);
 }
 
 // 转移
@@ -196,11 +198,12 @@ function leap(piece, cell, isDraw = false)
 function leap_to_cells(piece, cells, isDraw = false)
 {
     // 定义点击高亮区域行为
-    function onclick(event)
+    function click_to_leap(event)
     {
-        // event.stopPropagation();
+        if (event.cancelable) event.preventDefault();
+        event.stopPropagation();
         leap(piece, this, isDraw);
-        removeHighlight("landable", onclick);
+        removeHighlight("landable", click_to_leap);
         if (isDraw)
         {
             cls(1000);
@@ -208,7 +211,7 @@ function leap_to_cells(piece, cells, isDraw = false)
     }
 
     // 高亮可到达的区域
-    highlightCells(cells, "landable", onclick);
+    highlightCells(cells, "landable", click_to_leap);
 }
 
 // 任意拖动
@@ -267,7 +270,7 @@ function slot(piece, cell, isDraw = false)
             record(`${piece.name}登场于(${row + 1}, ${col + 1})`);
 
             removeContextMenu(piece);
-            addContextMenu(piece, contextMenuItems(piece));
+            addContextMenu(piece, contextMenuItems(piece), isHighlighting);
         }
         else
         {
@@ -369,7 +372,7 @@ function bury(piece)
 
         grave.appendChild(piece);
         removeContextMenu(piece);
-        addContextMenu(piece, contextMenuItems(piece));
+        addContextMenu(piece, contextMenuItems(piece), isHighlighting);
         saveState();
     }
 }

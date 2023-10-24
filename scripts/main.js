@@ -1,9 +1,9 @@
 import { slot, bury } from '../modules/actions.mjs';
-import { terrain, HERO_DATA, weapons, armors, horses } from '../modules/data.mjs';
+import { TERRAIN, TERRAIN_INFO, HERO_DATA, weapons, armors, horses } from '../modules/data.mjs';
 import { highlightCells, removeHighlight, isHighlighting } from '../modules/highlight.mjs';
 import { stateHistory, saveState, recoverStatefrom } from '../modules/history.mjs';
 import { generateFlags, setCarrier } from '../modules/flags.mjs';
-import { HPColor, cls, record } from '../modules/utils.mjs';
+import { HPColor, cls, piecesIn, record } from '../modules/utils.mjs';
 import { zhan_ji, zhan_ji_undo } from '../modules/skills.mjs';
 import { contextMenuItems, addContextMenu, removeContextMenu } from '../modules/context-menu.mjs';
 import { Pieces } from '../modules/global_variables.mjs';
@@ -37,35 +37,61 @@ function onMouseLeavePiece(event)
     removeHighlight("attackable");
 }
 
+// 更改地形
+function setTerrain(cell, terrain)
+{
+    cell.className = "cell";
+
+    if (terrain.includes("红方") || terrain.includes("蓝方"))
+    {
+        if (terrain.includes("红方"))
+        {
+            cell.classList.add("Red");
+        }
+        else
+        {
+            cell.classList.add("Blue");
+        }
+        cell.classList.add(TERRAIN_INFO[terrain.slice(0, -3)]["className"]);
+        cell.terrain = terrain.slice(0, -3);
+    }
+    else
+    {
+        cell.classList.add(TERRAIN_INFO[terrain]["className"]);
+        cell.terrain = terrain;
+    }
+
+    removeContextMenu(cell);
+    addContextMenu(cell, contextMenuItems(cell), function ()
+    {
+        if (piecesIn(cell).length > 0 || isHighlighting())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    });
+}
+
 // 创建棋盘
 function createChessboard(mode = "野战")
 {
+    const mainboard = document.getElementById("mainboard");
+    mainboard.style.backgroundImage = `url('../assets/Map/${mode}.jpg')`;
+
     const chessboard = document.getElementById("chessboard");
+    const Map = TERRAIN[mode];
 
     for (var i = 0; i < 7; i++)
     {
         for (var j = 0; j < 7; j++)
         {
             const cell = document.createElement("div");
-            cell.className = "cell";
-            if (terrain[i][j].includes("R") || terrain[i][j].includes("B"))
-            {
-                if (terrain[i][j].includes("R"))
-                {
-                    cell.classList.add("Red");
-                }
-                else
-                {
-                    cell.classList.add("Blue");
-                }
-                cell.classList.add(terrain[i][j].slice(1));
-            }
-            else
-            {
-                cell.classList.add(terrain[i][j]);
-            }
             cell.row = i;
             cell.col = j;
+            setTerrain(cell, Map[i][j]);
             chessboard.appendChild(cell);
         }
     }
@@ -312,7 +338,7 @@ function createPiece(color, name, index)
     piece.addEventListener("mouseenter", onMouseEnterPiece);
     piece.addEventListener("mouseleave", onMouseLeavePiece);
 
-    addContextMenu(piece, contextMenuItems(piece));
+    addContextMenu(piece, contextMenuItems(piece), isHighlighting);
 
     return piece;
 }
@@ -396,7 +422,7 @@ function createMenuList()
             }
 
             removeContextMenu(piece);
-            addContextMenu(piece, contextMenuItems(piece));
+            addContextMenu(piece, contextMenuItems(piece), isHighlighting);
 
             saveState();
         });

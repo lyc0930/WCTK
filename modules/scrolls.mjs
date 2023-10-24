@@ -75,7 +75,8 @@ function QiMenDunJia(user, limit = 2)
 
     function click_to_swap(event)
     {
-        // event.stopPropagation();
+        if (event.cancelable) event.preventDefault();
+        event.stopPropagation();
 
         removeHighlight("targetable", click_to_swap);
 
@@ -108,7 +109,8 @@ function YouDiShenRu(user, limit = 4)
 
     function click_to_move(event)
     {
-        // event.stopPropagation();
+        if (event.cancelable) event.preventDefault();
+        event.stopPropagation();
 
         removeHighlight("targetable", click_to_move);
 

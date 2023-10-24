@@ -218,7 +218,8 @@ function jie_yue(piece, limit = 3)
         // 定义点击高亮元素行为
         function click_to_pull(event)
         {
-            // event.stopPropagation();
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
 
             record(`于禁发动〖节钺〗`);
             removeHighlight("targetable", click_to_pull);

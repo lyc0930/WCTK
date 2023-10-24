@@ -1,19 +1,25 @@
 import hero_data from "../assets/hero-data.json" assert { type: 'json' };
+import terrain_info from "../assets/terrain-info.json" assert { type: 'json' };
 
 // 地形
-const terrain = [
-    ["post", "plain", "grove", "ridge", "plain", "Bcamp", "Bbase"],
-    ["plain", "plain", "grove", "lake", "grove", "plain", "Bcamp"],
-    ["grove", "plain", "ridge", "plain", "plain", "tower", "plain"],
-    ["plain", "ridge", "lake", "plain", "lake", "ridge", "plain"],
-    ["plain", "tower", "plain", "plain", "ridge", "plain", "plain"],
-    ["Rcamp", "plain", "grove", "lake", "grove", "plain", "plain"],
-    ["Rbase", "Rcamp", "plain", "ridge", "plain", "grove", "post"]
-];
+const TERRAIN = {
+    "野战": [
+        ["驿站", "平原", "树林", "山岭", "平原", "军营-蓝方", "大本营-蓝方"],
+        ["平原", "平原", "树林", "湖泊", "树林", "平原", "军营-蓝方"],
+        ["树林", "平原", "山岭", "平原", "平原", "箭塔", "平原"],
+        ["平原", "山岭", "湖泊", "平原", "湖泊", "山岭", "平原"],
+        ["平原", "箭塔", "平原", "平原", "山岭", "平原", "平原"],
+        ["军营-红方", "平原", "树林", "湖泊", "树林", "平原", "平原"],
+        ["大本营-红方", "军营-红方", "平原", "山岭", "平原", "树林", "驿站"]
+    ]
+};
 
+// 地形信息
+const TERRAIN_INFO = terrain_info;
+// 英雄数据
 const HERO_DATA = hero_data;
 
-function formatSkill(text)
+function format(text)
 {
     const skillLabels = ["锁定技", "限定技"];
     for (let label of skillLabels)
@@ -54,8 +60,14 @@ for (let name in HERO_DATA)
 {
     for (let skillName in HERO_DATA[name]["技能"])
     {
-        HERO_DATA[name]["技能"][skillName] = formatSkill(HERO_DATA[name]["技能"][skillName]);
+        HERO_DATA[name]["技能"][skillName] = format(HERO_DATA[name]["技能"][skillName]);
     }
+}
+
+// format every terrain info
+for (let name in TERRAIN_INFO)
+{
+    TERRAIN_INFO[name]["地形效果"] = format(TERRAIN_INFO[name]["地形效果"]);
 }
 
 
@@ -96,4 +108,4 @@ const horses = {
     "燎原火":   "阻动",
 }
 
-export { terrain, HERO_DATA, weapons, armors, horses };
+export { TERRAIN, TERRAIN_INFO, HERO_DATA, weapons, armors, horses };
