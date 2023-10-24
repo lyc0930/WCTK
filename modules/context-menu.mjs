@@ -184,7 +184,7 @@ function addContextMenu(element, items = {}, disable = function () { return fals
                     menu.style.visibility = 'visible';
                     menu.style.opacity = 1;
                 }
-            }, 750);
+            }, 500);
 
             element.touchEventListener = {
                 "touchmove": function (event)

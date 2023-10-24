@@ -220,7 +220,7 @@ function jie_yue(piece, limit = 3)
         {
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
-
+            navigator.vibrate(20);
             record(`于禁发动〖节钺〗`);
             removeHighlight("targetable", click_to_pull);
 

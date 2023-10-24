@@ -77,7 +77,7 @@ function QiMenDunJia(user, limit = 2)
     {
         if (event.cancelable) event.preventDefault();
         event.stopPropagation();
-
+        navigator.vibrate(20);
         removeHighlight("targetable", click_to_swap);
 
         swap(user, this);
@@ -107,18 +107,18 @@ function YouDiShenRu(user, limit = 4)
         }
     }
 
-    function click_to_move(event)
+    function click_to_choose(event)
     {
         if (event.cancelable) event.preventDefault();
         event.stopPropagation();
-
-        removeHighlight("targetable", click_to_move);
+        navigator.vibrate(20);
+        removeHighlight("targetable", click_to_choose);
 
         this.moveSteps = 1;
         move_fixed_steps(this, true);
     }
 
-    highlightPieces(targetablePieces, "targetable", click_to_move);
+    highlightPieces(targetablePieces, "targetable", click_to_choose);
 }
 
 export { AnDuChenCang, BingGuiShenSu, QiMenDunJia, YouDiShenRu };

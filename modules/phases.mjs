@@ -57,16 +57,17 @@ function movePhase(piece)
 }
 
 // 定义点击高亮区域行为
-function onclick(event)
+function click_to_move(event)
 {
     if (!movingPiece)
     {
         return;
     }
 
+    if (event.cancelable) event.preventDefault();
     event.stopPropagation();
     move(movingPiece, this, true, true);
-    removeHighlight("reachable", onclick);
+    removeHighlight("reachable", click_to_move);
 
     // 还有移动力
     if (movingPiece && movingPiece.movePoints > 0)
@@ -96,7 +97,7 @@ function movePhase_subphase(piece)
     }
 
     // 高亮可到达的区域
-    highlightCells(reachableCells, "reachable", onclick);
+    highlightCells(reachableCells, "reachable", click_to_move);
 }
 
 // 定义结束移动阶段函数
@@ -109,7 +110,7 @@ function endMovePhase(event = null)
             if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
             movingPiece = null;
-            removeHighlight("reachable", onclick);
+            removeHighlight("reachable", click_to_move);
             cls(1000);
             document.removeEventListener("contextmenu", endMovePhase);
             document.removeEventListener("click", endMovePhase);
@@ -119,7 +120,7 @@ function endMovePhase(event = null)
     else
     {
         movingPiece = null;
-        removeHighlight("reachable", onclick);
+        removeHighlight("reachable", click_to_move);
         cls(1000);
         document.removeEventListener("contextmenu", endMovePhase);
         document.removeEventListener("click", endMovePhase);
@@ -187,14 +188,16 @@ function movePhase_you_bing(piece)
     else
     {
         // 高亮可选择的角色
-        highlightPieces(targetablePieces, "targetable", onclick);
+        highlightPieces(targetablePieces, "targetable", click_to_choose);
 
         // 定义点击高亮元素行为
-        function onclick(event)
+        function click_to_choose(event)
         {
-            // event.stopPropagation();
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+            navigator.vibrate(20);
             record(`祖茂发动〖诱兵〗`);
-            removeHighlight("targetable", onclick);
+            removeHighlight("targetable", click_to_choose);
 
             object = this;
             movePhase_subphase_you_bing(piece, object);
@@ -206,16 +209,17 @@ function movePhase_you_bing(piece)
     }
 
     // 定义点击高亮区域行为
-    function onclick_you_bing(event)
+    function click_to_move_you_bing(event)
     {
-        // event.stopPropagation();
-
+        if (event.cancelable) event.preventDefault();
+        event.stopPropagation();
+        navigator.vibrate(20);
         movingPiece.movePoints -= 1;
         const s = step(movingPiece, this, true);
 
         you_bing(piece, object, s.direction);
 
-        removeHighlight("reachable", onclick_you_bing);
+        removeHighlight("reachable", click_to_move_you_bing);
 
         // 还有移动力
         if (movingPiece && movingPiece.movePoints > 0)
@@ -247,7 +251,7 @@ function movePhase_you_bing(piece)
         }
 
         // 高亮可到达的区域
-        highlightCells(reachableCells, "reachable", onclick_you_bing);
+        highlightCells(reachableCells, "reachable", click_to_move_you_bing);
     }
 
     // 定义结束移动阶段函数
@@ -263,7 +267,7 @@ function movePhase_you_bing(piece)
         {
             if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
-            removeHighlight("reachable", onclick_you_bing);
+            removeHighlight("reachable", click_to_move_you_bing);
             cls(1000);
             document.removeEventListener("contextmenu", endMovePhase_you_bing);
             document.removeEventListener("click", endMovePhase_you_bing);

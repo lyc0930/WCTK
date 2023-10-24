@@ -43,13 +43,16 @@ function move(piece, cell, ifConsumeMovePoints = false, isDraw = false)
 
         var path = Pathes[row][col];
         var moveLog = `(${path[0].row + 1}, ${path[0].col + 1})`;
+        var vibration_pattern = [];
         for (var i = 1; i < path.length; i++)
         {
             step(piece, path[i], isDraw);
             moveLog += ` ▶ (${path[i].row + 1}, ${path[i].col + 1})`;
+            vibration_pattern.push(20);
+            vibration_pattern.push(250);
         }
         record(`${piece.name} ${moveLog}`);
-
+        navigator.vibrate(vibration_pattern);
         return true;
     }
     return false;
@@ -152,7 +155,6 @@ function move_fixed_steps(piece, isDraw = false)
     {
         if (event.cancelable) event.preventDefault();
         event.stopPropagation();
-
         move(piece, this, false, isDraw);
         removeHighlight("reachable", click_to_move);
 
@@ -190,6 +192,7 @@ function leap(piece, cell, isDraw = false)
         cell.appendChild(piece);
         afterPositionChange(piece, cell);
 
+        navigator.vibrate(20);
         return true;
     }
     return false;
