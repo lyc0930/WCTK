@@ -4,6 +4,7 @@ import { movePhase, movePhase_you_bing } from './phases.mjs';
 import { xunShan } from './basics.mjs';
 import { shen_xing, jie_yue, gui_ying } from './skills.mjs';
 import { AnDuChenCang, BingGuiShenSu, QiMenDunJia, YouDiShenRu } from './scrolls.mjs';
+import { showModeTable } from './map.mjs';
 
 const MENU_LOGO = {
     "更换武将": "class='fas fa-users'",
@@ -19,7 +20,7 @@ const MENU_LOGO = {
     "【兵贵神速】": "class='fas fa-angles-right'",
     "【奇门遁甲】": "class='fas fa-arrows-rotate'",
     "【诱敌深入】": "class='fas fa-person-walking-arrow-right'",
-    "更换地图（测试中）": "class='fas fa-grip'",
+    "更换地图": "class='fas fa-grip'",
 }
 
 for (let name in TERRAIN_INFO)
@@ -79,7 +80,7 @@ function contextMenuItems(element)
         const items = {
             [cell.terrain]: function () { showTerrainPanel(cell); },
             "break-line-1": "<hr>",
-            "更换地图（测试中）": function () { console.log("更换地图（测试中）"); }
+            "更换地图": function () { showModeTable(); }
         };
         return items;
     }
@@ -702,6 +703,13 @@ document.addEventListener("click", function (event)
     {
         heroTable.style.visibility = 'hidden';
         heroTable.style.opacity = 0;
+    }
+
+    const modeTable = document.getElementById("mode-table");
+    if (modeTable)
+    {
+        modeTable.style.visibility = 'hidden';
+        modeTable.style.opacity = 0;
     }
 });
 export { contextMenuItems, addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel };
