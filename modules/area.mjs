@@ -1,3 +1,4 @@
+import { TERRAIN, TERRAIN_INFO } from "./data.mjs";
 import { Heroes } from "../scripts/main.js";
 import { Areas } from "../scripts/main.js";
 
@@ -20,7 +21,7 @@ class Area
     _create_cell()
     {
         const cell = document.createElement("div");
-        cell.className = "cell";
+        cell.className = `cell ${TERRAIN_INFO[this.terrain]["className"]}`;
         cell.area = this;
         return cell;
     }
@@ -71,31 +72,7 @@ class Area
 // 工厂函数
 function create_area(row, col, terrain)
 {
-    if (terrain === "平原")
-    {
-        return new plain(row, col, terrain);
-    }
-    else if (terrain === "山岭")
-    {
-        return new ridge(row, col, terrain);
-    }
-    else if (terrain === "湖泊")
-    {
-        return new lake(row, col, terrain);
-    }
-    else if (terrain === "驿站")
-    {
-        return new post_station(row, col, terrain);
-    }
-    else if (terrain === "树林")
-    {
-        return new grove(row, col, terrain);
-    }
-    else if (terrain === "箭塔")
-    {
-        return new arrow_tower(row, col, terrain);
-    }
-    else if (terrain.startsWith("大本营"))
+    if (terrain.startsWith("大本营"))
     {
         return new base(row, col, terrain);
     }
@@ -105,23 +82,7 @@ function create_area(row, col, terrain)
     }
     else
     {
-        throw new Error(`Unknown terrain: ${terrain}`);
-    }
-}
-
-// 平原
-class plain extends Area
-{
-    constructor(row, col, terrain)
-    {
-        super(row, col, terrain);
-    }
-
-    _create_cell()
-    {
-        const cell = super._create_cell();
-        cell.classList.add("plain");
-        return cell;
+        return new Area(row, col, terrain);
     }
 }
 
@@ -147,8 +108,9 @@ class base extends Area
 
     _create_cell()
     {
-        const cell = super._create_cell();
-        cell.classList.add("base");
+        const cell = document.createElement("div");
+        cell.className = `cell ${TERRAIN_INFO["大本营"]["className"]}`;
+        cell.area = this;
         return cell;
     }
 }
@@ -176,88 +138,9 @@ class barrack extends Area
 
     _create_cell()
     {
-        const cell = super._create_cell();
-        cell.classList.add("barrack");
-        return cell;
-    }
-}
-
-// 山岭
-class ridge extends Area
-{
-    constructor(row, col, terrain)
-    {
-        super(row, col, terrain);
-    }
-
-    _create_cell()
-    {
-        const cell = super._create_cell();
-        cell.classList.add("ridge");
-        return cell;
-    }
-}
-
-// 驿站
-class post_station extends Area
-{
-    constructor(row, col, terrain)
-    {
-        super(row, col, terrain);
-    }
-
-    _create_cell()
-    {
-        const cell = super._create_cell();
-        cell.classList.add("post-station");
-        return cell;
-    }
-}
-
-// 树林
-class grove extends Area
-{
-    constructor(row, col, terrain)
-    {
-        super(row, col, terrain);
-    }
-
-    _create_cell()
-    {
-        const cell = super._create_cell();
-        cell.classList.add("grove");
-        return cell;
-    }
-}
-
-// 箭塔
-class arrow_tower extends Area
-{
-    constructor(row, col, terrain)
-    {
-        super(row, col, terrain);
-    }
-
-    _create_cell()
-    {
-        const cell = super._create_cell();
-        cell.classList.add("arrow-tower");
-        return cell;
-    }
-}
-
-// 湖泊
-class lake extends Area
-{
-    constructor(row, col, terrain)
-    {
-        super(row, col, terrain);
-    }
-
-    _create_cell()
-    {
-        const cell = super._create_cell();
-        cell.classList.add("lake");
+        const cell = document.createElement("div");
+        cell.className = `cell ${TERRAIN_INFO["军营"]["className"]}`;
+        cell.area = this;
         return cell;
     }
 }
