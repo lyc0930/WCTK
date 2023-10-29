@@ -1,9 +1,9 @@
 import { HERO_DATA, weapons, armors, horses } from './data.mjs';
-import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, afterPositionChange } from "./utils.mjs";
+import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, afterPositionChange, distance } from "./utils.mjs";
 import { addContextMenu, showSkillPanel } from './context-menu.mjs';
 import { Areas, Heroes } from '../scripts/main.js';
 import { redFlag, blueFlag } from './flags.mjs';
-import { setCurrentPhase, setCurrentPlayer } from './global_variables.mjs';
+import { currentPlayer, setCurrentPhase, setCurrentPlayer } from './global_variables.mjs';
 import { Area } from './area.mjs';
 
 // 武将类
@@ -392,6 +392,8 @@ class Hero
         piece.className = "piece";
         piece.classList.add(this.color === "Red" ? "red-piece" : "blue-piece");
 
+        piece.hero = this;
+
         var heroOption = document.getElementById(this.name + this.index);
         heroOption.selected = true;
 
@@ -690,7 +692,7 @@ class Hero
         else
         {
             // 【穿越马】
-            if (this.is_ride_on("穿越"))
+            if (this.is_ride_on("穿越") && currentPlayer === this)
             {
                 var hold_by_enemy = false;
                 for (const enemy of this.enemies)
@@ -825,7 +827,7 @@ class Hero
     }
 
     //移动
-    move(area, ifConsumeMovePoints = false, isDraw = false)
+    move(area, consume_move_points = false, isDraw = false, subject = this)
     {
         const row = area.row;
         const col = area.col;
@@ -834,11 +836,11 @@ class Hero
         {
             var steps = Pathes[row][col].length - 1;
 
-            if (ifConsumeMovePoints)
+            if (consume_move_points)
             {
-                if ((this.movePoints > steps && this.can_pass(area)) || (this.movePoints === steps && this.can_stay(area)))
+                if ((this.move_points > steps && this.can_pass(area)) || (this.move_points === steps && this.can_stay(area)))
                 {
-                    this.movePoints = this.movePoints - steps;
+                    this.move_points = this.move_points - steps;
                 }
                 else
                 {
@@ -847,9 +849,9 @@ class Hero
             }
             else
             {
-                if ((this.moveSteps > steps && this.can_pass(area)) || (this.moveSteps === steps && this.can_stay(area)))
+                if ((this.move_steps > steps && this.can_pass(area)) || (this.move_steps === steps && this.can_stay(area)))
                 {
-                    this.moveSteps = this.moveSteps - steps;
+                    this.move_steps = this.move_steps - steps;
                 }
                 else
                 {
@@ -867,7 +869,16 @@ class Hero
                 vibration_pattern.push(20);
                 vibration_pattern.push(250);
             }
-            record(`${this.name} ${moveLog}`);
+
+            if (subject === this)
+            {
+                record(`${this.name} ${moveLog}`);
+            }
+            else
+            {
+                record(`${subject.name} 控制 ${this.name} 执行移动 ${moveLog}`);
+            }
+
             navigator.vibrate(vibration_pattern);
             return true;
         }
@@ -944,7 +955,7 @@ class Hero
             }
 
             // 还有移动力
-            if (this.movePoints > 0)
+            if (this.move_points > 0)
             {
                 move_in_move_phase();
             }
@@ -964,7 +975,7 @@ class Hero
             {
                 if (Pathes[area.row][area.col])
                 {
-                    if ((Pathes[area.row][area.col].length - 1 < this.movePoints && this.can_pass(area)) || (Pathes[area.row][area.col].length - 1 === this.movePoints && this.can_stay(area)))
+                    if ((Pathes[area.row][area.col].length - 1 < this.move_points && this.can_pass(area)) || (Pathes[area.row][area.col].length - 1 === this.move_points && this.can_stay(area)))
                     {
                         area.highlight("reachable", click_to_move);
                     }
@@ -975,7 +986,7 @@ class Hero
         // 定义结束移动阶段函数
         const move_phase_end = (event = null) =>
         {
-            if (this.movePoints > 0 && !this.can_stay(this.area, false))
+            if (this.move_points > 0 && !this.can_stay(this.area, false))
             {
                 return;
             }
@@ -1012,11 +1023,11 @@ class Hero
             }
         }
 
-        setCurrentPlayer(this.piece);
+        setCurrentPlayer(this);
         setCurrentPhase("移动");
 
         // 基于体力值生成移动力
-        this.movePoints = this.HP;
+        this.move_points = this.HP;
 
         move_in_move_phase(this.piece);
 
@@ -1025,7 +1036,7 @@ class Hero
     }
 
     // 移动固定步数
-    move_fixed_steps(isDraw = false)
+    move_fixed_steps(isDraw = false, subject = this)
     {
         // 计算可到达的区域
         const Pathes = this.pathes;
@@ -1036,7 +1047,7 @@ class Hero
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
 
-            this.move(event.currentTarget.area, false, isDraw);
+            this.move(event.currentTarget.area, false, isDraw, subject);
 
             for (const area of Areas.flat())
             {
@@ -1044,9 +1055,9 @@ class Hero
             }
 
             // 还有移动力
-            if (this.moveSteps > 0)
+            if (this.move_steps > 0)
             {
-                this.move_fixed_steps(isDraw);
+                this.move_fixed_steps(isDraw, subject);
             }
             else
             {
@@ -1060,7 +1071,7 @@ class Hero
         // 高亮可到达的区域
         for (const area of Areas.flat())
         {
-            if ((Pathes[area.row][area.col] && (Pathes[area.row][area.col].length - 1 < this.moveSteps) && this.can_pass(area)) || (Pathes[area.row][area.col] && (Pathes[area.row][area.col].length - 1 === this.moveSteps) && this.can_stay(area)))
+            if ((Pathes[area.row][area.col] && (Pathes[area.row][area.col].length - 1 < this.move_steps) && this.can_pass(area)) || (Pathes[area.row][area.col] && (Pathes[area.row][area.col].length - 1 === this.move_steps) && this.can_stay(area)))
             {
                 area.highlight("reachable", click_to_move);
             }
@@ -1068,11 +1079,18 @@ class Hero
     }
 
     // 转移
-    leap(area, isDraw = false)
+    leap(area, isDraw = false, subject = this)
     {
         if (this.can_stay(area))
         {
-            record(`${this.name} (${this.area.row + 1}, ${this.area.col + 1}) ▷ (${area.row + 1}, ${area.col + 1})`);
+            if (subject === this)
+            {
+                record(`${this.name} (${this.area.row + 1}, ${this.area.col + 1}) ▷ (${area.row + 1}, ${area.col + 1})`);
+            }
+            else
+            {
+                record(`${subject.name} 控制 ${this.name} 执行转移 (${this.area.row + 1}, ${this.area.col + 1}) ▷ (${area.row + 1}, ${area.col + 1})`);
+            }
             if (isDraw)
             {
                 drawTeleport([[this.area.row, this.area.col], [area.row, area.col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
@@ -1086,7 +1104,7 @@ class Hero
     }
 
     // 转移到若干区域之一
-    leap_to_areas(areas, isDraw = false)
+    leap_to_areas(areas, isDraw = false, subject = this)
     {
         // 定义点击高亮区域行为
         const click_to_leap = (event) =>
@@ -1094,7 +1112,7 @@ class Hero
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
 
-            this.leap(event.currentTarget.area, isDraw);
+            this.leap(event.currentTarget.area, isDraw, subject);
 
             for (const area of Areas.flat())
             {
@@ -1143,9 +1161,10 @@ class Hero
         const this_area = this.area;
         const that_area = that.area;
 
-        // TODO 临时存放真的对吗？
         document.body.appendChild(this.piece);
         document.body.appendChild(that.piece);
+        this._area = null;
+        that._area = null;
 
         // 交换
         if ((this.can_stay(that_area)) && that.can_stay(this_area))
@@ -1153,15 +1172,18 @@ class Hero
             record(`${this.name} (${this_area.row + 1}, ${this_area.col + 1}) ▷ (${that_area.row + 1}, ${that_area.col + 1})`);
             this.area = that_area;
 
-            record(`${that.name} (${that_area.row + 1}, ${that_area.col + 1}) ▷ (${this_area.row + 1}, ${this_area.col + 1})`);
+            record(`${this.name} 控制 ${that.name} 转移 (${that_area.row + 1}, ${that_area.col + 1}) ▷ (${this_area.row + 1}, ${this_area.col + 1})`);
             that.area = this_area;
 
             return true;
         }
         else
         {
-            this.area = this_area;
-            that.area = that_area;
+            this.area.cell.appendChild(this.piece);
+            that.area.cell.appendChild(that.piece);
+            this._area = this_area;
+            that._area = that_area;
+
             return false;
         }
     }
@@ -1195,18 +1217,22 @@ class Hero
         }
         else if (card === "【暗度陈仓】")
         {
+            setCurrentPlayer(this)
             this._An_Du_Chen_Cang();
         }
         else if (card === "【兵贵神速】")
         {
+            setCurrentPlayer(this)
             this._Bing_Gui_Shen_Su();
         }
         else if (card === "【奇门遁甲】")
         {
+            setCurrentPlayer(this)
             this._Qi_Meng_Dun_Jia();
         }
         else if (card === "【诱敌深入】")
         {
+            setCurrentPlayer(this)
             this._You_Di_Shen_Ru();
         }
     }
@@ -1214,33 +1240,106 @@ class Hero
     // 迅【闪】
     _xun_Shan()
     {
-        this.moveSteps = 1;
+        record(`${this.name}使用【迅【闪】】`);
+
+        this.move_steps = 1;
         this.move_fixed_steps(true);
     }
 
     // 【暗度陈仓】
-    _An_Du_Chen_Cang()
+    _An_Du_Chen_Cang(limit = 3)
     {
+        record(`${this.name}使用【暗度陈仓】`);
 
+        var areas = [];
+        areas.push(this.base);
+
+        for (const ally of this.allies)
+        {
+            if (ally != this && ally.alive)
+            {
+                for (const area of ally.area.adjacent_areas)
+                {
+                    if (this.can_stay(area) && distance(this, area) <= limit)
+                    {
+                        areas.push(area);
+                    }
+                }
+            }
+        }
+        this.leap_to_areas(areas, true);
     }
 
     // 【兵贵神速】
     _Bing_Gui_Shen_Su()
     {
-        this.moveSteps = 2;
+        record(`${this.name}使用【兵贵神速】`);
+
+        this.move_steps = 2;
         this.move_fixed_steps(true);
     }
 
     // 【奇门遁甲】
-    _Qi_Meng_Dun_Jia()
+    _Qi_Meng_Dun_Jia(limit = 2)
     {
+        record(`${this.name}使用【奇门遁甲】`);
 
+        const click_to_swap = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            navigator.vibrate(20);
+
+            for (const hero of Heroes)
+            {
+                hero.unhighlight("targetable", click_to_swap);
+            }
+
+            this.swap(event.currentTarget.hero);
+        }
+
+        for (const hero of Heroes)
+        {
+            if (hero !== this && hero.alive)
+            {
+                if (hero.alive && (distance(this, hero) <= limit) && !hero.is_ride_on("阻动"))
+                {
+                    hero.highlight("targetable", click_to_swap);
+                }
+            }
+        }
     }
 
     // 【诱敌深入】
-    _You_Di_Shen_Ru()
+    _You_Di_Shen_Ru(limit = 4)
     {
+        record(`${this.name}使用【诱敌深入】`);
 
+        const click_to_control = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            navigator.vibrate(20);
+
+            for (const hero of Heroes)
+            {
+                hero.unhighlight("targetable", click_to_control);
+            }
+
+            const object_hero = event.currentTarget.hero;
+            object_hero.move_steps = 1;
+            object_hero.move_fixed_steps(true, this);
+        }
+
+        for (const hero of Heroes)
+        {
+            if (hero.alive && (distance(this, hero) <= limit) && !hero.is_ride_on("阻动"))
+            {
+                hero.highlight("targetable", click_to_control);
+            }
+        }
     }
 }
 
