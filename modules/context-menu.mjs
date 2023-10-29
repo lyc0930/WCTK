@@ -1,10 +1,7 @@
 import { HERO_DATA, TERRAIN_INFO } from './data.mjs';
-import { isHighlighting } from './highlight.mjs';
-import { movePhase, movePhase_you_bing } from './phases.mjs';
-import { xunShan } from './basics.mjs';
-import { shen_xing, jie_yue, gui_ying } from './skills.mjs';
-import { AnDuChenCang, BingGuiShenSu, QiMenDunJia, YouDiShenRu } from './scrolls.mjs';
+import { isHighlighting } from './utils.mjs';
 import { showModeTable } from './map.mjs';
+import { Hero } from './hero.mjs';
 
 const MENU_LOGO = {
     "更换武将": "class='fas fa-users'",
@@ -29,65 +26,9 @@ for (let name in TERRAIN_INFO)
     MENU_LOGO[name] = icon;
 }
 
-function contextMenuItems(element)
-{
-    if (element.classList.contains("piece"))
-    {
-        const piece = element;
-        const items = {
-            "查看技能": function () { showSkillPanel(piece); }
-        };
+// CONTEXT MENU
 
-        if (piece.alive)
-        {
-            items["break-line-1"] = "<hr>";
-            items["移动阶段"] = function () { movePhase(piece); };
-
-            if (piece.name == "祖茂")
-            {
-                items["移动阶段〖诱兵〗"] = function () { movePhase_you_bing(piece); };
-            }
-            else if (piece.name == "左慈")
-            {
-                items["移动阶段〖神行〗"] = function () { shen_xing(piece); };
-            }
-
-            if (piece.name == "于禁")
-            {
-                items["break-line-4"] = "<hr>";
-                items["〖节钺〗"] = function () { jie_yue(piece); };
-            }
-            else if (piece.name == "孙乾")
-            {
-                items["break-line-4"] = "<hr>";
-                items["〖归营〗"] = function () { gui_ying(piece); };
-            }
-
-            items["break-line-2"] = "<hr>";
-            items["迅【闪】"] = function () { xunShan(piece); };
-            items["break-line-3"] = "<hr>";
-            // 〖奇才〗
-            items["【暗度陈仓】"] = function () { AnDuChenCang(piece, (piece.name == "黄月英") ? 4 : 3); };
-            items["【兵贵神速】"] = function () { BingGuiShenSu(piece); };
-            items["【奇门遁甲】"] = function () { QiMenDunJia(piece, (piece.name == "黄月英") ? 3 : 2); };
-            items["【诱敌深入】"] = function () { YouDiShenRu(piece, (piece.name == "黄月英") ? 5 : 4); };
-        }
-        return items;
-    }
-    else if (element.classList.contains("cell"))
-    {
-        const cell = element;
-        const items = {
-            [cell.terrain]: function () { showTerrainPanel(cell); },
-            "break-line-1": "<hr>",
-            "更换地图": function () { showModeTable(); }
-        };
-        return items;
-    }
-    return {};
-}
-
-function addContextMenu(element, items = {}, disable = function () { return false; })
+function addContextMenu(element, object, disable = function () { return false; })
 {
     const menu = document.getElementById("context-menu");
 
@@ -136,7 +77,7 @@ function addContextMenu(element, items = {}, disable = function () { return fals
                 {
                     if (event.cancelable) event.preventDefault();
                     // event.stopPropagation();
-                    updateContextMenu(menu, items);
+                    updateContextMenu(menu, object.context_menu_items);
                     positionMenu(menu, event);
                     if (menu.style.visibility != 'visible')
                     {
@@ -178,7 +119,7 @@ function addContextMenu(element, items = {}, disable = function () { return fals
 
             const timeoutId = setTimeout(function ()
             {
-                updateContextMenu(menu, items);
+                updateContextMenu(menu, object.context_menu_items);
                 positionMenu(menu, event);
                 if (menu.style.visibility != 'visible')
                 {
@@ -230,6 +171,40 @@ function addContextMenu(element, items = {}, disable = function () { return fals
 
 }
 
+function updateContextMenu(menu, items = {})
+{
+    menu.innerHTML = "";
+    for (const item in items)
+    {
+        if (items[item] != "<hr>")
+        {
+            const menuItem = document.createElement("div");
+            menuItem.classList.add("context-menu-item");
+            const itemLabel = document.createElement("label");
+            itemLabel.innerHTML = `<i ${MENU_LOGO[item]} ></i> ${item}`;
+            menuItem.appendChild(itemLabel);
+            menuItem.addEventListener("click", function (event)
+            {
+                if (event.cancelable) event.preventDefault();
+                event.stopPropagation();
+                hideContextMenu();
+                items[item]();
+            });
+            menu.appendChild(menuItem);
+        }
+        else
+        {
+            const hr = document.createElement("hr");
+            hr.style.border = "none";
+            hr.style.backgroundColor = "rgba(0, 0, 0, 0.3)";
+            hr.style.height = "2px";
+            hr.style.margin = "2px 0 2px 0";
+            hr.style.boxShadow = "none";
+            menu.appendChild(hr);
+        }
+    }
+}
+
 function removeContextMenu(element)
 {
     if (element.contextmenuEventListener != null)
@@ -256,6 +231,8 @@ function hideContextMenu()
         }
     }
 }
+
+// SKILL PANEL
 
 function addSkillPanel(piece)
 {
@@ -358,19 +335,19 @@ function updateSkillPanel(panel, name)
         skillName.classList.add("skill-name");
         skillName.innerHTML = skill;
 
-        if (faction == "魏")
+        if (faction === "魏")
         {
             skillName.classList.add("wei-front");
         }
-        else if (faction == "蜀")
+        else if (faction === "蜀")
         {
             skillName.classList.add("shu-front");
         }
-        else if (faction == "吴")
+        else if (faction === "吴")
         {
             skillName.classList.add("wu-front");
         }
-        else if (faction == "群")
+        else if (faction === "群")
         {
             skillName.classList.add("qun-front");
         }
@@ -385,12 +362,10 @@ function updateSkillPanel(panel, name)
     }
 }
 
-function showSkillPanel(piece)
+function showSkillPanel(hero)
 {
-    // hideContextMenu();
-
     const skillPanel = document.getElementById("skill-panel");
-    updateSkillPanel(skillPanel, piece.name);
+    updateSkillPanel(skillPanel, hero.name);
     skillPanel.style.visibility = 'visible';
     skillPanel.style.opacity = 1;
 }
@@ -407,6 +382,8 @@ function hideSkillPanel()
         skillPanel.ontrasitionend = null;
     }
 }
+
+// TERRAIN PANEL
 
 function showTerrainPanel(cell)
 {
@@ -457,7 +434,7 @@ function showTerrainPanel(cell)
     {
         if (TERRAIN_INFO[cell.terrain]["neutral"])
         {
-            if (c.terrain == cell.terrain)
+            if (c.terrain === cell.terrain)
             {
                 c.style.boxShadow = "0 0 0.25em 0.25em" + TERRAIN_INFO[cell.terrain]["color"];
                 c.style.zIndex = 10;
@@ -465,7 +442,7 @@ function showTerrainPanel(cell)
         }
         else
         {
-            if (c.terrain == cell.terrain)
+            if (c.terrain === cell.terrain)
             {
                 if (c.classList.contains("Red") && cell.classList.contains("Red"))
                 {
@@ -503,41 +480,7 @@ function hideTerrainPanel()
     }
 }
 
-function updateContextMenu(menu, items = {})
-{
-    menu.innerHTML = "";
-    for (const item in items)
-    {
-        if (items[item] != "<hr>")
-        {
-            const menuItem = document.createElement("div");
-            menuItem.classList.add("context-menu-item");
-            const itemLabel = document.createElement("label");
-            itemLabel.innerHTML = `<i ${MENU_LOGO[item]} ></i> ${item}`;
-            menuItem.appendChild(itemLabel);
-            menuItem.addEventListener("click", function (event)
-            {
-                if (event.cancelable) event.preventDefault();
-                event.stopPropagation();
-                hideContextMenu();
-                items[item]();
-            });
-            menu.appendChild(menuItem);
-        }
-        else
-        {
-            const hr = document.createElement("hr");
-            hr.style.border = "none";
-            hr.style.backgroundColor = "rgba(0, 0, 0, 0.3)";
-            hr.style.height = "2px";
-            hr.style.margin = "2px 0 2px 0";
-            hr.style.boxShadow = "none";
-            menu.appendChild(hr);
-        }
-    }
-}
-
-function getPosition(event)
+function positionMenu(menu, event)
 {
     var posX = 0;
     var posY = 0;
@@ -557,17 +500,8 @@ function getPosition(event)
         posY = event.changedTouches[0].clientY;
     }
 
-    return {
-        x: posX + window.scrollX,
-        y: posY + window.scrollY
-    };
-}
-
-function positionMenu(menu, event)
-{
-    let clickCoords = getPosition(event);
-    let clickCoordsX = clickCoords.x;
-    let clickCoordsY = clickCoords.y;
+    let clickCoordsX = posX + window.scrollX;
+    let clickCoordsY = posY + window.scrollY;
 
     let menuWidth = menu.offsetWidth + 4;
     let menuHeight = menu.offsetHeight + 4;
@@ -616,28 +550,28 @@ function createHeroTable()
         factionHeroes.classList.add("faction-heroes");
         factionTable.appendChild(factionHeroes);
 
-        if (faction == "魏")
+        if (faction === "魏")
         {
             factionLabel.classList.add("wei-front");
             factionTable.classList.add("wei-back");
         }
-        else if (faction == "蜀")
+        else if (faction === "蜀")
         {
             factionLabel.classList.add("shu-front");
             factionTable.classList.add("shu-back");
         }
-        else if (faction == "吴")
+        else if (faction === "吴")
         {
             factionLabel.classList.add("wu-front");
             factionTable.classList.add("wu-back");
         }
-        else if (faction == "群")
+        else if (faction === "群")
         {
             factionLabel.classList.add("qun-front");
             factionTable.classList.add("qun-back");
         }
 
-        const heroes = (Object.keys(HERO_DATA)).filter(hero => HERO_DATA[hero]["势力"] == faction);
+        const heroes = (Object.keys(HERO_DATA)).filter(hero => HERO_DATA[hero]["势力"] === faction);
 
         for (const hero of heroes)
         {
@@ -712,4 +646,4 @@ document.addEventListener("click", function (event)
         modeTable.style.opacity = 0;
     }
 });
-export { contextMenuItems, addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel };
+export { addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel };

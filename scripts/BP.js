@@ -2,7 +2,7 @@ import { HERO_DATA } from '../modules/data.mjs';
 import { addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, showSkillPanel, createHeroTable, showHeroTable } from '../modules/context-menu.mjs';
 
 var side1st = "red";
-var side2nd = side1st == "red" ? "blue" : "red";
+var side2nd = side1st === "red" ? "blue" : "red";
 var INDEX = 0;
 
 function createHeroBoard(number = 16)
@@ -29,14 +29,14 @@ function createHeroBoard(number = 16)
     }
 
     // side1st = window.confirm("红方是否先选？") ? "red" : "blue";
-    // side2nd = side1st == "red" ? "blue" : "red";
+    // side2nd = side1st === "red" ? "blue" : "red";
 
     const board1st = document.getElementById(side1st + 'Board');
     const board2nd = document.getElementById(side2nd + 'Board');
 
     for (let i = 0; i < number; i++)
     {
-        const board = (i % 4 == 0 || i % 4 == 3) ? board1st : board2nd;
+        const board = (i % 4 === 0 || i % 4 === 3) ? board1st : board2nd;
 
         const candidate = document.createElement('div');
         candidate.classList.add('candidate');
@@ -62,7 +62,7 @@ function pick(piece)
 
     oldNameTag.innerHTML = "";
 
-    const side = (INDEX % 4 == 0 || INDEX % 4 == 3) ? side1st : side2nd;
+    const side = (INDEX % 4 === 0 || INDEX % 4 === 3) ? side1st : side2nd;
     const cell = document.getElementById("cell" + INDEX);
     const name = document.getElementById("name" + INDEX);
 
@@ -184,7 +184,7 @@ function createHeroCandidate(name, index)
 
                 if (draggingPiece.picked === false)
                 {
-                    const side = (INDEX % 4 == 0 || INDEX % 4 == 3) ? side1st : side2nd;
+                    const side = (INDEX % 4 === 0 || INDEX % 4 === 3) ? side1st : side2nd;
                     const board = document.getElementById(side + "Board");
                     const boardRect = board.getBoundingClientRect();
 
@@ -306,7 +306,7 @@ function createHeroCandidate(name, index)
 
                     if (draggingPiece.picked === false)
                     {
-                        const side = (INDEX % 4 == 0 || INDEX % 4 == 3) ? side1st : side2nd;
+                        const side = (INDEX % 4 === 0 || INDEX % 4 === 3) ? side1st : side2nd;
                         const board = document.getElementById(side + "Board");
                         const boardRect = board.getBoundingClientRect();
 
@@ -369,12 +369,12 @@ function highlightCandidate(index = INDEX)
 {
     if (index < 16)
     {
-        const side = (index % 4 == 0 || index % 4 == 3) ? side1st : side2nd;
+        const side = (index % 4 === 0 || index % 4 === 3) ? side1st : side2nd;
 
         for (let i = 0; i < 16; i++)
         {
             const candidate = document.getElementById("candidate" + i);
-            if (i == (index - (index % 2 == 0 ? 1 : 0)) || i == (index - (index % 2 == 0 ? 1 : 0) + 1))
+            if (i === (index - (index % 2 === 0 ? 1 : 0)) || i === (index - (index % 2 === 0 ? 1 : 0) + 1))
             {
                 candidate.classList.add("waiting-" + side);
             }
@@ -429,7 +429,7 @@ class BPHistory
             label.style.display = "block";
 
             var number = parseInt(label.textContent.slice(2, -1));
-            if (historyTooltip.style.visibility == "visible" && historyTooltip.style.opacity == "1" && icon.className == "fas fa-rotate-left" && !isNaN(number))
+            if (historyTooltip.style.visibility === "visible" && historyTooltip.style.opacity === "1" && icon.className === "fas fa-rotate-left" && !isNaN(number))
             {
                 number++;
                 label.textContent = `后退${number}步`;
@@ -475,7 +475,7 @@ class BPHistory
             label.style.display = "block";
 
             var number = parseInt(label.textContent.slice(2, -1));
-            if (historyTooltip.style.visibility == "visible" && historyTooltip.style.opacity == "1" && icon.className == "fas fa-rotate-right" && !isNaN(number))
+            if (historyTooltip.style.visibility === "visible" && historyTooltip.style.opacity === "1" && icon.className === "fas fa-rotate-right" && !isNaN(number))
             {
                 number++;
                 label.textContent = `重做${number}步`;
@@ -607,7 +607,7 @@ function initializeHistory()
 
     document.addEventListener("keydown", function (event)
     {
-        if (event.key == 'ArrowUp')
+        if (event.key === 'ArrowUp')
         {
             if (event.cancelable) event.preventDefault();
             const previousState = history.undo();
@@ -616,7 +616,7 @@ function initializeHistory()
                 recoverBPStatefrom(previousState);
             }
         }
-        else if (event.key == 'ArrowDown')
+        else if (event.key === 'ArrowDown')
         {
             if (event.cancelable) event.preventDefault();
             const nextState = history.redo();
@@ -625,7 +625,7 @@ function initializeHistory()
                 recoverBPStatefrom(nextState);
             }
         }
-        else if (event.key == 'z' && event.ctrlKey)
+        else if (event.key === 'z' && event.ctrlKey)
         {
             if (event.cancelable) event.preventDefault();
             const previousState = history.undo();
@@ -634,7 +634,7 @@ function initializeHistory()
                 recoverBPStatefrom(previousState);
             }
         }
-        else if (event.key == 'y' && event.ctrlKey)
+        else if (event.key === 'y' && event.ctrlKey)
         {
             if (event.cancelable) event.preventDefault();
             const nextState = history.redo();
@@ -674,7 +674,7 @@ function initializeHistory()
         historyTooltip.style.visibility = "visible";
         historyTooltip.style.opacity = "1";
 
-        if (edge == "top")
+        if (edge === "top")
         {
             historyTooltip.style.top = "0";
             historyTooltip.style.webkitTransform = "translate(-50%, -100%)";
@@ -682,7 +682,7 @@ function initializeHistory()
             icon.className = "fas fa-rotate-left";
             label.textContent = "后退0步";
         }
-        else if (edge == "bottom")
+        else if (edge === "bottom")
         {
             historyTooltip.style.top = `${document.body.scrollHeight}px`;
             historyTooltip.style.webkitTransform = "translate(-50%, 100%)";
@@ -702,15 +702,15 @@ function initializeHistory()
         {
             var deltaY = (event.touches[0].clientY - startY);
 
-            if (direction == null)
+            if (direction === null)
             {
                 // 纵向滑动已经到顶
-                if (edge == "top" && deltaY > 0)
+                if (edge === "top" && deltaY > 0)
                 {
                     direction = "pull-down";
                 }
                 // 纵向滑动已经到底
-                else if (edge == "bottom" && deltaY < 0)
+                else if (edge === "bottom" && deltaY < 0)
                 {
                     direction = "pull-up";
                 }
@@ -723,7 +723,7 @@ function initializeHistory()
             if (event.cancelable) event.preventDefault();
 
             // 纵向滑动已经到顶
-            if (direction == "pull-down" && deltaY > 0)
+            if (direction === "pull-down" && deltaY > 0)
             {
                 var deltaIndex = parseInt(deltaY / threshold);
                 if (startIndex - deltaIndex >= 0 && startINDEX - deltaIndex >= 0)
@@ -742,7 +742,7 @@ function initializeHistory()
                 historyTooltip.style.top = `${30 * deltaY / window.innerHeight}vh`;
             }
             // 纵向滑动已经到底
-            else if (direction == "pull-up" && deltaY < 0)
+            else if (direction === "pull-up" && deltaY < 0)
             {
                 var deltaIndex = parseInt(- deltaY / threshold);
                 if (startIndex + deltaIndex < history.history.length && startINDEX + deltaIndex < 16)

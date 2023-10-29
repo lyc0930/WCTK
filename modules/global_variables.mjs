@@ -1,7 +1,3 @@
-var Pieces = [];
-
-
-
 var currentPlayer = null; // 当前回合玩家
 function setCurrentPlayer(player)
 {
@@ -14,4 +10,4 @@ function setCurrentPhase(phase)
     currentPhase = phase;
 }
 
-export { Pieces, currentPlayer, setCurrentPlayer, currentPhase, setCurrentPhase };
+export { currentPlayer, setCurrentPlayer, currentPhase, setCurrentPhase };

@@ -1,460 +1,95 @@
 import { HERO_DATA, weapons, armors, horses } from './data.mjs';
 import { currentPlayer, currentPhase } from "./global_variables.mjs";
-import { yong_quan } from "./skills.mjs";
+import { redFlag, blueFlag } from './flags.mjs';
+import { Hero } from './hero.mjs';
+import { Area } from './area.mjs';
 
 // 计算距离
 function distance(P, Q)
 {
-    var cellP = P;
-    var cellQ = Q;
-    if (P.classList.contains("piece"))
+    var area_P = P;
+    var area_Q = Q;
+    if (P instanceof Hero)
     {
-        cellP = P.parentElement;
+        area_P = P.area;
     }
-    if (Q.classList.contains("piece"))
+    if (Q instanceof Hero)
     {
-        cellQ = Q.parentElement;
+        area_Q = Q.area;
     }
-    return Math.abs(cellP.row - cellQ.row) + Math.abs(cellP.col - cellQ.col);
-}
-
-// 计算路径
-function PathesOf(piece)
-{
-    var Pathes = new Array(7)
-    for (var i = 0; i < 7; i++)
-    {
-        Pathes[i] = new Array(7)
-        for (var j = 0; j < 7; j++)
-        {
-            Pathes[i][j] = null;
-        }
-    }
-
-    var queue = [];
-    queue.push(piece.parentElement);
-    const startRow = piece.parentElement.row;
-    const startCol = piece.parentElement.col;
-    Pathes[startRow][startCol] = [piece.parentElement];
-
-    while (queue.length)
-    {
-        const currentCell = queue.shift();
-
-        // 〖冲杀〗
-        // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域（并Stop）；
-        var subject = piece;
-        var chong_sha = (piece === currentPlayer && currentPhase == "移动" && piece.name === "张绣" && subject === piece);
-        var chong_sha_stop = false;
-        for (const pieceInCell of piecesIn(currentCell))
-        {
-            if (enemyPiecesOf(piece).includes(pieceInCell) && chong_sha && !isRideOn(pieceInCell, "阻动"))
-            {
-                chong_sha_stop = true;
-                break;
-            }
-        }
-        if (chong_sha_stop)
-        {
-            continue;
-        }
-
-        const row = currentCell.row;
-        const col = currentCell.col;
-        for (const cell of adjacentCells(currentCell, piece))
-        {
-            const nextRow = cell.row;
-            const nextCol = cell.col;
-            if (Pathes[nextRow][nextCol] == null)
-            {
-                Pathes[nextRow][nextCol] = Pathes[row][col].concat([cell]);
-                queue.push(cell);
-            }
-        }
-    }
-
-    // 删除起点
-    Pathes[startRow][startCol] = null;
-
-    for (const cell of document.getElementsByClassName("cell"))
-    {
-        const row = cell.row;
-        const col = cell.col;
-        if (!isStayable(cell, piece))
-        {
-            Pathes[row][col] = null;
-        }
-    }
-
-    return Pathes;
-}
-
-// 可停留
-function isStayable(cell, piece = null, reentry = true)
-{
-    // 如果不是重新进入，且棋子已经在该区域，那么可以停留
-    if (cell === piece.parentElement && !reentry)
-    {
-        if (cell.classList.contains("ridge"))
-        {
-            return false;
-        }
-        else if (cell.classList.contains("barrack") || cell.classList.contains("base"))
-        {
-            return true;
-        }
-        else if (piecesIn(cell).length > 1)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    var hold_by_enemy = false;
-    for (const enemyPiece of enemyPiecesOf(piece))
-    {
-        if (cell.contains(enemyPiece))
-        {
-            hold_by_enemy = true;
-            break;
-        }
-    }
-
-    // 〖固城〗
-    var gu_cheng = false;
-    for (const enemyPiece of enemyPiecesOf(piece))
-    {
-        if (enemyPiece.name === "曹仁")
-        {
-            gu_cheng = true;
-            break;
-        }
-    }
-
-    if (hold_by_enemy && gu_cheng)
-    {
-        if (cell.classList.contains("base"))
-        {
-            if (piece.classList.contains("blue-piece") && !cell.classList.contains("Blue"))
-            {
-                return false;
-            }
-            if (piece.classList.contains("red-piece") && !cell.classList.contains("Red"))
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
-    if (cell.classList.contains("barrack") || cell.classList.contains("base"))
-    {
-        return true;
-    }
-    else if (cell.classList.contains("ridge"))
-    {
-        return false;
-    }
-    // 〖冲杀〗
-    // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域
-    var subject = piece;
-    var chong_sha = (piece === currentPlayer && currentPhase == "移动" && piece.name === "张绣" && subject === piece);
-    for (const pieceInCell of piecesIn(cell))
-    {
-        if (piece === pieceInCell)
-        {
-            continue;
-        }
-        if (allyPiecesOf(piece).includes(pieceInCell))
-        {
-            return false;
-        }
-        else // enemyPiecesOf(piece).includes(pieceInCell)
-        {
-            if (chong_sha)
-            {
-                if (!yong_quan(pieceInCell) && !isRideOn(pieceInCell, "阻动"))
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
-    if (chong_sha && hold_by_enemy) // cell中的棋子都是敌方不能动的棋子
-    {
-        return false;
-    }
-
-    return true;
-}
-
-// 可穿越
-function isPassable(cell, piece = null)
-{
-    // 如果可以停留必然可以穿越
-    if (isStayable(cell, piece))
-    {
-        return true;
-    }
-    else
-    {
-        // 【穿越马】
-        if (isRideOn(piece, "穿越"))
-        {
-            var hold_by_enemy = false;
-            for (const enemyPiece of enemyPiecesOf(piece))
-            {
-                if (cell.contains(enemyPiece))
-                {
-                    hold_by_enemy = true;
-                    break;
-                }
-            }
-
-            // 〖固城〗
-            var gucheng = false;
-            for (const enemyPiece of enemyPiecesOf(piece))
-            {
-                if (enemyPiece.name === "曹仁")
-                {
-                    gucheng = true;
-                    break;
-                }
-            }
-
-            if (hold_by_enemy && gucheng)
-            {
-                if (cell.classList.contains("base"))
-                {
-                    if (piece.classList.contains("blue-piece") && !cell.classList.contains("Blue"))
-                    {
-                        return false;
-                    }
-                    if (piece.classList.contains("red-piece") && !cell.classList.contains("Red"))
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        return false;
-    }
-}
-
-// 相邻区域
-function adjacentCells(cell, piece = null)
-{
-    var adjCells = [];
-    const cells = document.getElementsByClassName("cell");
-    const row = cell.row;
-    const col = cell.col;
-    for (var i = 0; i < 4; i++)
-    {
-        // 下上右左
-        const nextRow = row + (i === 0 ? 1 : (i === 1 ? -1 : 0));
-        const nextCol = col + (i === 2 ? 1 : (i === 3 ? -1 : 0));
-        const nextCell = cells[nextRow * 7 + nextCol];
-        if (nextRow >= 0 && nextRow < 7 && nextCol >= 0 && nextCol < 7 && isPassable(nextCell, piece))
-        {
-            adjCells.push(nextCell);
-        }
-    }
-
-    // 〖渡江〗
-    if (piece === currentPlayer && piece.name === "吕蒙" && cell.classList.contains("lake"))
-    {
-        for (const lakeCell of document.getElementsByClassName("lake"))
-        {
-            if (isPassable(lakeCell, piece))
-            {
-                adjCells.push(lakeCell);
-            }
-        }
-    }
-
-    return adjCells;
-}
-
-// 距离最近的可进入区域
-function nearestCellOf(piece)
-{
-    var nearestCells = [];
-    var minDistance = 100;
-    for (const cell of document.getElementsByClassName("cell"))
-    {
-        if (isStayable(cell, piece))
-        {
-            const d = distance(piece, cell);
-            if (d < minDistance)
-            {
-                minDistance = d;
-                nearestCells = [cell];
-            }
-            else if (d === minDistance)
-            {
-                nearestCells.push(cell);
-            }
-        }
-    }
-    return nearestCells;
-}
-
-// 是否装备特定类型的坐骑
-function isRideOn(piece, horse_type)
-{
-    for (const horse of piece.horses)
-    {
-        if (horses[horse] == horse_type)
-        {
-            return true;
-        }
-    }
-    return false;
+    return Math.abs(area_P.row - area_Q.row) + Math.abs(area_P.col - area_Q.col);
 }
 
 // 是否位于同一直线
 function isOnSameLine(P, Q)
 {
-    var cellP = P;
-    var cellQ = Q;
-    if (P.classList.contains("piece"))
+    var area_P = P;
+    var area_Q = Q;
+    if (P instanceof Hero)
     {
-        cellP = P.parentElement;
+        area_P = P.area;
     }
-    if (Q.classList.contains("piece"))
+    if (Q instanceof Hero)
     {
-        cellQ = Q.parentElement;
+        area_Q = Q.area;
     }
-    return cellP.row === cellQ.row || cellP.col === cellQ.col;
+    return area_P.row === area_Q.row || area_P.col === area_Q.col;
 }
 
-// 所有棋子
-function allPiecesOf(piece)
+function afterPositionChange(hero, cell)
 {
-    if (piece.classList.contains("piece"))
+    // 捡起帅旗逻辑
+    if (redFlag.parentElement === cell && hero.color === "Red")
     {
-        const allPieces = document.getElementsByClassName("piece");
-        return Array.from(allPieces).filter(piece => !piece.parentElement.classList.contains("grave"));
+        hero.carrier = true;
     }
-    return null;
+    if (blueFlag.parentElement === cell && hero.color === "Blue")
+    {
+        hero.carrier = true;
+    }
+
+    // 运送帅旗逻辑
+    if (hero.carrier && cell === hero.enemy_base)
+    {
+        var score = 5;
+
+        hero.carrier = false;
+
+        record(`${hero.name}送至帅旗, ${hero.color === "Red" ? "红" : "蓝"}方+${score}分`);
+
+        const alliesInBase = Array.from(hero.allies).filter(ally => ally.cell === hero.base);
+
+        if (alliesInBase.length === 1)
+        {
+            const ally = alliesInBase[0];
+            ally.carrier = true;
+        }
+        else // 大本营 没有己方棋子 或者 有多个己方棋子
+        {
+            hero.base.appendChild(hero.color === "Red" ? redFlag : blueFlag);
+        }
+    }
+
+    // saveState();
 }
 
-// 所有己方棋子
-function allyPiecesOf(piece)
+function isHighlighting(className = null)
 {
-    if (piece.classList.contains("piece"))
+    if (className != null)
     {
-        if (piece.classList.contains("red-piece"))
+        return document.getElementsByClassName(className).length > 0;
+    }
+    else
+    {
+        const highlights = ["reachable", "landable", "targetable"];
+        for (const highlight of highlights)
         {
-            const redPieces = document.getElementsByClassName("red-piece");
-            return Array.from(redPieces).filter(piece => !piece.parentElement.classList.contains("grave"));
-        }
-        else if (piece.classList.contains("blue-piece"))
-        {
-            const bluePieces = document.getElementsByClassName("blue-piece");
-            return Array.from(bluePieces).filter(piece => !piece.parentElement.classList.contains("grave"));
-        }
-        else
-        {
-            throw new Error("Invalid faction");
+            if (document.getElementsByClassName(highlight).length > 0)
+            {
+                return true;
+            }
         }
     }
-    return null;
-}
-
-// 所有敌方棋子
-function enemyPiecesOf(piece)
-{
-    if (piece.classList.contains("piece"))
-    {
-        if (piece.classList.contains("red-piece"))
-        {
-            const bluePieces = document.getElementsByClassName("blue-piece");
-            return Array.from(bluePieces).filter(piece => !piece.parentElement.classList.contains("grave"));
-        }
-        else if (piece.classList.contains("blue-piece"))
-        {
-            const redPieces = document.getElementsByClassName("red-piece");
-            return Array.from(redPieces).filter(piece => !piece.parentElement.classList.contains("grave"));
-        }
-        else
-        {
-            throw new Error("Invalid faction");
-        }
-    }
-    return null;
-}
-
-// 大本营
-function baseOf(piece)
-{
-    if (piece.classList.contains("piece"))
-    {
-        if (piece.classList.contains("red-piece"))
-        {
-            return document.getElementsByClassName("Red base")[0];
-        }
-        else if (piece.classList.contains("blue-piece"))
-        {
-            return document.getElementsByClassName("Blue base")[0];
-        }
-        else
-        {
-            throw new Error("Invalid faction");
-        }
-    }
-    return null;
-}
-
-// 敌方大本营
-function enemyBaseOf(piece)
-{
-    if (piece.classList.contains("piece"))
-    {
-        if (piece.classList.contains("red-piece"))
-        {
-            return document.getElementsByClassName("Blue base")[0];
-        }
-        else if (piece.classList.contains("blue-piece"))
-        {
-            return document.getElementsByClassName("Red base")[0];
-        }
-        else
-        {
-            throw new Error("Invalid faction");
-        }
-    }
-    return null;
-}
-
-// 区域中的棋子
-function piecesIn(cell)
-{
-    var pieces = [];
-    for (const child of cell.children)
-    {
-        if (child.classList.contains("piece"))
-        {
-            pieces.push(child);
-        }
-    }
-    return pieces;
 }
 
 // 血量颜色
@@ -628,4 +263,4 @@ function record(message)
     console.info(message);
 }
 
-export { distance, PathesOf, isStayable, isPassable, adjacentCells, nearestCellOf, isRideOn, isOnSameLine, allPiecesOf, allyPiecesOf, enemyPiecesOf, baseOf, enemyBaseOf, piecesIn, HPColor, drawArrow, drawTeleport, cls, record};
+export { distance, isOnSameLine, isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, afterPositionChange };

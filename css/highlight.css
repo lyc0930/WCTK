@@ -38,3 +38,12 @@
     border-color: rgb(20, 200, 43);
     box-shadow: 0 0 0.4em 0.4em rgb(20, 200, 43, 0.5);
 }
+
+.piece.attackable {
+    box-shadow: 0 0 0.4em 0.4em rgb(255, 36, 0, 0.5);
+}
+
+.piece.attackable:hover {
+    border-color: rgb(255, 36, 0);
+    box-shadow: 0 0 0.4em 0.4em rgb(255, 36, 0, 0.5);
+}
