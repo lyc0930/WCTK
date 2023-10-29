@@ -371,12 +371,12 @@ class Hero
             items["break-line-1"] = "<hr>";
             items["移动阶段"] = () => { this.move_phase(); };
             items["break-line-2"] = "<hr>";
-            items["迅【闪】"] = () => { xunShan(); };
+            items["迅【闪】"] = () => { this.use("迅【闪】") };
             items["break-line-3"] = "<hr>";
-            items["【暗度陈仓】"] = () => { AnDuChenCang(3); };
-            items["【兵贵神速】"] = () => { BingGuiShenSu(); };
-            items["【奇门遁甲】"] = () => { QiMenDunJia(2); };
-            items["【诱敌深入】"] = () => { YouDiShenRu(4); };
+            items["【暗度陈仓】"] = () => { this.use("【暗度陈仓】") };
+            items["【兵贵神速】"] = () => { this.use("【兵贵神速】") };
+            items["【奇门遁甲】"] = () => { this.use("【奇门遁甲】") };
+            items["【诱敌深入】"] = () => { this.use("【诱敌深入】") };
         }
         return items;
     }
@@ -1030,15 +1030,6 @@ class Hero
         // 计算可到达的区域
         const Pathes = this.pathes;
 
-        // 高亮可到达的区域
-        for (const area of Areas.flat())
-        {
-            if (Pathes[area.row][area.col] && (Pathes[area.row][area.col].length - 1 <= this.moveSteps))
-            {
-                area.highlight("reachable", click_to_move);
-            }
-        }
-
         // 定义点击高亮区域行为
         const click_to_move = (event) =>
         {
@@ -1066,6 +1057,14 @@ class Hero
             }
         }
 
+        // 高亮可到达的区域
+        for (const area of Areas.flat())
+        {
+            if ((Pathes[area.row][area.col] && (Pathes[area.row][area.col].length - 1 < this.moveSteps) && this.can_pass(area)) || (Pathes[area.row][area.col] && (Pathes[area.row][area.col].length - 1 === this.moveSteps) && this.can_stay(area)))
+            {
+                area.highlight("reachable", click_to_move);
+            }
+        }
     }
 
     // 转移
@@ -1180,6 +1179,68 @@ class Hero
     {
         this.piece.classList.remove(className);
         this.piece.removeEventListener("click", listener);
+    }
+
+    use(card)
+    {
+        // 正在等待响应
+        if (isHighlighting())
+        {
+            return;
+        }
+
+        if (card === "迅【闪】")
+        {
+            this._xun_Shan();
+        }
+        else if (card === "【暗度陈仓】")
+        {
+            this._An_Du_Chen_Cang();
+        }
+        else if (card === "【兵贵神速】")
+        {
+            this._Bing_Gui_Shen_Su();
+        }
+        else if (card === "【奇门遁甲】")
+        {
+            this._Qi_Meng_Dun_Jia();
+        }
+        else if (card === "【诱敌深入】")
+        {
+            this._You_Di_Shen_Ru();
+        }
+    }
+
+    // 迅【闪】
+    _xun_Shan()
+    {
+        this.moveSteps = 1;
+        this.move_fixed_steps(true);
+    }
+
+    // 【暗度陈仓】
+    _An_Du_Chen_Cang()
+    {
+
+    }
+
+    // 【兵贵神速】
+    _Bing_Gui_Shen_Su()
+    {
+        this.moveSteps = 2;
+        this.move_fixed_steps(true);
+    }
+
+    // 【奇门遁甲】
+    _Qi_Meng_Dun_Jia()
+    {
+
+    }
+
+    // 【诱敌深入】
+    _You_Di_Shen_Ru()
+    {
+
     }
 }
 
