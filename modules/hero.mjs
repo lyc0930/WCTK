@@ -1027,12 +1027,27 @@ class Hero
         setCurrentPhase("移动");
 
         // 基于体力值生成移动力
-        this.move_points = this.HP;
+        this.move_points = this.generate_move_points();
 
         move_in_move_phase(this.piece);
 
         // 空白处结束移动阶段
         document.addEventListener("click", move_phase_end);
+    }
+
+    // 生成移动力
+    generate_move_points()
+    {
+        var move_points = this.HP;
+
+        // 〖拒敌〗
+        if (this.affected_by_ju_di)
+        {
+            record(`王异发动〖拒敌〗`);
+            move_points -= 1;
+        }
+
+        return move_points;
     }
 
     // 移动固定步数
@@ -1211,14 +1226,17 @@ class Hero
             return;
         }
 
+
         if (card === "迅【闪】")
         {
             this._xun_Shan();
         }
+        // 锦囊
+        // 〖秘计〗
         else if (card === "【暗度陈仓】")
         {
             setCurrentPlayer(this)
-            this._An_Du_Chen_Cang();
+            this._An_Du_Chen_Cang(3 - this.affected_by_mi_ji);
         }
         else if (card === "【兵贵神速】")
         {
@@ -1228,12 +1246,12 @@ class Hero
         else if (card === "【奇门遁甲】")
         {
             setCurrentPlayer(this)
-            this._Qi_Meng_Dun_Jia();
+            this._Qi_Meng_Dun_Jia(2 - this.affected_by_mi_ji);
         }
         else if (card === "【诱敌深入】")
         {
             setCurrentPlayer(this)
-            this._You_Di_Shen_Ru();
+            this._You_Di_Shen_Ru(4 - this.affected_by_mi_ji);
         }
     }
 
@@ -1256,7 +1274,7 @@ class Hero
 
         for (const ally of this.allies)
         {
-            if (ally != this && ally.alive)
+            if (ally.alive)
             {
                 for (const area of ally.area.adjacent_areas)
                 {
@@ -1303,7 +1321,7 @@ class Hero
         {
             if (hero !== this && hero.alive)
             {
-                if (hero.alive && (distance(this, hero) <= limit) && !hero.is_ride_on("阻动"))
+                if (hero.alive && (distance(this, hero) <= limit) && !hero.is_ride_on("阻动") && !hero?.yong_quan)
                 {
                     hero.highlight("targetable", click_to_swap);
                 }
@@ -1335,18 +1353,163 @@ class Hero
 
         for (const hero of Heroes)
         {
-            if (hero.alive && (distance(this, hero) <= limit) && !hero.is_ride_on("阻动"))
+            if (hero.alive && (distance(this, hero) <= limit) && !hero.is_ride_on("阻动") && !hero?.yong_quan)
             {
                 hero.highlight("targetable", click_to_control);
             }
         }
+    }
+
+    // 〖拒敌〗
+    get affected_by_ju_di()
+    {
+        for (const enemy of this.enemies)
+        {
+            if (enemy.name === "王异")
+            {
+                if (distance(this, enemy) <= enemy?.ju_di_limit)
+                {
+                    return true;
+                }
+                break;
+            }
+        }
+        return false;
+    }
+
+    // 〖秘计〗
+    get affected_by_mi_ji()
+    {
+        for (const enemy of this.enemies)
+        {
+            if (enemy.name === "王异")
+            {
+                if (distance(this, enemy) <= enemy?.mi_ji_limit)
+                {
+                    return enemy?.mi_ji_X;
+                }
+                break;
+            }
+        }
+        return 0;
     }
 }
 
 // 工厂函数
 function create_hero(name, color, index)
 {
-    return new Hero(name, color, index);
+    if (name === "王异")
+    {
+        return new Wang_Yi(color, index);
+    }
+    else if (name === "董卓")
+    {
+        return new Dong_Zhuo(color, index);
+    }
+    else
+    {
+        return new Hero(name, color, index);
+    }
+}
+
+// 王异
+class Wang_Yi extends Hero
+{
+    constructor(color, index)
+    {
+        super("王异", color, index);
+    }
+
+    // 〖拒敌〗
+    // 锁定技，敌方角色的移动阶段开始时，若其在你的距离<4>范围内，其少生成1点移动力。
+    get ju_di_limit()
+    {
+        return 4;
+    }
+
+    // 〖秘计〗
+    // 锁定技，你的距离<3>范围内的敌方角色使用锦囊牌的距离限制-X（X为你的已损失体力值）。
+    get mi_ji_limit()
+    {
+        return 3;
+    }
+
+    get mi_ji_X()
+    {
+        return this.maxHP - this.HP;
+    }
+}
+
+// 董卓
+class Dong_Zhuo extends Hero
+{
+    constructor(color, index)
+    {
+        super("董卓", color, index);
+    }
+
+    // 〖拥权〗
+    // 锁定技，若你的距离<1>范围内有其它己方角色，你不能成为敌方角色使用牌或发动技能的目标。
+    get yong_quan_limit()
+    {
+        return 1;
+    }
+
+    get yong_quan()
+    {
+        for (const ally of this.allies)
+        {
+            if (ally.alive && distance(this, ally) <= this.yong_quan_limit)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 〖拒敌〗
+    get affected_by_ju_di()
+    {
+        if (this.yong_quan)
+        {
+            return false;
+        }
+
+        for (const enemy of this.enemies)
+        {
+            if (enemy.name === "王异")
+            {
+                if (distance(this, enemy) <= enemy?.ju_di_limit)
+                {
+                    return true;
+                }
+                break;
+            }
+        }
+        return false;
+    }
+
+    // 〖秘计〗
+    get affected_by_mi_ji()
+    {
+        if (this.yong_quan)
+        {
+            return 0;
+        }
+
+        for (const enemy of this.enemies)
+        {
+            if (enemy.name === "王异")
+            {
+                if (distance(this, enemy) <= enemy?.mi_ji_limit)
+                {
+                    return enemy?.mi_ji_X;
+                }
+                break;
+            }
+        }
+        return 0;
+    }
 }
 
 export { Hero, create_hero };
