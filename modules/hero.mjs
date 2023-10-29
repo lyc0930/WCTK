@@ -1,5 +1,5 @@
 import { HERO_DATA, weapons, armors, horses } from './data.mjs';
-import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, afterPositionChange, distance } from "./utils.mjs";
+import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, distance } from "./utils.mjs";
 import { addContextMenu, showSkillPanel } from './context-menu.mjs';
 import { Areas, Heroes } from '../scripts/main.js';
 import { redFlag, blueFlag } from './flags.mjs';

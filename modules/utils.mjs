@@ -36,43 +36,6 @@ function isOnSameLine(P, Q)
     return area_P.row === area_Q.row || area_P.col === area_Q.col;
 }
 
-function afterPositionChange(hero, cell)
-{
-    // 捡起帅旗逻辑
-    if (redFlag.parentElement === cell && hero.color === "Red")
-    {
-        hero.carrier = true;
-    }
-    if (blueFlag.parentElement === cell && hero.color === "Blue")
-    {
-        hero.carrier = true;
-    }
-
-    // 运送帅旗逻辑
-    if (hero.carrier && cell === hero.enemy_base)
-    {
-        var score = 5;
-
-        hero.carrier = false;
-
-        record(`${hero.name}送至帅旗, ${hero.color === "Red" ? "红" : "蓝"}方+${score}分`);
-
-        const alliesInBase = Array.from(hero.allies).filter(ally => ally.cell === hero.base);
-
-        if (alliesInBase.length === 1)
-        {
-            const ally = alliesInBase[0];
-            ally.carrier = true;
-        }
-        else // 大本营 没有己方棋子 或者 有多个己方棋子
-        {
-            hero.base.appendChild(hero.color === "Red" ? redFlag : blueFlag);
-        }
-    }
-
-    // saveState();
-}
-
 function isHighlighting(className = null)
 {
     if (className != null)
@@ -263,4 +226,4 @@ function record(message)
     console.info(message);
 }
 
-export { distance, isOnSameLine, isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, afterPositionChange };
+export { distance, isOnSameLine, isHighlighting, HPColor, drawArrow, drawTeleport, cls, record };
