@@ -15,6 +15,7 @@ class Hero
         this.color = color; // 阵营
         this.name = name; // 姓名
 
+        this.menu = this.#create_menu(); // 菜单
         this.piece = this.#create_piece(); // 棋子
 
         this.move_points = 0; // 移动力
@@ -394,7 +395,7 @@ class Hero
 
         piece.hero = this;
 
-        var heroOption = document.getElementById(this.name + this.index);
+        const heroOption = document.getElementById(this.name + this.index);
         heroOption.selected = true;
 
         const labelMaxHP = document.getElementById("maxHP" + this.index);
@@ -610,6 +611,298 @@ class Hero
         addContextMenu(piece, this, isHighlighting);
 
         return piece;
+    }
+
+    #create_menu()
+    {
+        const menu = document.createElement("div");
+        menu.className = "menu";
+        menu.id = "menu" + this.index;
+        menu.style.order = this.index;
+
+        const fixedPanel = document.createElement("div");
+        fixedPanel.className = "fixed-panel";
+        fixedPanel.id = "fixedPanel" + this.index;
+
+        const selectBlock = document.createElement("div");
+        selectBlock.className = "select-block";
+        selectBlock.classList.add("block");
+
+        const heroLabel = document.createElement("label");
+        heroLabel.innerHTML = "武将：";
+        heroLabel.htmlFor = "heroSelect" + this.index;
+
+        const heroSelect = document.createElement("select");
+        heroSelect.className = "hero-select";
+        heroSelect.id = "heroSelect" + this.index;
+
+        selectBlock.appendChild(heroLabel);
+        selectBlock.appendChild(heroSelect);
+
+        for (const name in HERO_DATA)
+        {
+            const option = document.createElement("option");
+            option.id = name + this.index;
+            option.value = name;
+            option.innerText = name;
+            heroSelect.appendChild(option);
+        }
+        heroSelect.addEventListener("change", (event) =>
+        {
+            this.piece.parentElement.removeChild(this.piece);
+            this.menu.parentElement.removeChild(this.menu);
+
+            Heroes[this.index] = create_hero(event.currentTarget.value, this.color, this.index);
+
+            if (this.alive)
+            {
+                Heroes[this.index].alive = true;
+                Heroes[this.index].area = this.area;
+            }
+            else
+            {
+                Heroes[this.index].alive = false;
+                Heroes[this.index].grave.appendChild(Heroes[this.index].piece);
+            }
+
+            if (this.carrier)
+            {
+                Heroes[this.index].carrier = true;
+            }
+        });
+
+        const checkBlock = document.createElement("div");
+        checkBlock.className = "check-block";
+        checkBlock.classList.add("block");
+        checkBlock.id = "checkBlock" + this.index;
+
+        const carrierLabel = document.createElement("label");
+        carrierLabel.innerHTML = "主帅";
+        carrierLabel.htmlFor = "carrierCheckbox" + this.index;
+
+        const carrierCheckbox = document.createElement("input");
+        carrierCheckbox.type = "checkbox";
+        carrierCheckbox.className = "checkbox";
+        carrierCheckbox.id = "carrierCheckbox" + this.index;
+        carrierCheckbox.name = (this.color === "Red" ? 'red' : 'blue') + "Checkbox";
+        carrierCheckbox.disabled = true;
+
+        carrierCheckbox.addEventListener("change", (event) =>
+        {
+            this.carrier = event.currentTarget.checked;
+        });
+
+        const actedLabel = document.createElement("label");
+        actedLabel.innerHTML = "本轮行动";
+        actedLabel.htmlFor = "actedCheckbox" + this.index;
+
+        const actedCheckbox = document.createElement("input");
+        actedCheckbox.type = "checkbox";
+        actedCheckbox.className = "checkbox";
+        actedCheckbox.id = "actedCheckbox" + this.index;
+        actedCheckbox.disabled = true;
+
+        actedCheckbox.addEventListener("change", (event) =>
+        {
+            if (!event.currentTarget.checked)
+            {
+                for (const hero of Heroes)
+                {
+                    hero.acted = false;
+                }
+                record(`新轮次开始`);
+            }
+            else
+            {
+                this.acted = true;
+                record(`${this.name}回合结束`);
+            }
+        });
+
+        checkBlock.appendChild(carrierLabel);
+        checkBlock.appendChild(carrierCheckbox);
+        checkBlock.appendChild(actedLabel);
+        checkBlock.appendChild(actedCheckbox);
+
+        fixedPanel.appendChild(selectBlock);
+        fixedPanel.appendChild(checkBlock);
+
+        const alivePanel = document.createElement("div");
+        alivePanel.className = "alive-panel";
+        alivePanel.id = "alivePanel" + this.index;
+
+        const HPBlock = document.createElement("div");
+        HPBlock.className = "HP-block";
+        HPBlock.classList.add("block");
+        HPBlock.id = "HPBlock" + this.index;
+
+        const HPLabel = document.createElement("label");
+        HPLabel.innerHTML = "体力值：";
+        HPLabel.htmlFor = "HPMinus" + this.index;
+
+        const HPMinus = document.createElement("i");
+        HPMinus.className = "fas fa-minus-circle";
+        HPMinus.id = "HPMinus" + this.index;
+
+        HPMinus.addEventListener("click", (event) =>
+        {
+            this.HP = Math.max(0, this.HP - 1);
+        });
+
+        const labelHP = document.createElement("label");
+        labelHP.id = "HP" + this.index;
+        labelHP.type = "numner";
+        labelHP.className = "number";
+        labelHP.innerHTML = "0";
+        labelHP.htmlFor = "HPMinus" + this.index;
+
+        const labelSlash = document.createElement("label");
+        labelSlash.innerHTML = "/";
+
+        const labelMaxHP = document.createElement("label");
+        labelMaxHP.id = "maxHP" + this.index;
+        labelMaxHP.type = "numner";
+        labelMaxHP.className = "number";
+        labelMaxHP.innerHTML = "0";
+        labelMaxHP.htmlFor = "HPPlus" + this.index;
+
+        const HPPlus = document.createElement("i");
+        HPPlus.className = "fas fa-plus-circle";
+        HPPlus.id = "HPPlus" + this.index;
+
+        HPPlus.addEventListener("click", (event) =>
+        {
+            this.HP = Math.min(this.HP + 1, HERO_DATA[this.name]["体力上限"]);
+        });
+
+        HPBlock.appendChild(HPLabel);
+        HPBlock.appendChild(HPMinus);
+        HPBlock.appendChild(labelHP);
+        HPBlock.appendChild(labelSlash);
+        HPBlock.appendChild(labelMaxHP);
+        HPBlock.appendChild(HPPlus);
+
+        const weaponBlock = document.createElement("div");
+        weaponBlock.className = "select-block";
+        weaponBlock.classList.add("block");
+        weaponBlock.id = "weaponBlock" + this.index;
+
+        const weaponLabel = document.createElement("label");
+        weaponLabel.innerHTML = "武器：";
+        weaponLabel.htmlFor = "weaponSelect" + this.index;
+
+        const weaponSelect = document.createElement("select");
+        weaponSelect.className = "hero-select";
+        weaponSelect.id = "weaponSelect" + this.index;
+
+        for (const name in weapons)
+        {
+            const option = document.createElement("option");
+            option.id = name + this.index;
+            option.value = name;
+            option.innerText = name;
+            weaponSelect.appendChild(option);
+        }
+
+        weaponSelect.addEventListener("change", (event) =>
+        {
+            this.weapon = event.currentTarget.value;
+        });
+
+        weaponBlock.appendChild(weaponLabel);
+        weaponBlock.appendChild(weaponSelect);
+
+        const armorBlock = document.createElement("div");
+        armorBlock.className = "select-block";
+        armorBlock.classList.add("block");
+        armorBlock.id = "armorBlock" + this.index;
+
+        const armorLabel = document.createElement("label");
+        armorLabel.innerHTML = "防具：";
+        armorLabel.htmlFor = "armorSelect" + this.index;
+
+        const armorSelect = document.createElement("select");
+        armorSelect.className = "hero-select";
+        armorSelect.id = "armorSelect" + this.index;
+
+        for (const name in armors)
+        {
+            const option = document.createElement("option");
+            option.id = name + this.index;
+            option.value = name;
+            option.innerText = name;
+            armorSelect.appendChild(option);
+        }
+
+        armorSelect.addEventListener("change", (event) =>
+        {
+            this.armor = event.currentTarget.value;
+        });
+
+        armorBlock.appendChild(armorLabel);
+        armorBlock.appendChild(armorSelect);
+
+        const horseBlock = document.createElement("div");
+        horseBlock.className = "select-block";
+        horseBlock.classList.add("block");
+        horseBlock.id = "horseBlock" + this.index;
+
+        const horseLabel = document.createElement("label");
+        horseLabel.innerHTML = "坐骑：";
+        horseLabel.htmlFor = "horseSelect" + this.index;
+
+        const horseSelect = document.createElement("select");
+        horseSelect.className = "hero-select";
+        horseSelect.id = "horseSelect" + this.index;
+
+        for (const name in horses)
+        {
+            const option = document.createElement("option");
+            option.id = name + this.index;
+            option.value = name;
+            option.innerText = name;
+            horseSelect.appendChild(option);
+        }
+
+        horseSelect.addEventListener("change", (event) =>
+        {
+            this.horse = event.currentTarget.value;
+        });
+
+        horseBlock.appendChild(horseLabel);
+        horseBlock.appendChild(horseSelect);
+
+        alivePanel.appendChild(HPBlock);
+        alivePanel.appendChild(weaponBlock);
+        alivePanel.appendChild(armorBlock);
+        alivePanel.appendChild(horseBlock);
+
+        alivePanel.style.display = "none";
+
+        menu.appendChild(fixedPanel);
+        menu.appendChild(alivePanel);
+
+        const grave = document.createElement("div");
+        grave.className = "grave";
+        grave.classList.add(this.color);
+        grave.id = "grave" + this.index;
+
+        grave.style.display = "flex";
+
+        menu.appendChild(grave);
+
+        if (this.color === "Red")
+        {
+            const redMenuList = document.getElementById("redMenuList");
+            redMenuList.appendChild(menu);
+        }
+        else if (this.color === "Blue")
+        {
+            const blueMenuList = document.getElementById("blueMenuList");
+            blueMenuList.appendChild(menu);
+        }
+
+        return menu;
     }
 
     // 可停留
@@ -1406,6 +1699,10 @@ function create_hero(name, color, index)
     {
         return new Dong_Zhuo(color, index);
     }
+    else if (name === "庞统")
+    {
+        return new Pang_Tong(color, index);
+    }
     else
     {
         return new Hero(name, color, index);
@@ -1512,4 +1809,12 @@ class Dong_Zhuo extends Hero
     }
 }
 
+// 庞统
+class Pang_Tong extends Hero
+{
+    constructor(color, index)
+    {
+        super("庞统", color, index);
+    }
+}
 export { Hero, create_hero };
