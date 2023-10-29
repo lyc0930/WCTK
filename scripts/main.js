@@ -2,7 +2,7 @@ import { TERRAIN, TERRAIN_INFO, HERO_DATA, weapons, armors, horses } from '../mo
 import { generateFlags } from '../modules/flags.mjs';
 import { HPColor, cls, record } from '../modules/utils.mjs';
 import { setMode } from '../modules/map.mjs';
-import { Hero } from '../modules/hero.mjs';
+import { Hero, create_hero } from '../modules/hero.mjs';
 import { Area, create_area } from '../modules/area.mjs';
 
 export var Heroes = [];
@@ -84,7 +84,7 @@ function createMenuList()
         {
             const index = this.id.slice(-1);
             const hero = Heroes[index];
-            Heroes[index] = new Hero(heroSelect.value, hero.color, hero.index);
+            Heroes[index] = create_hero(heroSelect.value, hero.color, hero.index);
             if (hero.alive)
             {
                 Heroes[index].alive = true;
@@ -368,7 +368,7 @@ function initializePieces(names = [])
     for (var i = 0; i < 6; i++)
     {
         const hero_name = init_heroes[i];
-        const hero = new Hero(hero_name, (i < 3) ? "Red" : "Blue", i);
+        const hero = create_hero(hero_name, (i < 3) ? "Red" : "Blue", i);
         Heroes.push(hero);
         hero.grave.appendChild(hero.piece);
     }

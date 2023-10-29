@@ -1343,4 +1343,10 @@ class Hero
     }
 }
 
-export { Hero };
+// 工厂函数
+function create_hero(name, color, index)
+{
+    return new Hero(name, color, index);
+}
+
+export { Hero, create_hero };
