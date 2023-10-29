@@ -776,7 +776,7 @@ class Hero
         {
             for (var col = 0; col < 7; col++)
             {
-                if (!this.can_stay(Areas[row][col]))
+                if (!this.can_pass(Areas[row][col]))
                 {
                     Pathes[row][col] = null;
                 }
@@ -830,13 +830,13 @@ class Hero
         const row = area.row;
         const col = area.col;
         const Pathes = this.pathes;
-        if (Pathes[row][col] !== null && this.can_stay(area))
+        if (Pathes[row][col] !== null)
         {
             var steps = Pathes[row][col].length - 1;
 
             if (ifConsumeMovePoints)
             {
-                if (this.movePoints >= steps)
+                if ((this.movePoints > steps && this.can_pass(area)) || (this.movePoints === steps && this.can_stay(area)))
                 {
                     this.movePoints = this.movePoints - steps;
                 }
@@ -847,7 +847,7 @@ class Hero
             }
             else
             {
-                if (this.moveSteps >= steps)
+                if ((this.moveSteps > steps && this.can_pass(area)) || (this.moveSteps === steps && this.can_stay(area)))
                 {
                     this.moveSteps = this.moveSteps - steps;
                 }
@@ -962,9 +962,12 @@ class Hero
             // 高亮可到达的区域
             for (const area of Areas.flat())
             {
-                if (Pathes[area.row][area.col] && (Pathes[area.row][area.col].length - 1 <= this.movePoints))
+                if (Pathes[area.row][area.col])
                 {
-                    area.highlight("reachable", click_to_move);
+                    if ((Pathes[area.row][area.col].length - 1 < this.movePoints && this.can_pass(area)) || (Pathes[area.row][area.col].length - 1 === this.movePoints && this.can_stay(area)))
+                    {
+                        area.highlight("reachable", click_to_move);
+                    }
                 }
             }
         }
@@ -972,6 +975,11 @@ class Hero
         // 定义结束移动阶段函数
         const move_phase_end = (event = null) =>
         {
+            if (this.movePoints > 0 && !this.can_stay(this.area, false))
+            {
+                return;
+            }
+
             if (event !== null)
             {
                 if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))

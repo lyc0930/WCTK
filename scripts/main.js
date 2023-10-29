@@ -85,7 +85,15 @@ function createMenuList()
             const index = this.id.slice(-1);
             const hero = Heroes[index];
             Heroes[index] = new Hero(heroSelect.value, hero.color, hero.index);
-            hero.piece.parentElement.appendChild(Heroes[index].piece);
+            if (hero.alive)
+            {
+                Heroes[index].alive = true;
+                Heroes[index].area = hero.area;
+            }
+            else
+            {
+                Heroes[index].grave.appendChild(Heroes[index].piece);
+            }
 
             if (hero.carrier)
             {
