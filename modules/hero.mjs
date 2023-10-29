@@ -921,6 +921,101 @@ class Hero
         return null;
     }
 
+    // 移动阶段
+    move_phase()
+    {
+        // 正在等待响应
+        if (isHighlighting())
+        {
+            return;
+        }
+
+        // 定义点击高亮区域行为
+        const click_to_move = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            this.move(event.currentTarget.area, true, true);
+
+            for (const area of Areas.flat())
+            {
+                area.unhighlight("reachable", click_to_move);
+            }
+
+            // 还有移动力
+            if (this.movePoints > 0)
+            {
+                move_in_move_phase();
+            }
+            else
+            {
+                move_phase_end(event);
+            }
+        }
+
+        const move_in_move_phase = () =>
+        {
+            // 计算可到达的区域
+            const Pathes = this.pathes;
+
+            // 高亮可到达的区域
+            for (const area of Areas.flat())
+            {
+                if (Pathes[area.row][area.col] && (Pathes[area.row][area.col].length - 1 <= this.movePoints))
+                {
+                    area.highlight("reachable", click_to_move);
+                }
+            }
+        }
+
+        // 定义结束移动阶段函数
+        const move_phase_end = (event = null) =>
+        {
+            if (event !== null)
+            {
+                if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
+                {
+                    if (event.cancelable) event.preventDefault();
+                    // event.stopPropagation();
+
+                    for (const area of Areas.flat())
+                    {
+                        area.unhighlight("reachable", click_to_move);
+                    }
+
+                    cls(1000);
+                    document.removeEventListener("contextmenu", move_phase_end);
+                    document.removeEventListener("click", move_phase_end);
+                    setCurrentPhase(null);
+                }
+            }
+            else
+            {
+                for (const area of Areas.flat())
+                {
+                    area.unhighlight("reachable", click_to_move);
+                }
+
+                cls(1000);
+                document.removeEventListener("contextmenu", move_phase_end);
+                document.removeEventListener("click", move_phase_end);
+                setCurrentPhase(null);
+            }
+        }
+
+        setCurrentPlayer(this.piece);
+        setCurrentPhase("移动");
+
+        // 基于体力值生成移动力
+        this.movePoints = this.HP;
+
+        move_in_move_phase(this.piece);
+
+        // 空白处结束移动阶段
+        document.addEventListener("click", move_phase_end);
+    }
+
     // 移动固定步数
     move_fixed_steps(isDraw = false)
     {
@@ -1062,101 +1157,6 @@ class Hero
             that.area = that_area;
             return false;
         }
-    }
-
-    // 移动阶段
-    move_phase()
-    {
-        // 正在等待响应
-        if (isHighlighting())
-        {
-            return;
-        }
-
-        // 定义点击高亮区域行为
-        const click_to_move = (event) =>
-        {
-            if (event.cancelable) event.preventDefault();
-            event.stopPropagation();
-
-            this.move(event.currentTarget.area, true, true);
-
-            for (const area of Areas.flat())
-            {
-                area.unhighlight("reachable", click_to_move);
-            }
-
-            // 还有移动力
-            if (this.movePoints > 0)
-            {
-                move_in_move_phase();
-            }
-            else
-            {
-                move_phase_end(event);
-            }
-        }
-
-        const move_in_move_phase = () =>
-        {
-            // 计算可到达的区域
-            const Pathes = this.pathes;
-
-            // 高亮可到达的区域
-            for (const area of Areas.flat())
-            {
-                if (Pathes[area.row][area.col] && (Pathes[area.row][area.col].length - 1 <= this.movePoints))
-                {
-                    area.highlight("reachable", click_to_move);
-                }
-            }
-        }
-
-        // 定义结束移动阶段函数
-        const move_phase_end = (event = null) =>
-        {
-            if (event !== null)
-            {
-                if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
-                {
-                    if (event.cancelable) event.preventDefault();
-                    // event.stopPropagation();
-
-                    for (const area of Areas.flat())
-                    {
-                        area.unhighlight("reachable", click_to_move);
-                    }
-
-                    cls(1000);
-                    document.removeEventListener("contextmenu", move_phase_end);
-                    document.removeEventListener("click", move_phase_end);
-                    setCurrentPhase(null);
-                }
-            }
-            else
-            {
-                for (const area of Areas.flat())
-                {
-                    area.unhighlight("reachable", click_to_move);
-                }
-
-                cls(1000);
-                document.removeEventListener("contextmenu", move_phase_end);
-                document.removeEventListener("click", move_phase_end);
-                setCurrentPhase(null);
-            }
-        }
-
-        setCurrentPlayer(this.piece);
-        setCurrentPhase("移动");
-
-        // 基于体力值生成移动力
-        this.movePoints = this.HP;
-
-        move_in_move_phase(this.piece);
-
-        // 空白处结束移动阶段
-        document.addEventListener("click", move_phase_end);
     }
 
     highlight(className, listener = null)
