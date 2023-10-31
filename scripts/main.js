@@ -8,12 +8,12 @@ import { Area, create_area } from '../modules/area.mjs';
 export var Heroes = [];
 export var Areas = [];
 
-for (var i = 0; i < 7; i++)
+for (let row = 0; row < 7; row++)
 {
     Areas.push([]);
-    for (var j = 0; j < 7; j++)
+    for (let col = 0; col < 7; col++)
     {
-        Areas[i].push(null);
+        Areas[row].push(null);
     }
 }
 
@@ -24,9 +24,9 @@ function createChessboard(mode = "野战")
     const chessboard = document.getElementById("chessboard");
     const Map = TERRAIN[mode];
 
-    for (var row = 0; row < 7; row++)
+    for (let row = 0; row < 7; row++)
     {
-        for (var col = 0; col < 7; col++)
+        for (let col = 0; col < 7; col++)
         {
             const area = create_area(row, col, Map[row][col]);
             chessboard.appendChild(area.cell);
@@ -57,16 +57,16 @@ function initializePieces(names = [])
     const chessboard = document.getElementById("chessboard");
     const HERO_DATAList = Object.keys(HERO_DATA);
     var init_heroes = names;
-    for (var i = names.length; i < 6; i++)
+    for (let i = names.length; i < 6; i++)
     {
         var index = Math.floor(Math.random() * (HERO_DATAList.length - i));
         init_heroes.push(HERO_DATAList[index]);
         HERO_DATAList[index] = HERO_DATAList[HERO_DATAList.length - 1 - i];
     }
-    for (var i = 0; i < 6; i++)
+    for (let index = 0; index < 6; index++)
     {
-        const hero_name = init_heroes[i];
-        const hero = create_hero(hero_name, (i < 3) ? "Red" : "Blue", i);
+        const hero_name = init_heroes[index];
+        const hero = create_hero(hero_name, (index < 3) ? "Red" : "Blue", index);
         Heroes.push(hero);
         hero.grave.appendChild(hero.piece);
     }

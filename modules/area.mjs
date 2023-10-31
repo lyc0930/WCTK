@@ -30,7 +30,7 @@ class Area
     get adjacent_areas()
     {
         var adj_areas = [];
-        for (var i = 0; i < 4; i++)
+        for (let i = 0; i < 4; i++)
         {
             // 下上右左
             const next_row = this.row + (i === 0 ? 1 : (i === 1 ? -1 : 0));

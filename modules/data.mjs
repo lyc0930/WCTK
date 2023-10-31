@@ -13,7 +13,7 @@ const HERO_DATA = hero_data;
 function format_skill(text)
 {
     const skillLabels = ["锁定技", "限定技"];
-    for (let label of skillLabels)
+    for (const label of skillLabels)
     {
         text = text.replace(label, "<span class='skill-label'>" + label + "</span>");
     }
@@ -58,7 +58,7 @@ for (let name in HERO_DATA)
 function format_terrain(text)
 {
     const terrain_names = Object.keys(terrain_info);
-    for (let name of terrain_names)
+    for (const name of terrain_names)
     {
         text = text.replace(name, `<span style="color: ${terrain_info[name]["color"]}">` + name + "</span>");
     }

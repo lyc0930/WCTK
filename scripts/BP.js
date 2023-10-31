@@ -353,13 +353,13 @@ function initializeHeroCandidates(number = 16)
 {
     const HERO_DATAList = Object.keys(HERO_DATA);
     var initHeroes = [];
-    for (var i = 0; i < number; i++)
+    for (let i = 0; i < number; i++)
     {
         var index = Math.floor(Math.random() * (HERO_DATAList.length - i));
         initHeroes.push(HERO_DATAList[index]);
         HERO_DATAList[index] = HERO_DATAList[HERO_DATAList.length - 1 - i];
     }
-    for (var i = 0; i < number; i++)
+    for (let i = 0; i < number; i++)
     {
         createHeroCandidate(initHeroes[i], i);
     }

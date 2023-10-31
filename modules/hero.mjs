@@ -1025,12 +1025,12 @@ class Hero
     get pathes()
     {
         var Pathes = new Array(7)
-        for (var i = 0; i < 7; i++)
+        for (let row = 0; row < 7; row++)
         {
-            Pathes[i] = new Array(7)
-            for (var j = 0; j < 7; j++)
+            Pathes[row] = new Array(7)
+            for (let col = 0; col < 7; col++)
             {
-                Pathes[i][j] = null;
+                Pathes[row][col] = null;
             }
         }
 
@@ -1067,9 +1067,9 @@ class Hero
         // 删除起点
         Pathes[start_row][start_col] = null;
 
-        for (var row = 0; row < 7; row++)
+        for (let row = 0; row < 7; row++)
         {
-            for (var col = 0; col < 7; col++)
+            for (let col = 0; col < 7; col++)
             {
                 if (!this.can_pass(Areas[row][col]))
                 {
@@ -1086,9 +1086,9 @@ class Hero
     {
         var nearest_areas = [];
         var min_d = 100;
-        for (var row = 0; row < 7; row++)
+        for (let row = 0; row < 7; row++)
         {
-            for (var col = 0; col < 7; col++)
+            for (let col = 0; col < 7; col++)
             {
                 const area = Areas[row][col]
                 if (this.can_stay(area))
@@ -1155,7 +1155,7 @@ class Hero
             var path = Pathes[row][col];
             var moveLog = `(${path[0].row + 1}, ${path[0].col + 1})`;
             var vibration_pattern = [];
-            for (var i = 1; i < path.length; i++)
+            for (let i = 1; i < path.length; i++)
             {
                 this.step(path[i], isDraw);
                 moveLog += ` ▶ (${path[i].row + 1}, ${path[i].col + 1})`;

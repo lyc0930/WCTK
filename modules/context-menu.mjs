@@ -232,6 +232,52 @@ function hideContextMenu()
     }
 }
 
+function positionMenu(menu, event)
+{
+    var posX = 0;
+    var posY = 0;
+    if (event?.clientX || event?.clientY)
+    {
+        posX = event.clientX;
+        posY = event.clientY;
+    }
+    else if (event?.touches[0].clientX || event?.touches[0].clientY)
+    {
+        posX = event.touches[0].clientX;
+        posY = event.touches[0].clientY;
+    }
+    else if (event?.changedTouches[0].clientX || event?.changedTouches[0].clientY)
+    {
+        posX = event.changedTouches[0].clientX;
+        posY = event.changedTouches[0].clientY;
+    }
+
+    let clickCoordsX = posX + window.scrollX;
+    let clickCoordsY = posY + window.scrollY;
+
+    let menuWidth = menu.offsetWidth + 4;
+    let menuHeight = menu.offsetHeight + 4;
+
+    let windowWidth = window.innerWidth;
+    let windowHeight = window.innerHeight;
+
+    if (windowWidth - clickCoordsX < menuWidth)
+    {
+        menu.style.left = windowWidth - menuWidth + "px";
+    } else
+    {
+        menu.style.left = clickCoordsX + "px";
+    }
+
+    if (windowHeight - clickCoordsY < menuHeight)
+    {
+        menu.style.top = windowHeight - menuHeight + "px";
+    } else
+    {
+        menu.style.top = clickCoordsY + "px";
+    }
+}
+
 // SKILL PANEL
 
 function addSkillPanel(piece)
@@ -480,51 +526,7 @@ function hideTerrainPanel()
     }
 }
 
-function positionMenu(menu, event)
-{
-    var posX = 0;
-    var posY = 0;
-    if (event?.clientX || event?.clientY)
-    {
-        posX = event.clientX;
-        posY = event.clientY;
-    }
-    else if (event?.touches[0].clientX || event?.touches[0].clientY)
-    {
-        posX = event.touches[0].clientX;
-        posY = event.touches[0].clientY;
-    }
-    else if (event?.changedTouches[0].clientX || event?.changedTouches[0].clientY)
-    {
-        posX = event.changedTouches[0].clientX;
-        posY = event.changedTouches[0].clientY;
-    }
-
-    let clickCoordsX = posX + window.scrollX;
-    let clickCoordsY = posY + window.scrollY;
-
-    let menuWidth = menu.offsetWidth + 4;
-    let menuHeight = menu.offsetHeight + 4;
-
-    let windowWidth = window.innerWidth;
-    let windowHeight = window.innerHeight;
-
-    if (windowWidth - clickCoordsX < menuWidth)
-    {
-        menu.style.left = windowWidth - menuWidth + "px";
-    } else
-    {
-        menu.style.left = clickCoordsX + "px";
-    }
-
-    if (windowHeight - clickCoordsY < menuHeight)
-    {
-        menu.style.top = windowHeight - menuHeight + "px";
-    } else
-    {
-        menu.style.top = clickCoordsY + "px";
-    }
-}
+// HERO TABLE
 
 function createHeroTable()
 {
@@ -623,6 +625,7 @@ function showHeroTable(piece)
     }
 }
 
+// CLICK TO HIDE
 document.addEventListener("click", function (event)
 {
     if (event.button === 0)
@@ -646,4 +649,5 @@ document.addEventListener("click", function (event)
         modeTable.style.opacity = 0;
     }
 });
+
 export { addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel };

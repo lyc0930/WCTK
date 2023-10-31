@@ -98,7 +98,7 @@ function drawArrow(line, color = 'rgba(50, 50, 50)', isArrow = true)
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.strokeStyle = color;
-    for (var i = 1; i < line.length; i++)
+    for (let i = 1; i < line.length; i++)
     {
 
         const Px = line[i - 1][1] * cellSize + cellSize / 2;
@@ -118,7 +118,7 @@ function drawArrow(line, color = 'rgba(50, 50, 50)', isArrow = true)
     {
         ctx.lineCap = "butt";
         ctx.lineJoin = "miter";
-        for (var i = 1; i < line.length; i++)
+        for (let i = 1; i < line.length; i++)
         {
 
             const Px = line[i - 1][1] * cellSize + cellSize / 2;
