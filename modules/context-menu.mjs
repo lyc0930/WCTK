@@ -22,8 +22,7 @@ const MENU_LOGO = {
 
 for (let name in TERRAIN_INFO)
 {
-    var icon = TERRAIN_INFO[name]["icon"];
-    MENU_LOGO[name] = icon;
+    MENU_LOGO[name] = TERRAIN_INFO[name]["icon"];
 }
 
 // CONTEXT MENU
@@ -234,32 +233,30 @@ function hideContextMenu()
 
 function positionMenu(menu, event)
 {
-    var posX = 0;
-    var posY = 0;
     if (event?.clientX || event?.clientY)
     {
-        posX = event.clientX;
-        posY = event.clientY;
+        var posX = event.clientX;
+        var posY = event.clientY;
     }
     else if (event?.touches[0].clientX || event?.touches[0].clientY)
     {
-        posX = event.touches[0].clientX;
-        posY = event.touches[0].clientY;
+        var posX = event.touches[0].clientX;
+        var posY = event.touches[0].clientY;
     }
     else if (event?.changedTouches[0].clientX || event?.changedTouches[0].clientY)
     {
-        posX = event.changedTouches[0].clientX;
-        posY = event.changedTouches[0].clientY;
+        var posX = event.changedTouches[0].clientX;
+        var posY = event.changedTouches[0].clientY;
     }
 
-    let clickCoordsX = posX + window.scrollX;
-    let clickCoordsY = posY + window.scrollY;
+    const clickCoordsX = posX + window.scrollX;
+    const clickCoordsY = posY + window.scrollY;
 
-    let menuWidth = menu.offsetWidth + 4;
-    let menuHeight = menu.offsetHeight + 4;
+    const menuWidth = menu.offsetWidth + 4;
+    const menuHeight = menu.offsetHeight + 4;
 
-    let windowWidth = window.innerWidth;
-    let windowHeight = window.innerHeight;
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
 
     if (windowWidth - clickCoordsX < menuWidth)
     {

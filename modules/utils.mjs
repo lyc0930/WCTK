@@ -60,9 +60,9 @@ function HPColor(HP, maxHP)
 {
     var factor = HP / maxHP;
 
-    var color1 = { r: 255, g: 50, b: 50 }; // 红色
-    var color2 = { r: 255, g: 127, b: 0 }; // 橙色
-    var color3 = { r: 50, g: 160, b: 50 }; // 绿色
+    const color1 = { r: 255, g: 50, b: 50 }; // 红色
+    const color2 = { r: 255, g: 127, b: 0 }; // 橙色
+    const color3 = { r: 50, g: 160, b: 50 }; // 绿色
 
     var result = {};
 
@@ -91,7 +91,7 @@ function drawArrow(line, color = 'rgba(50, 50, 50)', isArrow = true)
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
-    var cellSize = canvas.width / 7; // 计算每个单元格的大小
+    const cellSize = canvas.width / 7; // 计算每个单元格的大小
     const width = 20;
     ctx.beginPath();
     ctx.lineWidth = width;
@@ -134,9 +134,9 @@ function drawArrow(line, color = 'rgba(50, 50, 50)', isArrow = true)
             ctx.moveTo(Px, Py);
             ctx.lineTo(Qx, Qy);
 
-            var dx = Qx - Px;
-            var dy = Qy - Py;
-            var angle = Math.atan2(dy, dx);
+            const dx = Qx - Px;
+            const dy = Qy - Py;
+            const angle = Math.atan2(dy, dx);
 
             ctx.beginPath();
             ctx.moveTo((Px + (Qx - Px) * 0.55) - 0.5 * width * Math.cos(angle + Math.PI / 6), (Py + (Qy - Py) * 0.55) - 0.5 * width * Math.sin(angle + Math.PI / 6));
@@ -181,8 +181,8 @@ function drawTeleport(line, color = 'rgba(50, 50, 50)')
     ctx.lineWidth = width / 2;
     ctx.setLineDash([]);
 
-    var dx = Qx - Px;
-    var dy = Qy - Py;
+    const dx = Qx - Px;
+    const dy = Qy - Py;
 
     // 起点优弧
     ctx.beginPath();

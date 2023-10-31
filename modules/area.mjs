@@ -29,7 +29,7 @@ class Area
     // 相邻区域
     get adjacent_areas()
     {
-        var adj_areas = [];
+        const adj_areas = [];
         for (let i = 0; i < 4; i++)
         {
             // 下上右左

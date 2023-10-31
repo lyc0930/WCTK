@@ -53,7 +53,7 @@ class Hero
             // 运送帅旗逻辑
             if (this.carrier && value === this.enemy_base)
             {
-                var score = 5;
+                var score = 5; // 分值
 
                 this.carrier = false;
 
@@ -107,18 +107,13 @@ class Hero
 
             if (value) // 获得帅旗
             {
-                var old_carrier = null;
                 for (const ally of this.allies)
                 {
-                    if (ally.carrier)
+                    if (ally.carrier) // 从队友手中接过帅旗
                     {
-                        old_carrier = ally;
+                        ally.carrier = false;
                         break;
                     }
-                }
-                if (old_carrier) // 从队友手中接过帅旗
-                {
-                    old_carrier.carrier = false;
                 }
 
                 this.piece.appendChild(this.color === "Red" ? redFlag : blueFlag);
@@ -202,7 +197,7 @@ class Hero
                 const actedCheckbox = document.getElementById("actedCheckbox" + this.index);
                 actedCheckbox.disabled = true;
 
-                var score = 3;
+                var score = 3; // 分值
                 record(`${this.name}死亡, ${this.color === "Red" ? '蓝方' : '红方'}+${score}分`);
             }
         }
@@ -403,7 +398,7 @@ class Hero
 
         const cell_at = (X, Y) =>
         {
-            var nearest_cell = null;
+            let nearest_cell = null;
             let min_d_sqr = 100000000;
             for (const cell of document.getElementsByClassName("cell"))
             {
@@ -929,7 +924,7 @@ class Hero
             }
         }
 
-        var hold_by_enemy = false;
+        let hold_by_enemy = false;
         for (const enemy of this.enemies)
         {
             if (area.contains(enemy))
@@ -940,7 +935,7 @@ class Hero
         }
 
         // 〖固城〗
-        var gu_cheng = false;
+        let gu_cheng = false;
         for (const enemy of this.enemies)
         {
             if (enemy.name === "曹仁")
@@ -987,7 +982,7 @@ class Hero
             // 【穿越马】
             if (this.is_ride_on("穿越") && currentPlayer === this)
             {
-                var hold_by_enemy = false;
+                let hold_by_enemy = false;
                 for (const enemy of this.enemies)
                 {
                     if (area.contains(enemy))
@@ -998,7 +993,7 @@ class Hero
                 }
 
                 // 〖固城〗
-                var gu_cheng = false;
+                let gu_cheng = false;
                 for (const enemy of this.enemies)
                 {
                     if (enemy.name === "曹仁")
@@ -1024,7 +1019,7 @@ class Hero
     // 路径
     get pathes()
     {
-        var Pathes = new Array(7)
+        const Pathes = new Array(7)
         for (let row = 0; row < 7; row++)
         {
             Pathes[row] = new Array(7)
@@ -1034,7 +1029,7 @@ class Hero
             }
         }
 
-        var queue = [];
+        const queue = [];
         queue.push(this.area);
         const start_row = this.area.row;
         const start_col = this.area.col;
@@ -1084,8 +1079,8 @@ class Hero
     // 距离最近的可进入区域
     get nearest_area()
     {
-        var nearest_areas = [];
-        var min_d = 100;
+        let nearest_areas = [];
+        let min_d = 100;
         for (let row = 0; row < 7; row++)
         {
             for (let col = 0; col < 7; col++)
@@ -1127,7 +1122,7 @@ class Hero
         const Pathes = this.pathes;
         if (Pathes[row][col] !== null)
         {
-            var steps = Pathes[row][col].length - 1;
+            const steps = Pathes[row][col].length - 1;
 
             if (consume_move_points)
             {
@@ -1152,9 +1147,9 @@ class Hero
                 }
             }
 
-            var path = Pathes[row][col];
-            var moveLog = `(${path[0].row + 1}, ${path[0].col + 1})`;
-            var vibration_pattern = [];
+            const path = Pathes[row][col];
+            let moveLog = `(${path[0].row + 1}, ${path[0].col + 1})`;
+            const vibration_pattern = [];
             for (let i = 1; i < path.length; i++)
             {
                 this.step(path[i], isDraw);
@@ -1188,7 +1183,7 @@ class Hero
             const end_row = area.row;
             const end_col = area.col;
 
-            var direction = null;
+            let direction = null;
             if (start_row === end_row && Math.abs(start_col - end_col) === 1)
             {
                 direction = start_col < end_col ? "+X" : "-X";
@@ -1331,7 +1326,7 @@ class Hero
     // 生成移动力
     generate_move_points()
     {
-        var move_points = this.HP;
+        let move_points = this.HP;
 
         // 〖拒敌〗
         if (this.affected_by_ju_di)
@@ -1562,7 +1557,7 @@ class Hero
     {
         record(`${this.name}使用【暗度陈仓】`);
 
-        var areas = [];
+        const areas = [];
         areas.push(this.base);
 
         for (const ally of this.allies)

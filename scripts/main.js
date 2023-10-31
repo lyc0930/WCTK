@@ -56,10 +56,10 @@ function initializePieces(names = [])
 {
     const chessboard = document.getElementById("chessboard");
     const HERO_DATAList = Object.keys(HERO_DATA);
-    var init_heroes = names;
+    let init_heroes = names;
     for (let i = names.length; i < 6; i++)
     {
-        var index = Math.floor(Math.random() * (HERO_DATAList.length - i));
+        let index = Math.floor(Math.random() * (HERO_DATAList.length - i));
         init_heroes.push(HERO_DATAList[index]);
         HERO_DATAList[index] = HERO_DATAList[HERO_DATAList.length - 1 - i];
     }
