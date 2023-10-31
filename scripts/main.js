@@ -55,7 +55,7 @@ function createMenuList()
 function initializePieces(names = [])
 {
     const chessboard = document.getElementById("chessboard");
-    const HERO_DATAList = Object.keys(HERO_DATA);
+    const HERO_DATAList = Array.from(Object.keys(HERO_DATA)).filter(name => !names.includes(name));
     let init_heroes = names;
     for (let i = names.length; i < 6; i++)
     {
@@ -288,4 +288,4 @@ function initializeGame(mode = "野战", names = [])
 }
 
 // 启动游戏
-initializeGame("野战", []);
+initializeGame("野战", ["于禁"]);

@@ -1,5 +1,5 @@
 import { HERO_DATA, weapons, armors, horses } from './data.mjs';
-import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, distance } from "./utils.mjs";
+import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, distance, isOnSameLine } from "./utils.mjs";
 import { addContextMenu, showSkillPanel } from './context-menu.mjs';
 import { Areas, Heroes } from '../scripts/main.js';
 import { redFlag, blueFlag } from './flags.mjs';
@@ -961,9 +961,15 @@ class Hero
         {
             return false;
         }
-        else if (area.heroes.length > 0)
+        else
         {
-            return false;
+            for (const hero of area.heroes)
+            {
+                if (hero !== this)
+                {
+                    return false;
+                }
+            }
         }
 
         return true;
@@ -1702,6 +1708,10 @@ function create_hero(name, color, index)
     {
         return new Zuo_Ci(color, index);
     }
+    else if (name === "于禁")
+    {
+        return new Yu_Jin(color, index);
+    }
     else
     {
         return new Hero(name, color, index);
@@ -2243,6 +2253,106 @@ class Zuo_Ci extends Hero
         }
 
         this.leap_to_areas(areas, true);
+    }
+}
+
+// 于禁
+class Yu_Jin extends Hero
+{
+    constructor(color, index)
+    {
+        super("于禁", color, index);
+    }
+
+    get context_menu_items()
+    {
+        const items = {
+            "查看技能": () => { showSkillPanel(this); }
+        };
+
+        if (this.alive)
+        {
+            items["break-line-1"] = "<hr>";
+            items["移动阶段"] = () => { this.move_phase(); };
+            items["break-line-2"] = "<hr>";
+            items["〖节钺〗"] = () => { this.jie_yue(); };
+            items["break-line-3"] = "<hr>";
+            items["迅【闪】"] = () => { this.use("迅【闪】") };
+            items["break-line-4"] = "<hr>";
+            items["【暗度陈仓】"] = () => { this.use("【暗度陈仓】") };
+            items["【兵贵神速】"] = () => { this.use("【兵贵神速】") };
+            items["【奇门遁甲】"] = () => { this.use("【奇门遁甲】") };
+            items["【诱敌深入】"] = () => { this.use("【诱敌深入】") };
+        }
+        return items;
+    }
+
+    // 〖节钺〗
+    jie_yue()
+    {
+        // 出牌阶段限一次，你可以选择一名与你的距离为<3>以内且与你位于同一直线的其他角色，
+
+        var limit = 3;
+
+        // 定义点击高亮元素行为
+        const click_to_pull = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            navigator.vibrate(20);
+
+            record(`于禁发动〖节钺〗`);
+
+            for (const hero of Heroes)
+            {
+                hero.unhighlight("targetable", click_to_pull);
+            }
+
+            const object = event.currentTarget.hero;
+
+            // 将其转移至该角色所在的方向上与你的距离最近的可进入区域，
+            const signX = Math.sign(this.area.row - object.area.row);
+            const signY = Math.sign(this.area.col - object.area.col);
+            let nearest_areas = [];
+            let min_d = 100;
+            for (const area of Areas.flat())
+            {
+                // TODO: 重合区域算不算该角色所在的方向上？
+                if (object.can_stay(area) && Math.sign(this.area.row - area.row) === signX && Math.sign(this.area.col - area.col) === signY)
+                {
+                    const d = distance(this, area);
+                    if (d < min_d)
+                    {
+                        min_d = d;
+                        nearest_areas = [area];
+                    }
+                    else if (d === min_d)
+                    {
+                        nearest_areas.push(area);
+                    }
+                }
+            }
+            if (nearest_areas.length > 1)
+            {
+                object.leap_to_areas(nearest_areas, true, this);
+            }
+            else // 只有一个最近的可进入区域
+            {
+                object.leap(nearest_areas[0], true, this);
+                cls(1000);
+            }
+        }
+
+        for (const hero of Heroes)
+        {
+            if (hero.alive && hero !== this && distance(hero, this) <= limit && isOnSameLine(hero, this) && !hero?.yong_quan && !hero.is_ride_on("阻动"))
+            {
+                hero.highlight("targetable", click_to_pull);
+            }
+        }
+
+        // 若如此做，本回合你不能对其使用牌。
     }
 }
 export { Hero, create_hero };
