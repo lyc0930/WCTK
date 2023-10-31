@@ -1703,6 +1703,10 @@ function create_hero(name, color, index)
     {
         return new Pang_Tong(color, index);
     }
+    else if (name === "左慈")
+    {
+        return new Zuo_Ci(color, index);
+    }
     else
     {
         return new Hero(name, color, index);
@@ -2197,6 +2201,53 @@ class Pang_Tong extends Hero
             return true;
         }
         return false;
+    }
+}
+
+// 左慈
+class Zuo_Ci extends Hero
+{
+    constructor(color, index)
+    {
+        super("左慈", color, index);
+    }
+
+    get context_menu_items()
+    {
+        const items = {
+            "查看技能": () => { showSkillPanel(this); }
+        };
+
+        if (this.alive)
+        {
+            items["break-line-1"] = "<hr>";
+            items["移动阶段"] = () => { this.move_phase(); };
+            items["移动阶段〖神行〗"] = () => { this.shen_xing(); };
+            items["break-line-2"] = "<hr>";
+            items["迅【闪】"] = () => { this.use("迅【闪】") };
+            items["break-line-3"] = "<hr>";
+            items["【暗度陈仓】"] = () => { this.use("【暗度陈仓】") };
+            items["【兵贵神速】"] = () => { this.use("【兵贵神速】") };
+            items["【奇门遁甲】"] = () => { this.use("【奇门遁甲】") };
+            items["【诱敌深入】"] = () => { this.use("【诱敌深入】") };
+        }
+        return items;
+    }
+
+    // 〖神行〗
+    // 移动阶段开始前，你可以跳过此阶段，然后转移至一个可进入空区域。
+    shen_xing()
+    {
+        const areas = [];
+        for (const area of Areas.flat())
+        {
+            if (this.can_stay(area) && area.heroes.length === 0)
+            {
+                areas.push(area);
+            }
+        }
+
+        this.leap_to_areas(areas, true);
     }
 }
 export { Hero, create_hero };

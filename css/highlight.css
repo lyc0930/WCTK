@@ -11,11 +11,11 @@
 }
 
 .landable {
-    background-color: rgba(20, 200, 43, 0.3);
+    background-color: rgba(20, 200, 43, 0.15);
 }
 
 .landable:hover {
-    background-color: rgba(20, 200, 43, 0.6);
+    background-color: rgba(20, 200, 43, 0.3);
 }
 
 .cell.targetable {
