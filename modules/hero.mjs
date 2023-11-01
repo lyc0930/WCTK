@@ -3,7 +3,7 @@ import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, distance
 import { addContextMenu, showSkillPanel } from './context-menu.mjs';
 import { Areas, Heroes } from '../scripts/main.js';
 import { redFlag, blueFlag } from './flags.mjs';
-import { currentPlayer, setCurrentPhase, setCurrentPlayer } from './global_variables.mjs';
+import { currentPlayer, currentPhase, setCurrentPhase, setCurrentPlayer } from './global_variables.mjs';
 import { Area } from './area.mjs';
 
 // 武将类
@@ -365,7 +365,7 @@ class Hero
         if (this.alive)
         {
             items["break-line-1"] = "<hr>";
-            items["移动阶段"] = () => { this.move_phase(); };
+            items["移动阶段"] = () => { this.move_phase_begin(); };
             items["break-line-2"] = "<hr>";
             items["迅【闪】"] = () => { this.use("迅【闪】") };
             items["break-line-3"] = "<hr>";
@@ -1170,7 +1170,7 @@ class Hero
             }
             else
             {
-                record(`${subject.name} 控制 ${this.name} 执行移动 ${moveLog}`);
+                record(`${subject.name}控制${this.name} ${moveLog}`);
             }
 
             navigator.vibrate(vibration_pattern);
@@ -1227,7 +1227,7 @@ class Hero
     }
 
     // 移动阶段
-    move_phase()
+    move_phase_begin()
     {
         // 正在等待响应
         if (isHighlighting())
@@ -1236,7 +1236,7 @@ class Hero
         }
 
         // 定义点击高亮区域行为
-        const click_to_move = (event) =>
+        this.move_phase_click_to_move = (event) =>
         {
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
@@ -1245,21 +1245,26 @@ class Hero
 
             for (const area of Areas.flat())
             {
-                area.unhighlight("reachable", click_to_move);
+                area.unhighlight("reachable", this.move_phase_click_to_move);
             }
 
-            // 还有移动力
-            if (this.move_points > 0)
+            // 移动阶段没有被提前结束
+            if (this.move_phase_highlight !== null && this.move_phase_end !== null)
             {
-                move_in_move_phase();
-            }
-            else
-            {
-                move_phase_end(event);
+                // 还有移动力
+                if (this.move_points > 0)
+                {
+                    this.move_phase_highlight();
+                }
+                else
+                {
+                    this.move_phase_end();
+                }
             }
         }
 
-        const move_in_move_phase = () =>
+        // 高亮可进入的区域
+        this.move_phase_highlight = () =>
         {
             // 计算可到达的区域
             const Pathes = this.pathes;
@@ -1271,14 +1276,14 @@ class Hero
                 {
                     if ((Pathes[area.row][area.col].length - 1 < this.move_points && this.can_pass(area)) || (Pathes[area.row][area.col].length - 1 === this.move_points && this.can_stay(area)))
                     {
-                        area.highlight("reachable", click_to_move);
+                        area.highlight("reachable", this.move_phase_click_to_move);
                     }
                 }
             }
         }
 
-        // 定义结束移动阶段函数
-        const move_phase_end = (event = null) =>
+        // 结束移动阶段
+        this.move_phase_end = (event = null) =>
         {
             if (this.move_points > 0 && !this.can_stay(this.area, false))
             {
@@ -1294,12 +1299,12 @@ class Hero
 
                     for (const area of Areas.flat())
                     {
-                        area.unhighlight("reachable", click_to_move);
+                        area.unhighlight("reachable", this.move_phase_click_to_move);
                     }
 
                     cls(1000);
-                    document.removeEventListener("contextmenu", move_phase_end);
-                    document.removeEventListener("click", move_phase_end);
+                    document.removeEventListener("contextmenu", this.move_phase_end);
+                    document.removeEventListener("click", this.move_phase_end);
                     setCurrentPhase(null);
                 }
             }
@@ -1307,12 +1312,17 @@ class Hero
             {
                 for (const area of Areas.flat())
                 {
-                    area.unhighlight("reachable", click_to_move);
+                    area.unhighlight("reachable", this.move_phase_click_to_move);
                 }
 
                 cls(1000);
-                document.removeEventListener("contextmenu", move_phase_end);
-                document.removeEventListener("click", move_phase_end);
+                document.removeEventListener("contextmenu", this.move_phase_end);
+                document.removeEventListener("click", this.move_phase_end);
+
+                this.move_phase_click_to_move = null;
+                this.move_phase_highlight = null;
+                this.move_phase_end = null;
+
                 setCurrentPhase(null);
             }
         }
@@ -1323,10 +1333,11 @@ class Hero
         // 基于体力值生成移动力
         this.move_points = this.generate_move_points();
 
-        move_in_move_phase(this.piece);
+        this.move_phase_highlight(this.piece);
 
         // 空白处结束移动阶段
-        document.addEventListener("click", move_phase_end);
+        document.addEventListener("contextmenu", this.move_phase_end);
+        document.addEventListener("click", this.move_phase_end);
     }
 
     // 生成移动力
@@ -1398,7 +1409,7 @@ class Hero
             }
             else
             {
-                record(`${subject.name} 控制 ${this.name} 执行转移 (${this.area.row + 1}, ${this.area.col + 1}) ▷ (${area.row + 1}, ${area.col + 1})`);
+                record(`${subject.name}控制${this.name} (${this.area.row + 1}, ${this.area.col + 1}) ▷ (${area.row + 1}, ${area.col + 1})`);
             }
             if (isDraw)
             {
@@ -2230,7 +2241,7 @@ class Zuo_Ci extends Hero
         if (this.alive)
         {
             items["break-line-1"] = "<hr>";
-            items["移动阶段"] = () => { this.move_phase(); };
+            items["移动阶段"] = () => { this.move_phase_begin(); };
             items["移动阶段〖神行〗"] = () => { this.shen_xing(); };
             items["break-line-2"] = "<hr>";
             items["迅【闪】"] = () => { this.use("迅【闪】") };
@@ -2277,7 +2288,7 @@ class Yu_Jin extends Hero
         if (this.alive)
         {
             items["break-line-1"] = "<hr>";
-            items["移动阶段"] = () => { this.move_phase(); };
+            items["移动阶段"] = () => { this.move_phase_begin(); };
             items["break-line-2"] = "<hr>";
             items["〖节钺〗"] = () => { this.jie_yue(); };
             items["break-line-3"] = "<hr>";
@@ -2604,18 +2615,24 @@ class Zhang_Xiu extends Hero
             "-Y": [-1, 0],
             "+Y": [+1, 0],
         }
-        const target_area = Areas[object.area.row + Direction[direction][0]][object.area.col + Direction[direction][1]];
 
+        const target_area_row = object.area.row + Direction[direction][0];
+        const target_area_col = object.area.col + Direction[direction][1];
         // 若该角色可以执行步数为1且方向与你相同的移动，你控制其执行之；
-        if (object.can_stay(target_area) && !object?.yong_quan && !object.is_ride_on("阻动"))
+        if (target_area_row >= 0 && target_area_row < 7 && target_area_col >= 0 && target_area_col < 7)
         {
-            object.moveSteps = 1;
-            object.move(target_area, false, false, this);
+            const target_area = Areas[target_area_row][target_area_col];
+            if (object.can_stay(target_area) && !object?.yong_quan && !object.is_ride_on("阻动"))
+            {
+                object.move_steps = 1;
+                object.move(target_area, false, false, this);
+            }
         }
         // 若该角色不可以执行步数为1且方向与你相同的移动且其可以转移，你控制其转移至与其距离最近的可进入区域，
         else if (!object?.yong_quan && !object.is_ride_on("阻动"))
         {
-            endMovePhase(); // TODO: 先结束移动阶段
+            this.move_phase_end();
+
             const nearest_areas = object.nearest_area;
             if (nearest_areas.length > 1)
             {
