@@ -1712,6 +1712,10 @@ function create_hero(name, color, index)
     {
         return new Yu_Jin(color, index);
     }
+    else if (name === "张绣")
+    {
+        return new Zhang_Xiu(color, index);
+    }
     else
     {
         return new Hero(name, color, index);
@@ -2355,4 +2359,276 @@ class Yu_Jin extends Hero
         // 若如此做，本回合你不能对其使用牌。
     }
 }
+
+// 张绣
+class Zhang_Xiu extends Hero
+{
+    constructor(color, index)
+    {
+        super("张绣", color, index);
+    }
+
+    // 可停留
+    can_stay(area, reentry = true)
+    {
+        // 如果不是重新进入，且棋子已经在该区域，那么可以停留
+        if (area === this.area && !reentry)
+        {
+            if (area.terrain === "山岭")
+            {
+                return false;
+            }
+            else if (area.terrain === "军营" || area.terrain === "大本营")
+            {
+                return true;
+            }
+            else if (area.heroes.length > 1)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        let hold_by_enemy = false;
+        for (const enemy of this.enemies)
+        {
+            if (area.contains(enemy))
+            {
+                hold_by_enemy = true;
+                break;
+            }
+        }
+
+        // 〖固城〗
+        let gu_cheng = false;
+        for (const enemy of this.enemies)
+        {
+            if (enemy.name === "曹仁")
+            {
+                gu_cheng = true;
+                break;
+            }
+        }
+
+        if (hold_by_enemy && gu_cheng)
+        {
+            if (area !== this.base)
+            {
+                return false;
+            }
+        }
+
+        if (area.terrain === "军营" || area.terrain === "大本营")
+        {
+            return true;
+        }
+        else if (area.terrain === "山岭")
+        {
+            return false;
+        }
+        else
+        {
+            for (const hero of area.heroes)
+            {
+                if (hero !== this)
+                {
+                    if (hero.color === this.color) // 区域里有己方棋子
+                    {
+                        return false; // 不能停留
+                    }
+                    else // 区域里有敌方棋子
+                    {
+                        // 〖冲杀〗
+                        // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域；
+                        if (this === currentPlayer && currentPhase == "移动" && !hero?.yong_quan && !hero.is_ride_on("阻动")) // 如果是当前玩家的移动阶段，且敌方棋子可以被推动
+                        {
+                            continue; // 可以停留
+                        }
+                        else
+                        {
+                            return false; // 不能停留
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    // 路径
+    get pathes()
+    {
+        const Pathes = new Array(7)
+        for (let row = 0; row < 7; row++)
+        {
+            Pathes[row] = new Array(7)
+            for (let col = 0; col < 7; col++)
+            {
+                Pathes[row][col] = null;
+            }
+        }
+
+        const queue = [];
+        queue.push(this.area);
+        const start_row = this.area.row;
+        const start_col = this.area.col;
+        Pathes[start_row][start_col] = [this.area];
+
+        while (queue.length)
+        {
+            const current_area = queue.shift();
+
+            // 〖冲杀〗
+            // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域；
+            // 特殊处理：在进入有敌方角色的区域后停下，不再自动寻路。
+            var chong_sha_stop = false;
+            for (const hero of current_area.heroes)
+            {
+                if (hero.color !== this.color && this === currentPlayer && currentPhase == "移动" && !hero?.yong_quan && !hero.is_ride_on("阻动"))
+                {
+                    chong_sha_stop = true;
+                    break;
+                }
+            }
+            if (chong_sha_stop)
+            {
+                continue;
+            }
+
+            const row = current_area.row;
+            const col = current_area.col;
+
+            for (const area of current_area.adjacent_areas)
+            {
+                if (!this.can_pass(area))
+                {
+                    continue;
+                }
+
+                const next_row = area.row;
+                const next_col = area.col;
+                if (Pathes[next_row][next_col] === null)
+                {
+                    Pathes[next_row][next_col] = Pathes[row][col].concat([area]);
+                    queue.push(area);
+                }
+            }
+        }
+
+        // 删除起点
+        Pathes[start_row][start_col] = null;
+
+        for (let row = 0; row < 7; row++)
+        {
+            for (let col = 0; col < 7; col++)
+            {
+                if (!this.can_pass(Areas[row][col]))
+                {
+                    Pathes[row][col] = null;
+                }
+            }
+        }
+
+        return Pathes;
+    }
+
+    // 移动一步
+    step(area, isDraw = false)
+    {
+        if (this.can_pass(area))
+        {
+            const start_row = this.area.row;
+            const start_col = this.area.col;
+            const end_row = area.row;
+            const end_col = area.col;
+
+            let direction = null;
+            if (start_row === end_row && Math.abs(start_col - end_col) === 1)
+            {
+                direction = start_col < end_col ? "+X" : "-X";
+            }
+            else if (start_col === end_col && Math.abs(start_row - end_row) === 1)
+            {
+                direction = start_row < end_row ? "+Y" : "-Y";
+            }
+
+            if (isDraw)
+            {
+                if (direction !== null) // 有方向
+                {
+                    drawArrow([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+                }
+                else // 无方向
+                {
+                    drawTeleport([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+                }
+            }
+
+            this.area = area;
+
+            // 〖冲杀〗
+            // 当你移动一步后，若你进入有敌方角色的区域；
+            // TODO: 张绣冲向一个同时存在{己方曹仁、敌方A、敌方B}的区域
+            for (const hero of area.heroes)
+            {
+                if (hero.color !== this.color && !hero?.yong_quan && !hero.is_ride_on("阻动"))
+                {
+                    this.chong_sha(hero, direction);
+                }
+            }
+
+            return class
+            {
+                constructor()
+                {
+                    this.start = this.area;
+                    this.end = area;
+                    this.direction = direction;
+                }
+            }
+        }
+        return null;
+    }
+
+    // 〖冲杀〗
+    chong_sha(object, direction)
+    {
+        record(`张绣发动〖冲杀〗`);
+        const Direction = {
+            "-X": [0, -1],
+            "+X": [0, +1],
+            "-Y": [-1, 0],
+            "+Y": [+1, 0],
+        }
+        const target_area = Areas[object.area.row + Direction[direction][0]][object.area.col + Direction[direction][1]];
+
+        // 若该角色可以执行步数为1且方向与你相同的移动，你控制其执行之；
+        if (object.can_stay(target_area) && !object?.yong_quan && !object.is_ride_on("阻动"))
+        {
+            object.moveSteps = 1;
+            object.move(target_area, false, false, this);
+        }
+        // 若该角色不可以执行步数为1且方向与你相同的移动且其可以转移，你控制其转移至与其距离最近的可进入区域，
+        else if (!object?.yong_quan && !object.is_ride_on("阻动"))
+        {
+            endMovePhase(); // TODO: 先结束移动阶段
+            const nearest_areas = object.nearest_area;
+            if (nearest_areas.length > 1)
+            {
+                object.leap_to_areas(nearest_areas, false, this);
+            }
+            else // 只有一个最近的可进入区域
+            {
+                object.leap(nearest_areas[0], false, this);
+            }
+            // 然后你对该角色造成1点普通伤害
+            // TODO
+        }
+    }
+}
+
 export { Hero, create_hero };
