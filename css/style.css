@@ -56,8 +56,10 @@ img {
 #chessboard {
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    gap: 0;
     justify-content: space-between;
     align-content: space-between;
     z-index: 90;

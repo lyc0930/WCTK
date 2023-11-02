@@ -22,6 +22,8 @@ class Area
     {
         const cell = document.createElement("div");
         cell.className = `cell ${TERRAIN_INFO[this.terrain]["className"]}`;
+        cell.style.gridRow = this.row + 1;
+        cell.style.gridColumn = this.col + 1;
         cell.area = this;
         return cell;
     }
