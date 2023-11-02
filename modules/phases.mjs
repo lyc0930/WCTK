@@ -262,9 +262,9 @@ function movePhase_you_bing(piece)
             return;
         }
 
-        movingPiece = null;
         if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
         {
+            movingPiece = null;
             if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
             removeHighlight("reachable", click_to_move_you_bing);

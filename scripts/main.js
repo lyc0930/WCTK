@@ -164,7 +164,8 @@ function createPiece(color, name, index)
 
         function onmouseup(event)
         {
-            // event.stopPropagation();
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
             document.removeEventListener('mousemove', onmousemove);
 
             phantomPiece.remove();
@@ -668,7 +669,7 @@ function createMenuList()
 function initializePieces(names = [])
 {
     const chessboard = document.getElementById("chessboard");
-    const HERO_DATAList = Object.keys(HERO_DATA);
+    const HERO_DATAList = Array.from(Object.keys(HERO_DATA)).filter(name => !names.includes(name));
     var initHeroes = names;
     for (var i = names.length; i < 6; i++)
     {
