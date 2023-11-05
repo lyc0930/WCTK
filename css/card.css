@@ -1,0 +1,49 @@
+.hand {
+    display: block;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    right: 50%;
+    transform: translate(-50%, 0);
+    background-color: aliceblue;
+}
+
+.card {
+    aspect-ratio: 2/3;
+    position: absolute;
+    border: 4px solid black;
+    background-color: antiquewhite;
+    box-shadow: 0 0 8px 8px rgba(0, 0, 0, 0.10);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    transition: all 100ms ease-in-out;
+    font-weight: bold;
+}
+
+@media screen and (orientation:landscape) {
+    .hand {
+        width: 70vw;
+        height: 30vh;
+    }
+
+    .card {
+        height: 20vh;
+        font-size: 48px;
+    }
+}
+
+@media screen and (orientation:portrait) {
+    .hand {
+        width: 100vw;
+        height: 30vh;
+    }
+
+    .card {
+        height: 20vh;
+        font-size: 48px;
+    }
+}
