@@ -1,6 +1,7 @@
 import hero_data from "../assets/hero-data.json" assert { type: 'json' };
 import map from "../assets/map.json" assert { type: 'json' };
 import terrain_info from "../assets/terrain-info.json" assert { type: 'json' };
+import deck from "../assets/deck.json" assert { type: 'json' };
 
 // 地形
 const TERRAIN = map;
@@ -9,6 +10,8 @@ const TERRAIN = map;
 const TERRAIN_INFO = terrain_info;
 // 英雄数据
 const HERO_DATA = hero_data;
+
+const DECK = deck;
 
 function format_skill(text)
 {
@@ -122,4 +125,4 @@ const horses = {
     "燎原火":   "阻动",
 }
 
-export { TERRAIN, TERRAIN_INFO, HERO_DATA, weapons, armors, horses };
+export { TERRAIN, TERRAIN_INFO, HERO_DATA, DECK, weapons, armors, horses };

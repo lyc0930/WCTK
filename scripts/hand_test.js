@@ -1,10 +1,139 @@
+import { DECK } from "../modules/data.mjs";
+
 const cards = [];
 
 function create_card(content)
 {
     const card = document.createElement("div");
     card.className = "card";
-    card.innerHTML = content;
+
+    const card_info = document.createElement("div");
+    card_info.className = "card-info";
+
+    const card_number = document.createElement("span");
+    card_number.className = "card-number";
+    card_number.innerText = content.number;
+
+    const card_color = document.createElement("span");
+    card_color.className = "card-color";
+    if (content.color === "黑桃")
+    {
+        card_number.style.color = "#000000";
+        card_color.style.color = "#000000";
+        card_color.innerHTML = '♠';
+    }
+    else if (content.color === "红桃")
+    {
+        card_number.style.color = "#ff2e2e";
+        card_color.style.color = "#ff2e2e";
+        card_color.innerHTML = '♥';
+    }
+    else if (content.color === "梅花")
+    {
+        card_number.style.color = "#000000";
+        card_color.style.color = "#000000";
+        card_color.innerHTML = '♣';
+    }
+    else if (content.color === "方块")
+    {
+        card_number.style.color = "#ff2e2e";
+        card_color.style.color = "#ff2e2e";
+        card_color.innerHTML = '♦';
+    }
+
+    card_info.appendChild(card_number);
+    card_info.appendChild(card_color);
+
+    const card_name = document.createElement("span");
+    card_name.className = "card-name";
+
+    const left_bracket = document.createElement("span");
+    left_bracket.className = "left-bracket";
+    left_bracket.innerHTML = "【";
+
+    const name_text = document.createElement("span");
+    name_text.className = "card-name-text";
+
+    const right_bracket = document.createElement("span");
+    right_bracket.className = "right-bracket";
+    right_bracket.innerHTML = "】";
+
+    if (["射【殺】", "迅【閃】"].includes(content.fanti))
+    {
+        const prefix = document.createElement("span");
+        prefix.className = "prefix";
+        prefix.innerHTML = content.fanti.substr(0, 1);
+        card_name.appendChild(prefix);
+
+        left_bracket.style.fontSize = "1.2em";
+        left_bracket.style.transform = "translateX(-0.15em)";
+
+        name_text.style.fontSize = "1.5em";
+        name_text.style.transform = "translateX(0.05em)";
+        name_text.innerHTML = content.fanti.substr(2, 1);
+
+        right_bracket.style.fontSize = "1.2em";
+        right_bracket.style.transform = "translateX(-0.15em)";
+    }
+    else
+    {
+        const text = content.fanti.substr(1, content.fanti.length - 2);
+        if (text.length === 1)
+        {
+            name_text.style.fontSize = "1.8em";
+            name_text.innerHTML = text;
+        }
+        else if (text.length === 2)
+        {
+            left_bracket.style.fontSize = "1.2em";
+            left_bracket.style.transform = "translateX(-0.3em)";
+
+            name_text.style.fontSize = "1.2em";
+            name_text.style.transform = "translateX(-0.15em)";
+            name_text.style.textWrap = "nowrap";
+            name_text.innerHTML = text;
+
+            right_bracket.style.fontSize = "1.2em";
+            right_bracket.style.transform = "translateX(-0.1em)";
+        }
+        else if (text.length === 3)
+        {
+            left_bracket.style.fontSize = "0.8em";
+            left_bracket.style.transform = "translateX(-0.3em)";
+
+            name_text.style.fontSize = "0.9em";
+            name_text.style.transform = "translateX(-0.4em)";
+            name_text.style.textWrap = "nowrap";
+            name_text.innerHTML = text;
+
+            right_bracket.style.fontSize = "0.8em";
+            right_bracket.style.transform = "translateX(0.2em)";
+        }
+        else if (text.length === 4)
+        {
+            name_text.style.fontSize = "0.9em";
+            name_text.innerHTML = text;
+        }
+        else if (text.length === 5)
+        {
+            left_bracket.style.fontSize = "1.2em";
+            left_bracket.style.transform = "translateX(-0.15em)";
+
+            name_text.style.fontSize = "0.8em";
+            name_text.style.width = "3em";
+            name_text.style.textWrap = "nowrap";
+            name_text.innerHTML = text.substr(0, 2) + "<br>" + text.substr(2, 3);
+
+            right_bracket.style.fontSize = "1.2em";
+            right_bracket.style.transform = "translateX(-0.3em)";
+        }
+    }
+
+    card.appendChild(card_info);
+    card_name.appendChild(left_bracket);
+    card_name.appendChild(name_text);
+    card_name.appendChild(right_bracket);
+    card.appendChild(card_name);
 
     // 添加鼠标事件
     card.addEventListener("mousedown", (event) =>
@@ -13,20 +142,10 @@ function create_card(content)
 
         const card_rect = card.getBoundingClientRect();
 
-        // var rotate_angle = 0;
-        // if (card.style.transform.match(/rotate\((.*)deg\)/))
-        // {
-        //     rotate_angle = parseFloat(card.style.transform.match(/rotate\((.*)deg\)/)[1]) * Math.PI / 180;
-        // }
-        // const shiftX = _shiftX * Math.cos(rotate_angle) - _shiftY * Math.sin(rotate_angle);
-        // const shiftY = _shiftY * Math.cos(rotate_angle) + _shiftX * Math.sin(rotate_angle);
-
         const shiftX = event.clientX - (card_rect.left + card_rect.right) / 2;
         const shiftY = event.clientY - (card_rect.top + card_rect.bottom) / 2;
 
         card.style.transform = `rotate(0deg) translate(${shiftX}px, ${shiftY}px) scale(1.1)`;
-
-
 
         const onmousemove = (event) =>
         {
@@ -141,12 +260,6 @@ function create_card(content)
 
         const card_rect = card.getBoundingClientRect();
 
-        var rotate_angle = 0;
-        if (card.style.transform.match(/rotate\((.*)deg\)/))
-        {
-            rotate_angle = parseFloat(card.style.transform.match(/rotate\((.*)deg\)/)[1]) * Math.PI / 180;
-        }
-
         const shiftX = event.touches[0].clientX - (card_rect.left + card_rect.right) / 2;
         const shiftY = event.touches[0].clientY - (card_rect.top + card_rect.bottom) / 2;
 
@@ -250,6 +363,11 @@ function create_card(content)
 
 function arrange_cards()
 {
+    if (cards.length === 0)
+    {
+        return;
+    }
+
     const hand = document.getElementById("hand");
     const hand_rect = hand.getBoundingClientRect();
     const card_style = window.getComputedStyle(cards[0]);
@@ -264,9 +382,9 @@ function arrange_cards()
         {
             const card = cards[i];
             card.style.zIndex = i;
-            card.style.transform = 'none';
+            card.style.transform = '';
             card.style.top = 'auto';
-            card.style.bottom = `0px`;
+            card.style.bottom = `10px`;
         }
 
         if (n % 2 === 0)
@@ -303,7 +421,7 @@ function arrange_cards()
             card.style.zIndex = i;
             card.style.transform = `rotate(${(i + 0.5 - n / 2) * Math.min(60 / n, 10)}deg)`;
             card.style.top = 'auto';
-            card.style.bottom = `${-Math.pow((i + 0.5 - n / 2), 2) * Math.min(200 / Math.pow(n, 2), 10)}px`;
+            card.style.bottom = `${10 -Math.pow((i + 0.5 - n / 2), 2) * Math.min(200 / Math.pow(n, 2), 10)}px`;
         }
     }
 
@@ -312,10 +430,10 @@ function arrange_cards()
 !function init(n = 3)
 {
     const hand = document.getElementById("hand");
-
     for (let i = 0; i < n; i++)
     {
-        cards.push(create_card(i));
+        let index = Math.floor(Math.random() * (DECK.length - i));
+        cards.push(create_card(DECK[index]));
     }
 
     cards.forEach((card) =>

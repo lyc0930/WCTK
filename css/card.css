@@ -1,4 +1,6 @@
-.hand {
+@import "./text.css";
+
+ .hand {
     display: block;
     justify-content: center;
     position: absolute;
@@ -21,7 +23,64 @@
     align-items: center;
     user-select: none;
     transition: all 100ms ease-in-out;
-    font-weight: bold;
+}
+
+.card-info {
+    position: absolute;
+    top: 0;
+    left: 2%;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-number {
+    text-align: center;
+    font-family: 'fzlb';
+}
+
+.card-color {
+    transform: translateY(-20%);
+    text-align: center;
+}
+
+.card-name {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 2%;
+    right: 2%;
+    width: 76%;
+    height: 30%;
+    font-family: 'fzlb';
+}
+
+.prefix {
+    width: 20%;
+    text-align: center;
+    font-size: 0.8em;
+}
+
+.left-bracket {
+    width: 20%;
+    transform: translateX(-70%);
+    text-align: center;
+    font-size: 1.5em;
+}
+
+.card-name-text {
+    width: 60%;
+    text-align: center;
+}
+
+.right-bracket {
+    width: 20%;
+    transform: translateX(-70%);
+    text-align: center;
+    font-size: 1.5em;
 }
 
 @media screen and (orientation:landscape) {
@@ -31,8 +90,12 @@
     }
 
     .card {
-        height: 20vh;
-        font-size: 48px;
+        height: 15vw;
+        font-size: 2.4vw;
+    }
+
+    .card-color {
+        font-size: 2.4vw;
     }
 }
 
@@ -44,6 +107,10 @@
 
     .card {
         height: 20vh;
-        font-size: 48px;
+        font-size: 6.4vw;
+    }
+
+    .card-color {
+        font-size: 6.4vw;
     }
 }
