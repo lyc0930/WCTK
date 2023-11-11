@@ -1,45 +1,45 @@
-.attackable {
+.attack-target {
     background-color: rgba(255, 36, 0, 0.1);
 }
 
-.reachable {
+.move-target {
     background-color: rgba(255, 255, 0, 0.2);
 }
 
-.reachable:hover {
+.move-target:hover {
     background-color: rgba(255, 255, 0, 0.4);
 }
 
-.landable {
+.transfer-target {
     background-color: rgba(20, 200, 43, 0.15);
 }
 
-.landable:hover {
+.transfer-target:hover {
     background-color: rgba(20, 200, 43, 0.3);
 }
 
-.cell.targetable {
+.cell.choose-target {
     background-color: rgb(255, 100, 0, 0.15);
 }
 
-.cell.targetable:hover {
+.cell.choose-target:hover {
     background-color: rgb(255, 100, 0, 0.3);
 }
 
-.piece.targetable {
+.piece.choose-target {
     box-shadow: 0 0 0.4em 0.4em rgb(20, 200, 43, 0.5);
 }
 
-.piece.targetable:hover {
+.piece.choose-target:hover {
     border-color: rgb(20, 200, 43);
     box-shadow: 0 0 0.4em 0.4em rgb(20, 200, 43, 0.5);
 }
 
-.piece.attackable {
+.piece.attack-target {
     box-shadow: 0 0 0.4em 0.4em rgb(255, 36, 0, 0.5);
 }
 
-.piece.attackable:hover {
+.piece.attack-target:hover {
     border-color: rgb(255, 36, 0);
     box-shadow: 0 0 0.4em 0.4em rgb(255, 36, 0, 0.5);
 }

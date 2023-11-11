@@ -58,7 +58,7 @@ class Area
     highlight(className, listener = null)
     {
         this.cell.classList.add(className);
-        if (className === "reachable" || className === "landable" || className === "targetable")
+        if (className === "move-target" || className === "transfer-target" || className === "choose-target")
         {
             this.cell.addEventListener("click", listener);
         }

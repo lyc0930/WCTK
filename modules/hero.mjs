@@ -309,10 +309,10 @@ class Hero
 
                 for (const area of Areas.flat())
                 {
-                    area.unhighlight("attackable");
+                    area.unhighlight("attack-target");
                     for (const hero of area.heroes)
                     {
-                        hero.unhighlight("attackable");
+                        hero.unhighlight("attack-target");
                     }
                 }
             }
@@ -579,12 +579,12 @@ class Hero
             {
                 if (Math.abs(area.row - this.area.row) + Math.abs(area.col - this.area.col) <= attack_range)
                 {
-                    area.highlight("attackable");
+                    area.highlight("attack-target");
                     for (const hero of area.heroes)
                     {
                         if (hero !== this)
                         {
-                            hero.highlight("attackable");
+                            hero.highlight("attack-target");
                         }
                     }
                 }
@@ -595,10 +595,10 @@ class Hero
         {
             for (const area of Areas.flat())
             {
-                area.unhighlight("attackable");
+                area.unhighlight("attack-target");
                 for (const hero of area.heroes)
                 {
-                    hero.unhighlight("attackable");
+                    hero.unhighlight("attack-target");
                 }
             }
         });
@@ -746,7 +746,7 @@ class Hero
 
         const labelHP = document.createElement("label");
         labelHP.id = "HP" + this.index;
-        labelHP.type = "numner";
+        labelHP.type = "number";
         labelHP.className = "number";
         labelHP.innerHTML = "0";
         labelHP.htmlFor = "HPMinus" + this.index;
@@ -756,7 +756,7 @@ class Hero
 
         const labelMaxHP = document.createElement("label");
         labelMaxHP.id = "maxHP" + this.index;
-        labelMaxHP.type = "numner";
+        labelMaxHP.type = "number";
         labelMaxHP.className = "number";
         labelMaxHP.innerHTML = "0";
         labelMaxHP.htmlFor = "HPPlus" + this.index;
@@ -1023,15 +1023,15 @@ class Hero
     }
 
     // 路径
-    get pathes()
+    get paths()
     {
-        const Pathes = new Array(7)
+        const Paths = new Array(7)
         for (let row = 0; row < 7; row++)
         {
-            Pathes[row] = new Array(7)
+            Paths[row] = new Array(7)
             for (let col = 0; col < 7; col++)
             {
-                Pathes[row][col] = null;
+                Paths[row][col] = null;
             }
         }
 
@@ -1039,7 +1039,7 @@ class Hero
         queue.push(this.area);
         const start_row = this.area.row;
         const start_col = this.area.col;
-        Pathes[start_row][start_col] = [this.area];
+        Paths[start_row][start_col] = [this.area];
 
         while (queue.length)
         {
@@ -1057,16 +1057,16 @@ class Hero
 
                 const next_row = area.row;
                 const next_col = area.col;
-                if (Pathes[next_row][next_col] === null)
+                if (Paths[next_row][next_col] === null)
                 {
-                    Pathes[next_row][next_col] = Pathes[row][col].concat([area]);
+                    Paths[next_row][next_col] = Paths[row][col].concat([area]);
                     queue.push(area);
                 }
             }
         }
 
         // 删除起点
-        Pathes[start_row][start_col] = null;
+        Paths[start_row][start_col] = null;
 
         for (let row = 0; row < 7; row++)
         {
@@ -1074,12 +1074,12 @@ class Hero
             {
                 if (!this.can_pass(Areas[row][col]))
                 {
-                    Pathes[row][col] = null;
+                    Paths[row][col] = null;
                 }
             }
         }
 
-        return Pathes;
+        return Paths;
     }
 
     // 距离最近的可进入区域
@@ -1125,10 +1125,10 @@ class Hero
     {
         const row = area.row;
         const col = area.col;
-        const Pathes = this.pathes;
-        if (Pathes[row][col] !== null)
+        const Paths = this.paths;
+        if (Paths[row][col] !== null)
         {
-            const steps = Pathes[row][col].length - 1;
+            const steps = Paths[row][col].length - 1;
 
             if (consume_move_points)
             {
@@ -1153,7 +1153,7 @@ class Hero
                 }
             }
 
-            const path = Pathes[row][col];
+            const path = Paths[row][col];
             let moveLog = `(${path[0].row + 1}, ${path[0].col + 1})`;
             const vibration_pattern = [];
             for (let i = 1; i < path.length; i++)
@@ -1245,7 +1245,7 @@ class Hero
 
             for (const area of Areas.flat())
             {
-                area.unhighlight("reachable", this.move_phase_click_to_move);
+                area.unhighlight("move-target", this.move_phase_click_to_move);
             }
 
             // 移动阶段没有被提前结束
@@ -1267,16 +1267,16 @@ class Hero
         this.move_phase_highlight = () =>
         {
             // 计算可到达的区域
-            const Pathes = this.pathes;
+            const Paths = this.paths;
 
             // 高亮可到达的区域
             for (const area of Areas.flat())
             {
-                if (Pathes[area.row][area.col])
+                if (Paths[area.row][area.col])
                 {
-                    if ((Pathes[area.row][area.col].length - 1 < this.move_points && this.can_pass(area)) || (Pathes[area.row][area.col].length - 1 === this.move_points && this.can_stay(area)))
+                    if ((Paths[area.row][area.col].length - 1 < this.move_points && this.can_pass(area)) || (Paths[area.row][area.col].length - 1 === this.move_points && this.can_stay(area)))
                     {
-                        area.highlight("reachable", this.move_phase_click_to_move);
+                        area.highlight("move-target", this.move_phase_click_to_move);
                     }
                 }
             }
@@ -1292,14 +1292,14 @@ class Hero
 
             if (event !== null)
             {
-                if (event.target.classList.contains("cell") && !event.target.classList.contains("reachable"))
+                if (event.target.classList.contains("cell") && !event.target.classList.contains("move-target"))
                 {
                     if (event.cancelable) event.preventDefault();
                     // event.stopPropagation();
 
                     for (const area of Areas.flat())
                     {
-                        area.unhighlight("reachable", this.move_phase_click_to_move);
+                        area.unhighlight("move-target", this.move_phase_click_to_move);
                     }
 
                     cls(1000);
@@ -1312,7 +1312,7 @@ class Hero
             {
                 for (const area of Areas.flat())
                 {
-                    area.unhighlight("reachable", this.move_phase_click_to_move);
+                    area.unhighlight("move-target", this.move_phase_click_to_move);
                 }
 
                 cls(1000);
@@ -1359,7 +1359,7 @@ class Hero
     move_fixed_steps(isDraw = false, subject = this)
     {
         // 计算可到达的区域
-        const Pathes = this.pathes;
+        const Paths = this.paths;
 
         // 定义点击高亮区域行为
         const click_to_move = (event) =>
@@ -1371,7 +1371,7 @@ class Hero
 
             for (const area of Areas.flat())
             {
-                area.unhighlight("reachable", click_to_move);
+                area.unhighlight("move-target", click_to_move);
             }
 
             // 还有移动力
@@ -1391,9 +1391,9 @@ class Hero
         // 高亮可到达的区域
         for (const area of Areas.flat())
         {
-            if ((Pathes[area.row][area.col] && (Pathes[area.row][area.col].length - 1 < this.move_steps) && this.can_pass(area)) || (Pathes[area.row][area.col] && (Pathes[area.row][area.col].length - 1 === this.move_steps) && this.can_stay(area)))
+            if ((Paths[area.row][area.col] && (Paths[area.row][area.col].length - 1 < this.move_steps) && this.can_pass(area)) || (Paths[area.row][area.col] && (Paths[area.row][area.col].length - 1 === this.move_steps) && this.can_stay(area)))
             {
-                area.highlight("reachable", click_to_move);
+                area.highlight("move-target", click_to_move);
             }
         }
     }
@@ -1436,7 +1436,7 @@ class Hero
 
             for (const area of Areas.flat())
             {
-                area.unhighlight("landable", click_to_leap);
+                area.unhighlight("transfer-target", click_to_leap);
             }
 
             if (isDraw)
@@ -1448,7 +1448,7 @@ class Hero
         // 高亮可到达的区域
         for (const area of areas)
         {
-            area.highlight("landable", click_to_leap);
+            area.highlight("transfer-target", click_to_leap);
         }
     }
 
@@ -1511,7 +1511,7 @@ class Hero
     highlight(className, listener = null)
     {
         this.piece.classList.add(className);
-        if (className === "targetable")
+        if (className === "choose-target")
         {
             this.piece.addEventListener("click", listener);
         }
@@ -1551,7 +1551,7 @@ class Hero
         else if (card === "【奇门遁甲】")
         {
             setCurrentPlayer(this)
-            this._Qi_Meng_Dun_Jia(2 - this.affected_by_mi_ji);
+            this._Qi_Men_Dun_Jia(2 - this.affected_by_mi_ji);
         }
         else if (card === "【诱敌深入】")
         {
@@ -1603,7 +1603,7 @@ class Hero
     }
 
     // 【奇门遁甲】
-    _Qi_Meng_Dun_Jia(limit = 2)
+    _Qi_Men_Dun_Jia(limit = 2)
     {
         record(`${this.name}使用【奇门遁甲】`);
 
@@ -1616,7 +1616,7 @@ class Hero
 
             for (const hero of Heroes)
             {
-                hero.unhighlight("targetable", click_to_swap);
+                hero.unhighlight("choose-target", click_to_swap);
             }
 
             this.swap(event.currentTarget.hero);
@@ -1628,7 +1628,7 @@ class Hero
             {
                 if (hero.alive && (distance(this, hero) <= limit) && !hero.is_ride_on("阻动") && !hero?.yong_quan)
                 {
-                    hero.highlight("targetable", click_to_swap);
+                    hero.highlight("choose-target", click_to_swap);
                 }
             }
         }
@@ -1648,7 +1648,7 @@ class Hero
 
             for (const hero of Heroes)
             {
-                hero.unhighlight("targetable", click_to_control);
+                hero.unhighlight("choose-target", click_to_control);
             }
 
             const object_hero = event.currentTarget.hero;
@@ -1660,7 +1660,7 @@ class Hero
         {
             if (hero.alive && (distance(this, hero) <= limit) && !hero.is_ride_on("阻动") && !hero?.yong_quan)
             {
-                hero.highlight("targetable", click_to_control);
+                hero.highlight("choose-target", click_to_control);
             }
         }
     }
@@ -2013,7 +2013,7 @@ class Pang_Tong extends Hero
 
         const labelHP = document.createElement("label");
         labelHP.id = "HP" + this.index;
-        labelHP.type = "numner";
+        labelHP.type = "number";
         labelHP.className = "number";
         labelHP.innerHTML = "0";
         labelHP.htmlFor = "HPMinus" + this.index;
@@ -2023,7 +2023,7 @@ class Pang_Tong extends Hero
 
         const labelMaxHP = document.createElement("label");
         labelMaxHP.id = "maxHP" + this.index;
-        labelMaxHP.type = "numner";
+        labelMaxHP.type = "number";
         labelMaxHP.className = "number";
         labelMaxHP.innerHTML = "0";
         labelMaxHP.htmlFor = "HPPlus" + this.index;
@@ -2321,7 +2321,7 @@ class Yu_Jin extends Hero
 
             for (const hero of Heroes)
             {
-                hero.unhighlight("targetable", click_to_pull);
+                hero.unhighlight("choose-target", click_to_pull);
             }
 
             const object = event.currentTarget.hero;
@@ -2363,7 +2363,7 @@ class Yu_Jin extends Hero
         {
             if (hero.alive && hero !== this && distance(hero, this) <= limit && isOnSameLine(hero, this) && !hero?.yong_quan && !hero.is_ride_on("阻动"))
             {
-                hero.highlight("targetable", click_to_pull);
+                hero.highlight("choose-target", click_to_pull);
             }
         }
 
@@ -2471,15 +2471,15 @@ class Zhang_Xiu extends Hero
     }
 
     // 路径
-    get pathes()
+    get paths()
     {
-        const Pathes = new Array(7)
+        const Paths = new Array(7)
         for (let row = 0; row < 7; row++)
         {
-            Pathes[row] = new Array(7)
+            Paths[row] = new Array(7)
             for (let col = 0; col < 7; col++)
             {
-                Pathes[row][col] = null;
+                Paths[row][col] = null;
             }
         }
 
@@ -2487,7 +2487,7 @@ class Zhang_Xiu extends Hero
         queue.push(this.area);
         const start_row = this.area.row;
         const start_col = this.area.col;
-        Pathes[start_row][start_col] = [this.area];
+        Paths[start_row][start_col] = [this.area];
 
         while (queue.length)
         {
@@ -2522,16 +2522,16 @@ class Zhang_Xiu extends Hero
 
                 const next_row = area.row;
                 const next_col = area.col;
-                if (Pathes[next_row][next_col] === null)
+                if (Paths[next_row][next_col] === null)
                 {
-                    Pathes[next_row][next_col] = Pathes[row][col].concat([area]);
+                    Paths[next_row][next_col] = Paths[row][col].concat([area]);
                     queue.push(area);
                 }
             }
         }
 
         // 删除起点
-        Pathes[start_row][start_col] = null;
+        Paths[start_row][start_col] = null;
 
         for (let row = 0; row < 7; row++)
         {
@@ -2539,12 +2539,12 @@ class Zhang_Xiu extends Hero
             {
                 if (!this.can_pass(Areas[row][col]))
                 {
-                    Pathes[row][col] = null;
+                    Paths[row][col] = null;
                 }
             }
         }
 
-        return Pathes;
+        return Paths;
     }
 
     // 移动一步

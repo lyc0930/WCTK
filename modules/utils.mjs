@@ -44,7 +44,7 @@ function isHighlighting(className = null)
     }
     else
     {
-        const highlights = ["reachable", "landable", "targetable"];
+        const highlights = ["move-target", "transfer-target", "choose-target"];
         for (const highlight of highlights)
         {
             if (document.getElementsByClassName(highlight).length > 0)
