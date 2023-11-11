@@ -1213,15 +1213,11 @@ class Hero
 
             this.area = area;
 
-            return class
-            {
-                constructor()
-                {
-                    this.start = this.area;
-                    this.end = area;
-                    this.direction = direction;
-                }
-            }
+            return {
+                start: this.area,
+                end: area,
+                direction: direction
+            };
         }
         return null;
     }
@@ -1333,7 +1329,7 @@ class Hero
         // 基于体力值生成移动力
         this.move_points = this.generate_move_points();
 
-        this.move_phase_highlight(this.piece);
+        this.move_phase_highlight();
 
         // 空白处结束移动阶段
         document.addEventListener("contextmenu", this.move_phase_end);
@@ -1726,6 +1722,10 @@ function create_hero(name, color, index)
     else if (name === "张绣")
     {
         return new Zhang_Xiu(color, index);
+    }
+    else if (name === "祖茂")
+    {
+        return new Zu_Mao(color, index);
     }
     else
     {
@@ -2368,6 +2368,7 @@ class Yu_Jin extends Hero
         }
 
         // 若如此做，本回合你不能对其使用牌。
+        // TODO
     }
 }
 
@@ -2592,15 +2593,11 @@ class Zhang_Xiu extends Hero
                 }
             }
 
-            return class
-            {
-                constructor()
-                {
-                    this.start = this.area;
-                    this.end = area;
-                    this.direction = direction;
-                }
-            }
+            return {
+                start: this.area,
+                end: area,
+                direction: direction
+            };
         }
         return null;
     }
@@ -2616,34 +2613,242 @@ class Zhang_Xiu extends Hero
             "+Y": [+1, 0],
         }
 
-        const target_area_row = object.area.row + Direction[direction][0];
-        const target_area_col = object.area.col + Direction[direction][1];
-        // 若该角色可以执行步数为1且方向与你相同的移动，你控制其执行之；
-        if (target_area_row >= 0 && target_area_row < 7 && target_area_col >= 0 && target_area_col < 7)
+        if (!object?.yong_quan && !object.is_ride_on("阻动"))
         {
-            const target_area = Areas[target_area_row][target_area_col];
-            if (object.can_stay(target_area) && !object?.yong_quan && !object.is_ride_on("阻动"))
+            const target_area_row = object.area.row + Direction[direction][0];
+            const target_area_col = object.area.col + Direction[direction][1];
+            // 若该角色可以执行步数为1且方向与你相同的移动，你控制其执行之；
+            if (target_area_row >= 0 && target_area_row < 7 && target_area_col >= 0 && target_area_col < 7 && object.can_stay(Areas[target_area_row][target_area_col]))
             {
                 object.move_steps = 1;
-                object.move(target_area, false, false, this);
+                object.move(Areas[target_area_row][target_area_col], false, false, this);
+            }
+            // 若该角色不可以执行步数为1且方向与你相同的移动且其可以转移，你控制其转移至与其距离最近的可进入区域，
+            else
+            {
+                this.move_phase_end();
+
+                const nearest_areas = object.nearest_area;
+                if (nearest_areas.length > 1)
+                {
+                    object.leap_to_areas(nearest_areas, false, this);
+                }
+                else // 只有一个最近的可进入区域
+                {
+                    object.leap(nearest_areas[0], false, this);
+                }
+                // 然后你对该角色造成1点普通伤害
+                // TODO
             }
         }
-        // 若该角色不可以执行步数为1且方向与你相同的移动且其可以转移，你控制其转移至与其距离最近的可进入区域，
-        else if (!object?.yong_quan && !object.is_ride_on("阻动"))
-        {
-            this.move_phase_end();
+    }
+}
 
-            const nearest_areas = object.nearest_area;
-            if (nearest_areas.length > 1)
+// 祖茂
+class Zu_Mao extends Hero
+{
+    constructor(color, index)
+    {
+        super("祖茂", color, index);
+    }
+
+    get context_menu_items()
+    {
+        const items = {
+            "查看技能": () => { showSkillPanel(this); }
+        };
+
+        if (this.alive)
+        {
+            items["break-line-1"] = "<hr>";
+            items["移动阶段"] = () => { this.move_phase_begin(); };
+            items["移动阶段〖诱兵〗"] = () => { this.you_bing_1(); };
+            items["break-line-2"] = "<hr>";
+            items["迅【闪】"] = () => { this.use("迅【闪】") };
+            items["break-line-3"] = "<hr>";
+            items["【暗度陈仓】"] = () => { this.use("【暗度陈仓】") };
+            items["【兵贵神速】"] = () => { this.use("【兵贵神速】") };
+            items["【奇门遁甲】"] = () => { this.use("【奇门遁甲】") };
+            items["【诱敌深入】"] = () => { this.use("【诱敌深入】") };
+        }
+        return items;
+    }
+
+    // 〖诱兵〗移动阶段
+    move_phase_begin_you_bing()
+    {
+        // 正在等待响应
+        if (isHighlighting())
+        {
+            return;
+        }
+
+        // 定义点击高亮区域行为
+        this.move_phase_click_to_move = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            this.move_points -= 1;
+            const s = this.step(event.currentTarget.area, true);
+            this.you_bing_2(s.direction);
+
+            for (const area of Areas.flat())
             {
-                object.leap_to_areas(nearest_areas, false, this);
+                area.unhighlight("move-target", this.move_phase_click_to_move);
             }
-            else // 只有一个最近的可进入区域
+
+            // 移动阶段没有被提前结束
+            if (this.move_phase_highlight !== null && this.move_phase_end !== null)
             {
-                object.leap(nearest_areas[0], false, this);
+                // 还有移动力
+                if (this.move_points > 0)
+                {
+                    this.move_phase_highlight();
+                }
+                else
+                {
+                    this.move_phase_end();
+                }
             }
-            // 然后你对该角色造成1点普通伤害
-            // TODO
+        }
+
+        // 高亮可进入的区域
+        this.move_phase_highlight = () =>
+        {
+            const areas = this.area.adjacent_areas;
+
+            for (const area of areas)
+            {
+                if ((this.move_points === 1 && !this.can_stay(area)) || (this.move_points > 1 && !this.can_pass(area)))
+                {
+                    areas.splice(areas.indexOf(area), 1);
+                }
+            }
+
+            // 高亮可到达的区域
+            for (const area of areas)
+            {
+                area.highlight("move-target", this.move_phase_click_to_move);
+            }
+        }
+
+        // 结束移动阶段
+        this.move_phase_end = (event = null) =>
+        {
+            if (this.move_points > 0 && !this.can_stay(this.area, false))
+            {
+                return;
+            }
+
+            if (event !== null)
+            {
+                if (event.target.classList.contains("cell") && !event.target.classList.contains("move-target"))
+                {
+                    if (event.cancelable) event.preventDefault();
+                    // event.stopPropagation();
+
+                    for (const area of Areas.flat())
+                    {
+                        area.unhighlight("move-target", this.move_phase_click_to_move);
+                    }
+
+                    cls(1000);
+                    document.removeEventListener("contextmenu", this.move_phase_end);
+                    document.removeEventListener("click", this.move_phase_end);
+                    setCurrentPhase(null);
+                }
+            }
+            else
+            {
+                for (const area of Areas.flat())
+                {
+                    area.unhighlight("move-target", this.move_phase_click_to_move);
+                }
+
+                cls(1000);
+                document.removeEventListener("contextmenu", this.move_phase_end);
+                document.removeEventListener("click", this.move_phase_end);
+
+                this.move_phase_click_to_move = null;
+                this.move_phase_highlight = null;
+                this.move_phase_end = null;
+
+                setCurrentPhase(null);
+            }
+        }
+
+        setCurrentPlayer(this);
+        setCurrentPhase("移动");
+
+        // 基于体力值生成移动力
+        this.move_points = this.generate_move_points();
+
+        this.move_phase_highlight();
+
+        // 空白处结束移动阶段
+        document.addEventListener("contextmenu", this.move_phase_end);
+        document.addEventListener("click", this.move_phase_end);
+    }
+
+    // 〖诱兵〗1
+    you_bing_1()
+    {
+        // 移动阶段开始时，你可以选择一名与你的距离为<4>以内的其他非主帅角色；
+
+        var limit = 4;
+
+        // 定义点击高亮元素行为
+        const click_to_choose = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            navigator.vibrate(20);
+
+            record(`祖茂发动〖诱兵〗`);
+
+            for (const hero of Heroes)
+            {
+                hero.unhighlight("choose-target", click_to_choose);
+            }
+
+            this.you_bing_object = event.currentTarget.hero;
+            this.move_phase_begin_you_bing();
+        }
+
+        for (const hero of Heroes)
+        {
+            if (hero.alive && hero !== this && distance(hero, this) <= limit && !hero.carrier && !hero?.yong_quan)
+            {
+                hero.highlight("choose-target", click_to_choose);
+            }
+        }
+    }
+
+    // 〖诱兵〗2
+    you_bing_2(direction)
+    {
+        // 若如此做，当你于本阶段移动一步后，
+        // 你控制该角色执行一次步数为1且方向与你此步移动相同的移动。
+        const object = this.you_bing_object;
+        const Direction = {
+            "-X": [0, -1],
+            "+X": [0, +1],
+            "-Y": [-1, 0],
+            "+Y": [+1, 0],
+        }
+        // 若该角色可以执行步数为1且方向与你此步移动相同的移动，你控制其执行之；
+        if (!object?.yong_quan && !object.is_ride_on("阻动"))
+        {
+            const target_area_row = object.area.row + Direction[direction][0];
+            const target_area_col = object.area.col + Direction[direction][1];
+            if (target_area_row >= 0 && target_area_row < 7 && target_area_col >= 0 && target_area_col < 7 && object.can_stay(Areas[target_area_row][target_area_col]))
+            {
+                record(`祖茂发动〖诱兵〗`);
+                object.move_steps = 1;
+                object.move(Areas[target_area_row][target_area_col], false, true, this);
+            }
         }
     }
 }
