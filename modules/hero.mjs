@@ -1622,7 +1622,7 @@ class Hero
         {
             if (hero !== this && hero.alive)
             {
-                if (hero.alive && (distance(this, hero) <= limit) && !hero.is_ride_on("阻动") && !hero?.yong_quan)
+                if (hero.alive && (distance(this, hero) <= limit) && (hero.color === this.color || !(hero.is_ride_on("阻动") || hero?.yong_quan)))
                 {
                     hero.highlight("choose-target", click_to_swap);
                 }
@@ -1654,7 +1654,7 @@ class Hero
 
         for (const hero of Heroes)
         {
-            if (hero.alive && (distance(this, hero) <= limit) && !hero.is_ride_on("阻动") && !hero?.yong_quan)
+            if (hero.alive && (distance(this, hero) <= limit) && (hero.color === this.color || !(hero.is_ride_on("阻动") || hero?.yong_quan)))
             {
                 hero.highlight("choose-target", click_to_control);
             }
@@ -2361,7 +2361,7 @@ class Yu_Jin extends Hero
 
         for (const hero of Heroes)
         {
-            if (hero.alive && hero !== this && distance(hero, this) <= limit && isOnSameLine(hero, this) && !hero?.yong_quan && !hero.is_ride_on("阻动"))
+            if (hero.alive && hero !== this && distance(hero, this) <= limit && isOnSameLine(hero, this) && (hero.color === this.color || !(hero.is_ride_on("阻动") || hero?.yong_quan)))
             {
                 hero.highlight("choose-target", click_to_pull);
             }
@@ -2613,7 +2613,7 @@ class Zhang_Xiu extends Hero
             "+Y": [+1, 0],
         }
 
-        if (!object?.yong_quan && !object.is_ride_on("阻动"))
+        if (object.color !== this.color && !object?.yong_quan && !object.is_ride_on("阻动"))
         {
             const target_area_row = object.area.row + Direction[direction][0];
             const target_area_col = object.area.col + Direction[direction][1];
@@ -2819,7 +2819,7 @@ class Zu_Mao extends Hero
 
         for (const hero of Heroes)
         {
-            if (hero.alive && hero !== this && distance(hero, this) <= limit && !hero.carrier && !hero?.yong_quan)
+            if (hero.alive && hero !== this && distance(hero, this) <= limit && !hero.carrier && !(hero.color !== this.color && hero?.yong_quan))
             {
                 hero.highlight("choose-target", click_to_choose);
             }
@@ -2839,7 +2839,7 @@ class Zu_Mao extends Hero
             "+Y": [+1, 0],
         }
         // 若该角色可以执行步数为1且方向与你此步移动相同的移动，你控制其执行之；
-        if (!object?.yong_quan && !object.is_ride_on("阻动"))
+        if (object.color === this.color || !(object.is_ride_on("阻动") || object?.yong_quan))
         {
             const target_area_row = object.area.row + Direction[direction][0];
             const target_area_col = object.area.col + Direction[direction][1];
