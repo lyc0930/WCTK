@@ -125,10 +125,7 @@ function createHeroCandidate(name, index)
 
     piece.addEventListener("mousedown", function (event)
     {
-        if (piece.picked || event.button != 0)
-        {
-            return;
-        }
+        if (piece.picked || event.button != 0) return;
 
         const startX = event.clientX;
         const startY = event.clientY;
@@ -163,10 +160,7 @@ function createHeroCandidate(name, index)
 
         function onmouseup(event)
         {
-            if (piece.picked || event.button != 0)
-            {
-                return;
-            }
+            if (piece.picked || event.button != 0) return;
 
             document.removeEventListener('mousemove', onmousemove);
 
@@ -230,15 +224,8 @@ function createHeroCandidate(name, index)
 
     piece.addEventListener("touchstart", function (event)
     {
-        if (event.touches.length > 1)
-        {
-            return;
-        }
-
-        if (piece.picked)
-        {
-            return;
-        }
+        if (event.touches.length > 1) return;
+        if (piece.picked) return;
 
         event.stopPropagation();
 
@@ -257,10 +244,7 @@ function createHeroCandidate(name, index)
             {
                 if (event.cancelable) event.preventDefault();
                 // event.stopPropagation();
-                if (event.touches.length > 1)
-                {
-                    return;
-                }
+                if (event.touches.length > 1) return;
 
                 if (draggingPiece === null)
                 {
@@ -279,15 +263,8 @@ function createHeroCandidate(name, index)
             },
             "ontouchend": function (event)
             {
-                if (event.changedTouches.length > 1)
-                {
-                    return;
-                }
-
-                if (piece.picked)
-                {
-                    return;
-                }
+                if (event.changedTouches.length > 1) return;
+                if (piece.picked) return;
 
                 piece.style.width = "10vmin";
                 piece.style.height = "10vmin";
@@ -647,10 +624,7 @@ function initializeHistory()
 
     document.addEventListener("touchstart", function (event)
     {
-        if (event.touches.length > 1)
-        {
-            return;
-        }
+        if (event.touches.length > 1) return;
 
         var edge = null;
 

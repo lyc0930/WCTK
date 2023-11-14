@@ -250,10 +250,7 @@ function create_card(content)
     // 添加触摸事件
     card.addEventListener("touchstart", (event) =>
     {
-        if (event.touches.length > 1)
-        {
-            return;
-        }
+        if (event.touches.length > 1) return;
 
         card.style.zIndex = 99;
         card.style.boxShadow = `0 0 8.8px 8.8px rgba(0, 0, 0, 0.10)`;
@@ -267,10 +264,7 @@ function create_card(content)
 
         const ontouchmove = (event) =>
         {
-            if (event.touches.length > 1)
-            {
-                return;
-            }
+            if (event.touches.length > 1) return;
 
             if (event.cancelable) event.preventDefault();
             if (!card.dragging)
@@ -293,10 +287,7 @@ function create_card(content)
 
         const ontouchend = (event) =>
         {
-            if (event.changedTouches.length > 1)
-            {
-                return;
-            }
+            if (event.changedTouches.length > 1) return;
 
             card.removeEventListener("touchmove", ontouchmove);
 
@@ -363,10 +354,7 @@ function create_card(content)
 
 function arrange_cards()
 {
-    if (cards.length === 0)
-    {
-        return;
-    }
+    if (cards.length === 0) return;
 
     const hand = document.getElementById("hand");
     const hand_rect = hand.getBoundingClientRect();

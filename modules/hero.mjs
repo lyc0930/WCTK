@@ -419,10 +419,8 @@ class Hero
         piece.addEventListener("mousedown", (event) =>
         {
             // 正在等待响应
-            if (isHighlighting())
-            {
-                return;
-            }
+            if (isHighlighting()) return;
+
             if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
 
@@ -482,16 +480,8 @@ class Hero
         // 添加触摸事件
         piece.addEventListener("touchstart", (event) =>
         {
-            if (event.touches.length > 1)
-            {
-                return;
-            }
-
-            // 正在等待响应
-            if (isHighlighting())
-            {
-                return;
-            }
+            if (event.touches.length > 1) return;
+            if (isHighlighting()) return;
 
             event.stopPropagation();
 
@@ -513,10 +503,7 @@ class Hero
 
             const ontouchmove = (event) =>
             {
-                if (event.touches.length > 1)
-                {
-                    return;
-                }
+                if (event.touches.length > 1) return;
 
                 if (event.cancelable) event.preventDefault();
                 // event.stopPropagation();
@@ -532,10 +519,8 @@ class Hero
 
             const ontouchend = (event) =>
             {
-                if (event.changedTouches.length > 1)
-                {
-                    return;
-                }
+                if (event.changedTouches.length > 1) return;
+
                 if (event.cancelable) event.preventDefault();
                 // event.stopPropagation();
                 piece.removeEventListener("touchmove", ontouchmove);
@@ -570,10 +555,8 @@ class Hero
 
         piece.addEventListener("mouseenter", (event) =>
         {
-            if (!this.alive || isHighlighting())
-            {
-                return;
-            }
+            if (!this.alive || isHighlighting()) return;
+
             const attack_range = weapons[this.weapon];
             for (const area of Areas.flat())
             {
@@ -1050,10 +1033,7 @@ class Hero
 
             for (const area of current_area.adjacent_areas)
             {
-                if (!this.can_pass(area))
-                {
-                    continue;
-                }
+                if (!this.can_pass(area)) continue;
 
                 const next_row = area.row;
                 const next_col = area.col;
@@ -1226,10 +1206,7 @@ class Hero
     move_phase_begin()
     {
         // 正在等待响应
-        if (isHighlighting())
-        {
-            return;
-        }
+        if (isHighlighting()) return;
 
         // 定义点击高亮区域行为
         this.move_phase_click_to_move = (event) =>
@@ -1281,10 +1258,7 @@ class Hero
         // 结束移动阶段
         this.move_phase_end = (event = null) =>
         {
-            if (this.move_points > 0 && !this.can_stay(this.area, false))
-            {
-                return;
-            }
+            if (this.move_points > 0 && !this.can_stay(this.area, false)) return;
 
             if (event !== null)
             {
@@ -1522,11 +1496,7 @@ class Hero
     use(card)
     {
         // 正在等待响应
-        if (isHighlighting())
-        {
-            return;
-        }
-
+        if (isHighlighting()) return;
 
         if (card === "迅【闪】")
         {
@@ -2506,20 +2476,14 @@ class Zhang_Xiu extends Hero
                     break;
                 }
             }
-            if (chong_sha_stop)
-            {
-                continue;
-            }
+            if (chong_sha_stop) continue;
 
             const row = current_area.row;
             const col = current_area.col;
 
             for (const area of current_area.adjacent_areas)
             {
-                if (!this.can_pass(area))
-                {
-                    continue;
-                }
+                if (!this.can_pass(area)) continue;
 
                 const next_row = area.row;
                 const next_col = area.col;
@@ -2678,10 +2642,7 @@ class Zu_Mao extends Hero
     move_phase_begin_you_bing()
     {
         // 正在等待响应
-        if (isHighlighting())
-        {
-            return;
-        }
+        if (isHighlighting()) return;
 
         // 定义点击高亮区域行为
         this.move_phase_click_to_move = (event) =>
@@ -2736,10 +2697,7 @@ class Zu_Mao extends Hero
         // 结束移动阶段
         this.move_phase_end = (event = null) =>
         {
-            if (this.move_points > 0 && !this.can_stay(this.area, false))
-            {
-                return;
-            }
+            if (this.move_points > 0 && !this.can_stay(this.area, false)) return;
 
             if (event !== null)
             {

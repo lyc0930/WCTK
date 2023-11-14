@@ -105,10 +105,8 @@ function drawArrow(line, color = 'rgba(50, 50, 50)', isArrow = true)
         const Py = line[i - 1][0] * cellSize + cellSize / 2;
         const Qx = line[i][1] * cellSize + cellSize / 2;
         const Qy = line[i][0] * cellSize + cellSize / 2;
-        if (Px === Qx && Py === Qy)
-        {
-            continue;
-        }
+
+        if (Px === Qx && Py === Qy) continue;
 
         ctx.moveTo(Px, Py);
         ctx.lineTo(Qx, Qy);
@@ -126,10 +124,7 @@ function drawArrow(line, color = 'rgba(50, 50, 50)', isArrow = true)
             const Qx = line[i][1] * cellSize + cellSize / 2;
             const Qy = line[i][0] * cellSize + cellSize / 2;
 
-            if (Px === Qx && Py === Qy)
-            {
-                continue;
-            }
+            if (Px === Qx && Py === Qy) continue;
 
             ctx.moveTo(Px, Py);
             ctx.lineTo(Qx, Qy);
@@ -160,10 +155,8 @@ function drawTeleport(line, color = 'rgba(50, 50, 50)')
     const Py = line[0][0] * cellSize + cellSize / 2;
     const Qx = line[1][1] * cellSize + cellSize / 2;
     const Qy = line[1][0] * cellSize + cellSize / 2;
-    if (Px === Qx && Py === Qy)
-    {
-        return;
-    }
+
+    if (Px === Qx && Py === Qy) return;
 
     const width = 10;
     ctx.beginPath();

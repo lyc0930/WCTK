@@ -34,24 +34,14 @@ function addContextMenu(element, object, disable = function () { return false; }
     element.contextmenuEventListener = {
         "contextmenu": function (event)
         {
-            if (disable())
-            {
-                return;
-            }
+            if (disable()) return;
             if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
         },
         "mousedown": function (event)
         {
-            if (event.button != 2)
-            {
-                return;
-            }
-
-            if (disable())
-            {
-                return;
-            }
+            if (event.button != 2) return;
+            if (disable()) return;
 
             if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
@@ -62,10 +52,7 @@ function addContextMenu(element, object, disable = function () { return false; }
 
             function onmouseup(event)
             {
-                if (event.button != 2)
-                {
-                    return;
-                }
+                if (event.button != 2) return;
 
                 // 计算移动距离
                 const moveX = event.clientX + window.scrollX - startX;
@@ -91,21 +78,9 @@ function addContextMenu(element, object, disable = function () { return false; }
         },
         "touchstart": function (event)
         {
-            if (event.touches.length > 1)
-            {
-                return;
-            }
-
-            if (disable())
-            {
-                return;
-            }
-
-            // 正在等待响应
-            if (isHighlighting())
-            {
-                return;
-            }
+            if (event.touches.length > 1) return;
+            if (disable()) return;
+            if (isHighlighting()) return;
 
             // if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
@@ -303,16 +278,8 @@ function addSkillPanel(piece)
         },
         "touchstart": function (event)
         {
-            if (event.touches.length > 1)
-            {
-                return;
-            }
-
-            // 正在等待响应
-            if (isHighlighting())
-            {
-                return;
-            }
+            if (event.touches.length > 1) return;
+            if (isHighlighting()) return;
 
             if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
