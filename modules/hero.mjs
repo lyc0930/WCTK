@@ -959,49 +959,51 @@ class Hero
     }
 
     // 可穿越
-    can_pass(area)
+    can_pass(area, from=this.area)
     {
-        // 如果可以停留必然可以穿越
+        // 如果可以停留必然可以穿越, 城墙除外
         if (this.can_stay(area))
         {
+            if (area.terrain !== "城墙" && from.terrain !== "城墙") return true;
+            if (area.terrain === "城墙" && from !== area.foot_area) return true;
+            if (from.terrain === "城墙" && area !== from.foot_area) return true;
+        }
+
+        // 【穿越马】
+        if (this.is_ride_on("穿越") && currentPlayer === this)
+        {
+            let hold_by_enemy = false;
+            for (const enemy of this.enemies)
+            {
+                if (area.contains(enemy))
+                {
+                    hold_by_enemy = true;
+                    break;
+                }
+            }
+
+            // 〖固城〗
+            let gu_cheng = false;
+            for (const enemy of this.enemies)
+            {
+                if (enemy.name === "曹仁")
+                {
+                    gu_cheng = true;
+                    break;
+                }
+            }
+
+            if (hold_by_enemy && gu_cheng)
+            {
+                if (area !== this.base)
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
-        else
-        {
-            // 【穿越马】
-            if (this.is_ride_on("穿越") && currentPlayer === this)
-            {
-                let hold_by_enemy = false;
-                for (const enemy of this.enemies)
-                {
-                    if (area.contains(enemy))
-                    {
-                        hold_by_enemy = true;
-                        break;
-                    }
-                }
 
-                // 〖固城〗
-                let gu_cheng = false;
-                for (const enemy of this.enemies)
-                {
-                    if (enemy.name === "曹仁")
-                    {
-                        gu_cheng = true;
-                        break;
-                    }
-                }
-
-                if (hold_by_enemy && gu_cheng)
-                {
-                    if (area !== this.base)
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
         return false;
     }
 
@@ -1033,7 +1035,7 @@ class Hero
 
             for (const area of current_area.adjacent_areas)
             {
-                if (!this.can_pass(area)) continue;
+                if (!this.can_pass(area, current_area)) continue;
 
                 const next_row = area.row;
                 const next_col = area.col;
@@ -1048,16 +1050,16 @@ class Hero
         // 删除起点
         Paths[start_row][start_col] = null;
 
-        for (let row = 0; row < 7; row++)
-        {
-            for (let col = 0; col < 7; col++)
-            {
-                if (!this.can_pass(Areas[row][col]))
-                {
-                    Paths[row][col] = null;
-                }
-            }
-        }
+        // for (let row = 0; row < 7; row++)
+        // {
+        //     for (let col = 0; col < 7; col++)
+        //     {
+        //         if (!this.can_pass(Areas[row][col]))
+        //         {
+        //             Paths[row][col] = null;
+        //         }
+        //     }
+        // }
 
         return Paths;
     }
@@ -1247,7 +1249,7 @@ class Hero
             {
                 if (Paths[area.row][area.col])
                 {
-                    if ((Paths[area.row][area.col].length - 1 < this.move_points && this.can_pass(area)) || (Paths[area.row][area.col].length - 1 === this.move_points && this.can_stay(area)))
+                    if ((Paths[area.row][area.col].length - 1 < this.move_points && this.can_pass(area)) || (Paths[area.row][area.col].length - 1 === this.move_points && this.can_pass(area) && this.can_stay(area)))
                     {
                         area.highlight("move-target", this.move_phase_click_to_move);
                     }
@@ -1361,7 +1363,7 @@ class Hero
         // 高亮可到达的区域
         for (const area of Areas.flat())
         {
-            if ((Paths[area.row][area.col] && (Paths[area.row][area.col].length - 1 < this.move_steps) && this.can_pass(area)) || (Paths[area.row][area.col] && (Paths[area.row][area.col].length - 1 === this.move_steps) && this.can_stay(area)))
+            if ((Paths[area.row][area.col] && (Paths[area.row][area.col].length - 1 < this.move_steps) && this.can_pass(area)) || (Paths[area.row][area.col] && (Paths[area.row][area.col].length - 1 === this.move_steps) && this.can_pass(area) && this.can_stay(area)))
             {
                 area.highlight("move-target", click_to_move);
             }
@@ -1457,7 +1459,7 @@ class Hero
         that._area = null;
 
         // 交换
-        if ((this.can_stay(that_area)) && that.can_stay(this_area))
+        if (this.can_stay(that_area) && that.can_stay(this_area))
         {
             record(`${this.name} (${this_area.row + 1}, ${this_area.col + 1}) ▷ (${that_area.row + 1}, ${that_area.col + 1})`);
             this.area = that_area;
@@ -2483,7 +2485,7 @@ class Zhang_Xiu extends Hero
 
             for (const area of current_area.adjacent_areas)
             {
-                if (!this.can_pass(area)) continue;
+                if (!this.can_pass(area, current_area)) continue;
 
                 const next_row = area.row;
                 const next_col = area.col;
@@ -2498,16 +2500,16 @@ class Zhang_Xiu extends Hero
         // 删除起点
         Paths[start_row][start_col] = null;
 
-        for (let row = 0; row < 7; row++)
-        {
-            for (let col = 0; col < 7; col++)
-            {
-                if (!this.can_pass(Areas[row][col]))
-                {
-                    Paths[row][col] = null;
-                }
-            }
-        }
+        // for (let row = 0; row < 7; row++)
+        // {
+        //     for (let col = 0; col < 7; col++)
+        //     {
+        //         if (!this.can_pass(Areas[row][col]))
+        //         {
+        //             Paths[row][col] = null;
+        //         }
+        //     }
+        // }
 
         return Paths;
     }
@@ -2582,7 +2584,7 @@ class Zhang_Xiu extends Hero
             const target_area_row = object.area.row + Direction[direction][0];
             const target_area_col = object.area.col + Direction[direction][1];
             // 若该角色可以执行步数为1且方向与你相同的移动，你控制其执行之；
-            if (target_area_row >= 0 && target_area_row < 7 && target_area_col >= 0 && target_area_col < 7 && object.can_stay(Areas[target_area_row][target_area_col]))
+            if (target_area_row >= 0 && target_area_row < 7 && target_area_col >= 0 && target_area_col < 7 && object.can_pass(Areas[target_area_row][target_area_col]) && object.can_stay(Areas[target_area_row][target_area_col]))
             {
                 object.move_steps = 1;
                 object.move(Areas[target_area_row][target_area_col], false, false, this);
@@ -2679,17 +2681,12 @@ class Zu_Mao extends Hero
         {
             const areas = this.area.adjacent_areas;
 
-            for (const area of areas)
-            {
-                if ((this.move_points === 1 && !this.can_stay(area)) || (this.move_points > 1 && !this.can_pass(area)))
-                {
-                    areas.splice(areas.indexOf(area), 1);
-                }
-            }
-
             // 高亮可到达的区域
             for (const area of areas)
             {
+                if (this.move_points === 1 && !(this.can_pass(area) && this.can_stay(area))) continue;
+                if (this.move_points > 1 && !this.can_pass(area)) continue;
+
                 area.highlight("move-target", this.move_phase_click_to_move);
             }
         }
@@ -2801,7 +2798,7 @@ class Zu_Mao extends Hero
         {
             const target_area_row = object.area.row + Direction[direction][0];
             const target_area_col = object.area.col + Direction[direction][1];
-            if (target_area_row >= 0 && target_area_row < 7 && target_area_col >= 0 && target_area_col < 7 && object.can_stay(Areas[target_area_row][target_area_col]))
+            if (target_area_row >= 0 && target_area_row < 7 && target_area_col >= 0 && target_area_col < 7 && object.can_pass(Areas[target_area_row][target_area_col]) && object.can_stay(Areas[target_area_row][target_area_col]))
             {
                 record(`祖茂发动〖诱兵〗`);
                 object.move_steps = 1;
