@@ -1035,31 +1035,16 @@ class Hero
 
             for (const area of current_area.adjacent_areas)
             {
+                if (Paths[area.row][area.col] !== null) continue;
                 if (!this.can_pass(area, current_area)) continue;
 
-                const next_row = area.row;
-                const next_col = area.col;
-                if (Paths[next_row][next_col] === null)
-                {
-                    Paths[next_row][next_col] = Paths[row][col].concat([area]);
-                    queue.push(area);
-                }
+                Paths[area.row][area.col] = Paths[row][col].concat([area]);
+                queue.push(area);
             }
         }
 
         // 删除起点
         Paths[start_row][start_col] = null;
-
-        // for (let row = 0; row < 7; row++)
-        // {
-        //     for (let col = 0; col < 7; col++)
-        //     {
-        //         if (!this.can_pass(Areas[row][col]))
-        //         {
-        //             Paths[row][col] = null;
-        //         }
-        //     }
-        // }
 
         return Paths;
     }
@@ -1247,13 +1232,12 @@ class Hero
             // 高亮可到达的区域
             for (const area of Areas.flat())
             {
-                if (Paths[area.row][area.col])
-                {
-                    if ((Paths[area.row][area.col].length - 1 < this.move_points && this.can_pass(area)) || (Paths[area.row][area.col].length - 1 === this.move_points && this.can_pass(area) && this.can_stay(area)))
-                    {
-                        area.highlight("move-target", this.move_phase_click_to_move);
-                    }
-                }
+                if (Paths[area.row][area.col] === null) continue;
+                if (Paths[area.row][area.col].length - 1 > this.move_points) continue;
+                if (!this.can_pass(area)) continue;
+                if (Paths[area.row][area.col].length - 1 === this.move_points && !this.can_stay(area)) continue;
+
+                area.highlight("move-target", this.move_phase_click_to_move);
             }
         }
 
@@ -1363,10 +1347,12 @@ class Hero
         // 高亮可到达的区域
         for (const area of Areas.flat())
         {
-            if ((Paths[area.row][area.col] && (Paths[area.row][area.col].length - 1 < this.move_steps) && this.can_pass(area)) || (Paths[area.row][area.col] && (Paths[area.row][area.col].length - 1 === this.move_steps) && this.can_pass(area) && this.can_stay(area)))
-            {
-                area.highlight("move-target", click_to_move);
-            }
+            if (Paths[area.row][area.col] === null) continue;
+            if (Paths[area.row][area.col].length - 1 > this.move_steps) continue;
+            if (!this.can_pass(area)) continue;
+            if (Paths[area.row][area.col].length - 1 === this.move_steps && !this.can_stay(area)) continue;
+
+            area.highlight("move-target", click_to_move);
         }
     }
 
@@ -2485,31 +2471,16 @@ class Zhang_Xiu extends Hero
 
             for (const area of current_area.adjacent_areas)
             {
+                if (Paths[area.row][area.col] !== null) continue;
                 if (!this.can_pass(area, current_area)) continue;
 
-                const next_row = area.row;
-                const next_col = area.col;
-                if (Paths[next_row][next_col] === null)
-                {
-                    Paths[next_row][next_col] = Paths[row][col].concat([area]);
-                    queue.push(area);
-                }
+                Paths[area.row][area.col] = Paths[row][col].concat([area]);
+                queue.push(area);
             }
         }
 
         // 删除起点
         Paths[start_row][start_col] = null;
-
-        // for (let row = 0; row < 7; row++)
-        // {
-        //     for (let col = 0; col < 7; col++)
-        //     {
-        //         if (!this.can_pass(Areas[row][col]))
-        //         {
-        //             Paths[row][col] = null;
-        //         }
-        //     }
-        // }
 
         return Paths;
     }
