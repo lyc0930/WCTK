@@ -1037,6 +1037,7 @@ class Hero
             {
                 if (Paths[area.row][area.col] !== null) continue;
                 if (!this.can_pass(area, current_area)) continue;
+                if (current_area.terrain === "拒马刺" && current_area !== this.move_start && area !== current_area.next_area) continue;
 
                 Paths[area.row][area.col] = Paths[row][col].concat([area]);
                 queue.push(area);
@@ -1093,100 +1094,91 @@ class Hero
         const row = area.row;
         const col = area.col;
         const Paths = this.paths;
-        if (Paths[row][col] !== null)
+
+        if (Paths[row][col] === null) return false;
+
+        const steps = Paths[row][col].length - 1;
+
+        if (consume_move_points)
         {
-            const steps = Paths[row][col].length - 1;
+            if (!this.can_pass(area)) return false;
+            if (steps > this.move_points) return false;
+            if (steps === this.move_points && !this.can_stay(area)) return false;
 
-            if (consume_move_points)
-            {
-                if ((this.move_points > steps && this.can_pass(area)) || (this.move_points === steps && this.can_stay(area)))
-                {
-                    this.move_points = this.move_points - steps;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if ((this.move_steps > steps && this.can_pass(area)) || (this.move_steps === steps && this.can_stay(area)))
-                {
-                    this.move_steps = this.move_steps - steps;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            const path = Paths[row][col];
-            let moveLog = `(${path[0].row + 1}, ${path[0].col + 1})`;
-            const vibration_pattern = [];
-            for (let i = 1; i < path.length; i++)
-            {
-                this.step(path[i], isDraw);
-                moveLog += ` ▶ (${path[i].row + 1}, ${path[i].col + 1})`;
-                vibration_pattern.push(20);
-                vibration_pattern.push(250);
-            }
-
-            if (subject === this)
-            {
-                record(`${this.name} ${moveLog}`);
-            }
-            else
-            {
-                record(`${subject.name}控制${this.name} ${moveLog}`);
-            }
-
-            navigator.vibrate(vibration_pattern);
-            return true;
+            this.move_points = this.move_points - steps;
         }
-        return false;
+        else
+        {
+            if (!this.can_pass(area)) return false;
+            if (steps > this.move_steps) return false;
+            if (steps === this.move_steps && !this.can_stay(area)) return false;
+
+            this.move_steps = this.move_steps - steps;
+        }
+
+        const path = Paths[row][col];
+        let move_log = `(${path[0].row + 1}, ${path[0].col + 1})`;
+        const vibration_pattern = [];
+        for (let i = 1; i < path.length; i++)
+        {
+            this.step(path[i], isDraw);
+            move_log += ` ▶ (${path[i].row + 1}, ${path[i].col + 1})`;
+            vibration_pattern.push(20);
+            vibration_pattern.push(250);
+        }
+
+        if (subject === this)
+        {
+            record(`${this.name} ${move_log}`);
+        }
+        else
+        {
+            record(`${subject.name}控制${this.name} ${move_log}`);
+        }
+
+        navigator.vibrate(vibration_pattern);
+        return true;
     }
 
     // 移动一步
     step(area, isDraw = false)
     {
-        if (this.can_pass(area))
+        if (!this.can_pass(area)) throw new Error(`无法进入(${area.row + 1}, ${area.col + 1})`);
+
+        const start_row = this.area.row;
+        const start_col = this.area.col;
+        const end_row = area.row;
+        const end_col = area.col;
+
+        let direction = null;
+        if (start_row === end_row && Math.abs(start_col - end_col) === 1)
         {
-            const start_row = this.area.row;
-            const start_col = this.area.col;
-            const end_row = area.row;
-            const end_col = area.col;
-
-            let direction = null;
-            if (start_row === end_row && Math.abs(start_col - end_col) === 1)
-            {
-                direction = start_col < end_col ? "+X" : "-X";
-            }
-            else if (start_col === end_col && Math.abs(start_row - end_row) === 1)
-            {
-                direction = start_row < end_row ? "+Y" : "-Y";
-            }
-
-            if (isDraw)
-            {
-                if (direction !== null) // 有方向
-                {
-                    drawArrow([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
-                }
-                else // 无方向
-                {
-                    drawTeleport([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
-                }
-            }
-
-            this.area = area;
-
-            return {
-                start: this.area,
-                end: area,
-                direction: direction
-            };
+            direction = start_col < end_col ? "+X" : "-X";
         }
-        return null;
+        else if (start_col === end_col && Math.abs(start_row - end_row) === 1)
+        {
+            direction = start_row < end_row ? "+Y" : "-Y";
+        }
+
+        if (isDraw)
+        {
+            if (direction !== null) // 有方向
+            {
+                drawArrow([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+            }
+            else // 无方向
+            {
+                drawTeleport([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+            }
+        }
+
+        this.area = area;
+
+        return {
+            start: this.area,
+            end: area,
+            direction: direction
+        };
     }
 
     // 移动阶段
@@ -1206,21 +1198,44 @@ class Hero
             for (const area of Areas.flat())
             {
                 area.unhighlight("move-target", this.move_phase_click_to_move);
+                area.unhighlight("trap-target", this.move_phase_click_to_fall);
             }
 
             // 移动阶段没有被提前结束
-            if (this.move_phase_highlight !== null && this.move_phase_end !== null)
+            if (this.move_phase_highlight === null || this.move_phase_end === null) return;
+            // 还有移动力
+            if (this.move_points > 0)
             {
-                // 还有移动力
-                if (this.move_points > 0)
-                {
-                    this.move_phase_highlight();
-                }
-                else
-                {
-                    this.move_phase_end();
-                }
+                this.move_phase_highlight();
             }
+            else
+            {
+                this.move_phase_end();
+            }
+        }
+
+        // 定义点击高亮区域行为(拒马刺)
+        this.move_phase_click_to_fall = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            for (const area of Areas.flat())
+            {
+                area.unhighlight("move-target", this.move_phase_click_to_move);
+                area.unhighlight("trap-target", this.move_phase_click_to_fall);
+            }
+
+            record(`${this.name}试图执行移动：(${this.area.row + 1}, ${this.area.col + 1}) ▶ (${event.currentTarget.area.row + 1}, ${event.currentTarget.area.col + 1})，触发拒马刺的地形效果！`);
+
+            // 失去1点体力
+            // TODO
+
+            // 移动阶段没有被提前结束
+            if (this.move_phase_highlight === null || this.move_phase_end === null) return;
+
+            // 结束移动阶段
+            this.move_phase_end();
         }
 
         // 高亮可进入的区域
@@ -1228,6 +1243,26 @@ class Hero
         {
             // 计算可到达的区域
             const Paths = this.paths;
+
+            if (this.area.terrain === "拒马刺" && this.area !== this.move_start)
+            {
+                for (const area of this.area.adjacent_areas)
+                {
+                    if (Paths[area.row][area.col] === null) continue;
+                    if (!this.can_pass(area)) continue;
+                    if (this.move_points === 1 && !this.can_stay(area)) continue;
+
+                    if (area === this.area.next_area)
+                    {
+                        area.highlight("move-target", this.move_phase_click_to_move);
+                    }
+                    else
+                    {
+                        area.highlight("trap-target", this.move_phase_click_to_fall);
+                    }
+                }
+                return;
+            }
 
             // 高亮可到达的区域
             for (const area of Areas.flat())
@@ -1248,39 +1283,28 @@ class Hero
 
             if (event !== null)
             {
-                if (event.target.classList.contains("cell") && !event.target.classList.contains("move-target"))
-                {
-                    if (event.cancelable) event.preventDefault();
-                    // event.stopPropagation();
+                if (!event.target.classList.contains("cell") || event.target.classList.contains("move-target")) return;
 
-                    for (const area of Areas.flat())
-                    {
-                        area.unhighlight("move-target", this.move_phase_click_to_move);
-                    }
-
-                    cls(1000);
-                    document.removeEventListener("contextmenu", this.move_phase_end);
-                    document.removeEventListener("click", this.move_phase_end);
-                    setCurrentPhase(null);
-                }
+                if (event.cancelable) event.preventDefault();
+                // event.stopPropagation();
             }
-            else
+
+            for (const area of Areas.flat())
             {
-                for (const area of Areas.flat())
-                {
-                    area.unhighlight("move-target", this.move_phase_click_to_move);
-                }
-
-                cls(1000);
-                document.removeEventListener("contextmenu", this.move_phase_end);
-                document.removeEventListener("click", this.move_phase_end);
-
-                this.move_phase_click_to_move = null;
-                this.move_phase_highlight = null;
-                this.move_phase_end = null;
-
-                setCurrentPhase(null);
+                area.unhighlight("move-target", this.move_phase_click_to_move);
+                area.unhighlight("trap-target", this.move_phase_click_to_fall);
             }
+
+            cls(1000);
+            document.removeEventListener("contextmenu", this.move_phase_end);
+            document.removeEventListener("click", this.move_phase_end);
+
+            this.move_phase_click_to_move = null;
+            this.move_phase_highlight = null;
+            this.move_phase_end = null;
+            this.move_start = null;
+
+            setCurrentPhase(null);
         }
 
         setCurrentPlayer(this);
@@ -1288,6 +1312,9 @@ class Hero
 
         // 基于体力值生成移动力
         this.move_points = this.generate_move_points();
+
+        // 记录移动起点
+        this.move_start = this.area;
 
         this.move_phase_highlight();
 
@@ -1314,11 +1341,8 @@ class Hero
     // 移动固定步数
     move_fixed_steps(isDraw = false, subject = this)
     {
-        // 计算可到达的区域
-        const Paths = this.paths;
-
         // 定义点击高亮区域行为
-        const click_to_move = (event) =>
+        this.click_to_move = (event) =>
         {
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
@@ -1327,7 +1351,8 @@ class Hero
 
             for (const area of Areas.flat())
             {
-                area.unhighlight("move-target", click_to_move);
+                area.unhighlight("move-target", this.click_to_move);
+                area.unhighlight("trap-target", this.click_to_fall);
             }
 
             // 还有移动力
@@ -1337,11 +1362,60 @@ class Hero
             }
             else
             {
+                this.move_start = null;
                 if (isDraw)
                 {
                     cls(1000);
                 }
             }
+        }
+
+        // 定义点击高亮区域行为(拒马刺)
+        this.click_to_fall = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            for (const area of Areas.flat())
+            {
+                area.unhighlight("move-target", this.click_to_move);
+                area.unhighlight("trap-target", this.click_to_fall);
+            }
+
+            record(`${this.name}试图执行移动：(${this.area.row + 1}, ${this.area.col + 1}) ▶ (${event.currentTarget.area.row + 1}, ${event.currentTarget.area.col + 1})，触发拒马刺的地形效果！`);
+
+            // 失去1点体力
+            // TODO
+
+            // 结束移动
+            this.move_start = null;
+            if (isDraw)
+            {
+                cls(1000);
+            }
+        }
+
+        // 计算可到达的区域
+        const Paths = this.paths;
+
+        if (this.area.terrain === "拒马刺" && this.area !== this.move_start)
+        {
+            for (const area of this.area.adjacent_areas)
+            {
+                if (Paths[area.row][area.col] === null) continue;
+                if (!this.can_pass(area)) continue;
+                if (this.move_steps === 1 && !this.can_stay(area)) continue;
+
+                if (area === this.area.next_area)
+                {
+                    area.highlight("move-target", this.click_to_move);
+                }
+                else
+                {
+                    area.highlight("trap-target", this.click_to_fall);
+                }
+            }
+            return;
         }
 
         // 高亮可到达的区域
@@ -1352,7 +1426,7 @@ class Hero
             if (!this.can_pass(area)) continue;
             if (Paths[area.row][area.col].length - 1 === this.move_steps && !this.can_stay(area)) continue;
 
-            area.highlight("move-target", click_to_move);
+            area.highlight("move-target", this.click_to_move);
         }
     }
 
@@ -1520,6 +1594,7 @@ class Hero
         record(`${this.name}使用【迅【闪】】`);
 
         this.move_steps = 1;
+        this.move_start = this.area;
         this.move_fixed_steps(true);
     }
 
@@ -1553,6 +1628,7 @@ class Hero
         record(`${this.name}使用【兵贵神速】`);
 
         this.move_steps = 2;
+        this.move_start = this.area;
         this.move_fixed_steps(true);
     }
 
@@ -1607,6 +1683,7 @@ class Hero
 
             const object_hero = event.currentTarget.hero;
             object_hero.move_steps = 1;
+            object_hero.move_start = object_hero.area;
             object_hero.move_fixed_steps(true, this);
         }
 
@@ -2473,6 +2550,7 @@ class Zhang_Xiu extends Hero
             {
                 if (Paths[area.row][area.col] !== null) continue;
                 if (!this.can_pass(area, current_area)) continue;
+                if (current_area.terrain === "拒马刺" && current_area !== this.move_start && area !== current_area.next_area) continue;
 
                 Paths[area.row][area.col] = Paths[row][col].concat([area]);
                 queue.push(area);
@@ -2488,55 +2566,53 @@ class Zhang_Xiu extends Hero
     // 移动一步
     step(area, isDraw = false)
     {
-        if (this.can_pass(area))
+        if (!this.can_pass(area)) throw new Error(`无法进入(${area.row + 1}, ${area.col + 1})`);
+
+        const start_row = this.area.row;
+        const start_col = this.area.col;
+        const end_row = area.row;
+        const end_col = area.col;
+
+        let direction = null;
+        if (start_row === end_row && Math.abs(start_col - end_col) === 1)
         {
-            const start_row = this.area.row;
-            const start_col = this.area.col;
-            const end_row = area.row;
-            const end_col = area.col;
-
-            let direction = null;
-            if (start_row === end_row && Math.abs(start_col - end_col) === 1)
-            {
-                direction = start_col < end_col ? "+X" : "-X";
-            }
-            else if (start_col === end_col && Math.abs(start_row - end_row) === 1)
-            {
-                direction = start_row < end_row ? "+Y" : "-Y";
-            }
-
-            if (isDraw)
-            {
-                if (direction !== null) // 有方向
-                {
-                    drawArrow([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
-                }
-                else // 无方向
-                {
-                    drawTeleport([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
-                }
-            }
-
-            this.area = area;
-
-            // 〖冲杀〗
-            // 当你移动一步后，若你进入有敌方角色的区域；
-            // TODO: 张绣冲向一个同时存在{己方曹仁、敌方A、敌方B}的区域
-            for (const hero of area.heroes)
-            {
-                if (hero.color !== this.color && !hero?.yong_quan && !hero.is_ride_on("阻动"))
-                {
-                    this.chong_sha(hero, direction);
-                }
-            }
-
-            return {
-                start: this.area,
-                end: area,
-                direction: direction
-            };
+            direction = start_col < end_col ? "+X" : "-X";
         }
-        return null;
+        else if (start_col === end_col && Math.abs(start_row - end_row) === 1)
+        {
+            direction = start_row < end_row ? "+Y" : "-Y";
+        }
+
+        if (isDraw)
+        {
+            if (direction !== null) // 有方向
+            {
+                drawArrow([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+            }
+            else // 无方向
+            {
+                drawTeleport([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+            }
+        }
+
+        this.area = area;
+
+        // 〖冲杀〗
+        // 当你移动一步后，若你进入有敌方角色的区域；
+        // TODO: 张绣冲向一个同时存在{己方曹仁、敌方A、敌方B}的区域
+        for (const hero of area.heroes)
+        {
+            if (hero.color !== this.color && !hero?.yong_quan && !hero.is_ride_on("阻动"))
+            {
+                this.chong_sha(hero, direction);
+            }
+        }
+
+        return {
+            start: this.area,
+            end: area,
+            direction: direction
+        };
     }
 
     // 〖冲杀〗
@@ -2558,7 +2634,9 @@ class Zhang_Xiu extends Hero
             if (target_area_row >= 0 && target_area_row < 7 && target_area_col >= 0 && target_area_col < 7 && object.can_pass(Areas[target_area_row][target_area_col]) && object.can_stay(Areas[target_area_row][target_area_col]))
             {
                 object.move_steps = 1;
+                object.move_start = object.area;
                 object.move(Areas[target_area_row][target_area_col], false, false, this);
+                object.move_start = null;
             }
             // 若该角色不可以执行步数为1且方向与你相同的移动且其可以转移，你控制其转移至与其距离最近的可进入区域，
             else
@@ -2630,33 +2708,80 @@ class Zu_Mao extends Hero
             for (const area of Areas.flat())
             {
                 area.unhighlight("move-target", this.move_phase_click_to_move);
+                area.unhighlight("trap-target", this.move_phase_click_to_fall);
             }
 
             // 移动阶段没有被提前结束
-            if (this.move_phase_highlight !== null && this.move_phase_end !== null)
+            if (this.move_phase_highlight === null || this.move_phase_end === null) return;
+            // 还有移动力
+            if (this.move_points > 0)
             {
-                // 还有移动力
-                if (this.move_points > 0)
-                {
-                    this.move_phase_highlight();
-                }
-                else
-                {
-                    this.move_phase_end();
-                }
+                this.move_phase_highlight();
             }
+            else
+            {
+                this.move_phase_end();
+            }
+        }
+
+        // 定义点击高亮区域行为(拒马刺)
+        this.move_phase_click_to_fall = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            for (const area of Areas.flat())
+            {
+                area.unhighlight("move-target", this.move_phase_click_to_move);
+                area.unhighlight("trap-target", this.move_phase_click_to_fall);
+            }
+
+            record(`${this.name}试图执行移动：(${this.area.row + 1}, ${this.area.col + 1}) ▶ (${event.currentTarget.area.row + 1}, ${event.currentTarget.area.col + 1})，触发拒马刺的地形效果！`);
+
+            // 失去1点体力
+            // TODO
+
+            // 移动阶段没有被提前结束
+            if (this.move_phase_highlight === null || this.move_phase_end === null) return;
+
+            // 结束移动阶段
+            this.move_phase_end();
         }
 
         // 高亮可进入的区域
         this.move_phase_highlight = () =>
         {
+            // 计算可到达的区域
+            const Paths = this.paths;
+
+            if (this.area.terrain === "拒马刺" && this.area !== this.move_start)
+            {
+                for (const area of this.area.adjacent_areas)
+                {
+                    if (Paths[area.row][area.col] === null) continue;
+                    if (!this.can_pass(area)) continue;
+                    if (this.move_points === 1 && !this.can_stay(area)) continue;
+
+                    if (area === this.area.next_area)
+                    {
+                        area.highlight("move-target", this.move_phase_click_to_move);
+                    }
+                    else
+                    {
+                        area.highlight("trap-target", this.move_phase_click_to_fall);
+                    }
+                }
+                return;
+            }
+
             const areas = this.area.adjacent_areas;
 
             // 高亮可到达的区域
             for (const area of areas)
             {
-                if (this.move_points === 1 && !(this.can_pass(area) && this.can_stay(area))) continue;
-                if (this.move_points > 1 && !this.can_pass(area)) continue;
+                if (Paths[area.row][area.col] === null) continue;
+                if (!this.can_pass(area)) continue;
+                if (this.move_points === 1 && !this.can_stay(area)) continue;
 
                 area.highlight("move-target", this.move_phase_click_to_move);
             }
@@ -2669,39 +2794,26 @@ class Zu_Mao extends Hero
 
             if (event !== null)
             {
-                if (event.target.classList.contains("cell") && !event.target.classList.contains("move-target"))
-                {
-                    if (event.cancelable) event.preventDefault();
-                    // event.stopPropagation();
+                if (!event.target.classList.contains("cell") || event.target.classList.contains("move-target")) return;
 
-                    for (const area of Areas.flat())
-                    {
-                        area.unhighlight("move-target", this.move_phase_click_to_move);
-                    }
-
-                    cls(1000);
-                    document.removeEventListener("contextmenu", this.move_phase_end);
-                    document.removeEventListener("click", this.move_phase_end);
-                    setCurrentPhase(null);
-                }
+                if (event.cancelable) event.preventDefault();
+                // event.stopPropagation();
             }
-            else
+            for (const area of Areas.flat())
             {
-                for (const area of Areas.flat())
-                {
-                    area.unhighlight("move-target", this.move_phase_click_to_move);
-                }
-
-                cls(1000);
-                document.removeEventListener("contextmenu", this.move_phase_end);
-                document.removeEventListener("click", this.move_phase_end);
-
-                this.move_phase_click_to_move = null;
-                this.move_phase_highlight = null;
-                this.move_phase_end = null;
-
-                setCurrentPhase(null);
+                area.unhighlight("move-target", this.move_phase_click_to_move);
+                area.unhighlight("trap-target", this.move_phase_click_to_fall);
             }
+
+            cls(1000);
+            document.removeEventListener("contextmenu", this.move_phase_end);
+            document.removeEventListener("click", this.move_phase_end);
+            this.move_phase_click_to_move = null;
+            this.move_phase_highlight = null;
+            this.move_phase_end = null;
+            this.move_start = null;
+
+            setCurrentPhase(null);
         }
 
         setCurrentPlayer(this);
@@ -2709,6 +2821,9 @@ class Zu_Mao extends Hero
 
         // 基于体力值生成移动力
         this.move_points = this.generate_move_points();
+
+        // 记录移动起点
+        this.move_start = this.area;
 
         this.move_phase_highlight();
 
@@ -2773,7 +2888,9 @@ class Zu_Mao extends Hero
             {
                 record(`祖茂发动〖诱兵〗`);
                 object.move_steps = 1;
+                object.move_start = object.area;
                 object.move(Areas[target_area_row][target_area_col], false, true, this);
+                object.move_start = null;
             }
         }
     }
