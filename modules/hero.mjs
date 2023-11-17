@@ -1052,7 +1052,7 @@ class Hero
             record(`${subject.name}控制${this.name} ${move_log}`);
         }
 
-        navigator.vibrate(vibration_pattern);
+        if (navigator.vibrate) navigator.vibrate(vibration_pattern);;
         return true;
     }
 
@@ -1118,7 +1118,7 @@ class Hero
             }
 
             // 移动阶段没有被提前结束
-            if (this.move_phase_highlight === null || this.move_phase_end === null) return;
+            if (this?.move_phase_highlight === undefined || this?.move_phase_end === undefined) return;
             // 还有移动力
             if (this.move_points > 0)
             {
@@ -1148,7 +1148,7 @@ class Hero
             // TODO
 
             // 移动阶段没有被提前结束
-            if (this.move_phase_highlight === null || this.move_phase_end === null) return;
+            if (this?.move_phase_highlight === undefined || this?.move_phase_end === undefined) return;
 
             // 结束移动阶段
             this.move_phase_end();
@@ -1366,7 +1366,7 @@ class Hero
             }
             this.area = area;
 
-            navigator.vibrate(20);
+            if (navigator.vibrate) navigator.vibrate(20);;
             return true;
         }
         return false;
@@ -1559,7 +1559,7 @@ class Hero
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
 
-            navigator.vibrate(20);
+            if (navigator.vibrate) navigator.vibrate(20);;
 
             for (const hero of Heroes)
             {
@@ -1599,7 +1599,7 @@ class Hero
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
 
-            navigator.vibrate(20);
+            if (navigator.vibrate) navigator.vibrate(20);;
 
             for (const hero of Heroes)
             {
@@ -2255,7 +2255,7 @@ class Yu_Jin extends Hero
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
 
-            navigator.vibrate(20);
+            if (navigator.vibrate) navigator.vibrate(20);;
 
             record(`于禁发动〖节钺〗`);
 
@@ -2573,7 +2573,7 @@ class Zu_Mao extends Hero
             }
 
             // 移动阶段没有被提前结束
-            if (this.move_phase_highlight === null || this.move_phase_end === null) return;
+            if (this?.move_phase_highlight === undefined || this?.move_phase_end === undefined) return;
             // 还有移动力
             if (this.move_points > 0)
             {
@@ -2603,7 +2603,7 @@ class Zu_Mao extends Hero
             // TODO
 
             // 移动阶段没有被提前结束
-            if (this.move_phase_highlight === null || this.move_phase_end === null) return;
+            if (this?.move_phase_highlight === undefined || this?.move_phase_end === undefined) return;
 
             // 结束移动阶段
             this.move_phase_end();
@@ -2706,7 +2706,7 @@ class Zu_Mao extends Hero
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
 
-            navigator.vibrate(20);
+            if (navigator.vibrate) navigator.vibrate(20);;
 
             record(`祖茂发动〖诱兵〗`);
 
