@@ -19,7 +19,6 @@ class Hero
         this.piece = this._create_piece(); // 棋子
 
         this.move_points = 0; // 移动力
-        this.move_steps = 0; // 移动步数
 
         this._area = null; // 所在区域
         this._carrier = false; // 是否携带帅旗
@@ -889,71 +888,20 @@ class Hero
         // 如果不是重新进入，且棋子已经在该区域，那么可以停留
         if (area === this.area && !reentry)
         {
-            if (area.terrain === "山岭")
-            {
-                return false;
-            }
-            else if (area.terrain === "军营" || area.terrain === "大本营")
-            {
-                return true;
-            }
-            else if (area.heroes.length > 1)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
+            if (area.terrain === "军营" || area.terrain === "大本营") return true;
+            if (area.terrain === "山岭") return false;
+            if (area.heroes.length > 1) return false;
 
-        let hold_by_enemy = false;
-        for (const enemy of this.enemies)
-        {
-            if (area.contains(enemy))
-            {
-                hold_by_enemy = true;
-                break;
-            }
+            return true;
         }
 
         // 〖固城〗
-        let gu_cheng = false;
-        for (const enemy of this.enemies)
-        {
-            if (enemy.name === "曹仁")
-            {
-                gu_cheng = true;
-                break;
-            }
-        }
+        if (area.heroes.some(hero => hero.color !== this.color) && this.enemies.some(hero => hero.name === "曹仁") && area !== this.base) return false;
 
-        if (hold_by_enemy && gu_cheng)
-        {
-            if (area !== this.base)
-            {
-                return false;
-            }
-        }
+        if (area.terrain === "军营" || area.terrain === "大本营") return true;
+        if (area.terrain === "山岭") return false;
 
-        if (area.terrain === "军营" || area.terrain === "大本营")
-        {
-            return true;
-        }
-        else if (area.terrain === "山岭")
-        {
-            return false;
-        }
-        else
-        {
-            for (const hero of area.heroes)
-            {
-                if (hero !== this)
-                {
-                    return false;
-                }
-            }
-        }
+        if (area.heroes.some(hero => hero !== this)) return false;
 
         return true;
     }
@@ -969,40 +917,11 @@ class Hero
             if (from.terrain === "城墙" && area !== from.foot_area) return true;
         }
 
+        // 〖固城〗
+        if (area.heroes.some(hero => hero.color !== this.color) && this.enemies.some(hero => hero.name === "曹仁") && area !== this.base) return false;
+
         // 【穿越马】
-        if (this.is_ride_on("穿越") && currentPlayer === this)
-        {
-            let hold_by_enemy = false;
-            for (const enemy of this.enemies)
-            {
-                if (area.contains(enemy))
-                {
-                    hold_by_enemy = true;
-                    break;
-                }
-            }
-
-            // 〖固城〗
-            let gu_cheng = false;
-            for (const enemy of this.enemies)
-            {
-                if (enemy.name === "曹仁")
-                {
-                    gu_cheng = true;
-                    break;
-                }
-            }
-
-            if (hold_by_enemy && gu_cheng)
-            {
-                if (area !== this.base)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+        if (this.is_ride_on("穿越") && currentPlayer === this) return true;
 
         return false;
     }
@@ -1081,10 +1000,8 @@ class Hero
     // 是否装备特定类型的坐骑
     is_ride_on(type)
     {
-        if (horses[this.horse] === type)
-        {
-            return true;
-        }
+        if (horses[this.horse] === type) return true;
+
         return false;
     }
 
@@ -1096,12 +1013,12 @@ class Hero
         const Paths = this.paths;
 
         if (Paths[row][col] === null) return false;
+        if (!this.can_pass(area)) return false;
 
         const steps = Paths[row][col].length - 1;
 
         if (consume_move_points)
         {
-            if (!this.can_pass(area)) return false;
             if (steps > this.move_points) return false;
             if (steps === this.move_points && !this.can_stay(area)) return false;
 
@@ -1109,7 +1026,6 @@ class Hero
         }
         else
         {
-            if (!this.can_pass(area)) return false;
             if (steps > this.move_steps) return false;
             if (steps === this.move_steps && !this.can_stay(area)) return false;
 
@@ -1299,10 +1215,10 @@ class Hero
             document.removeEventListener("contextmenu", this.move_phase_end);
             document.removeEventListener("click", this.move_phase_end);
 
-            this.move_phase_click_to_move = null;
-            this.move_phase_highlight = null;
-            this.move_phase_end = null;
-            this.move_start = null;
+            delete this.move_phase_click_to_move;
+            delete this.move_phase_highlight;
+            delete this.move_phase_end;
+            delete this.move_start;
 
             setCurrentPhase(null);
         }
@@ -1362,7 +1278,8 @@ class Hero
             }
             else
             {
-                this.move_start = null;
+                delete this.move_start;
+                delete this.move_steps;
                 if (isDraw)
                 {
                     cls(1000);
@@ -1388,7 +1305,7 @@ class Hero
             // TODO
 
             // 结束移动
-            this.move_start = null;
+            delete this.move_start;
             if (isDraw)
             {
                 cls(1000);
@@ -1601,25 +1518,27 @@ class Hero
     // 【暗度陈仓】
     _An_Du_Chen_Cang(limit = 3)
     {
-        record(`${this.name}使用【暗度陈仓】`);
-
-        const areas = [];
-        areas.push(this.base);
+        const targets = [];
+        targets.push(this.base);
 
         for (const ally of this.allies)
         {
-            if (ally.alive)
+            if (!ally.alive) continue;
+
+            for (const area of ally.area.adjacent_areas)
             {
-                for (const area of ally.area.adjacent_areas)
-                {
-                    if (this.can_stay(area) && distance(this, area) <= limit)
-                    {
-                        areas.push(area);
-                    }
-                }
+                if (!this.can_stay(area)) continue;
+                if (distance(this, area) > limit) continue;
+
+                targets.push(area);
             }
         }
-        this.leap_to_areas(areas, true);
+
+        if (targets.length <= 0) return;
+
+        record(`${this.name}使用【暗度陈仓】`);
+
+        this.leap_to_areas(targets, true);
     }
 
     // 【兵贵神速】
@@ -1635,8 +1554,6 @@ class Hero
     // 【奇门遁甲】
     _Qi_Men_Dun_Jia(limit = 2)
     {
-        record(`${this.name}使用【奇门遁甲】`);
-
         const click_to_swap = (event) =>
         {
             if (event.cancelable) event.preventDefault();
@@ -1652,23 +1569,31 @@ class Hero
             this.swap(event.currentTarget.hero);
         }
 
+        const targets = [];
+
         for (const hero of Heroes)
         {
-            if (hero !== this && hero.alive)
-            {
-                if (hero.alive && (distance(this, hero) <= limit) && (hero.color === this.color || !(hero.is_ride_on("阻动") || hero?.yong_quan)))
-                {
-                    hero.highlight("choose-target", click_to_swap);
-                }
-            }
+            if (!hero.alive) continue;
+            if (hero === this) continue;
+            if (distance(this, hero) > limit) continue;
+            if (hero.color !== this.color && (hero.is_ride_on("阻动") || hero?.yong_quan)) continue;
+
+            targets.push(hero);
+        }
+
+        if (targets.length <= 0) return;
+
+        record(`${this.name}使用【奇门遁甲】`);
+
+        for (const hero of targets)
+        {
+            hero.highlight("choose-target", click_to_swap);
         }
     }
 
     // 【诱敌深入】
     _You_Di_Shen_Ru(limit = 4)
     {
-        record(`${this.name}使用【诱敌深入】`);
-
         const click_to_control = (event) =>
         {
             if (event.cancelable) event.preventDefault();
@@ -1687,12 +1612,24 @@ class Hero
             object_hero.move_fixed_steps(true, this);
         }
 
+        const targets = [];
+
         for (const hero of Heroes)
         {
-            if (hero.alive && (distance(this, hero) <= limit) && (hero.color === this.color || !(hero.is_ride_on("阻动") || hero?.yong_quan)))
-            {
-                hero.highlight("choose-target", click_to_control);
-            }
+            if (!hero.alive) continue;
+            if (distance(this, hero) > limit) continue;
+            if (hero.color !== this.color && (hero.is_ride_on("阻动") || hero?.yong_quan)) continue;
+
+            targets.push(hero);
+        }
+
+        if (targets.length <= 0) return;
+
+        record(`${this.name}使用【诱敌深入】`);
+
+        for (const hero of targets)
+        {
+            hero.highlight("choose-target", click_to_control);
         }
     }
 
@@ -1701,14 +1638,8 @@ class Hero
     {
         for (const enemy of this.enemies)
         {
-            if (enemy.name === "王异")
-            {
-                if (distance(this, enemy) <= enemy?.ju_di_limit)
-                {
-                    return true;
-                }
-                break;
-            }
+            if (enemy.name !== "王异") continue;
+            return distance(this, enemy) <= enemy?.ju_di_limit;
         }
         return false;
     }
@@ -1718,14 +1649,8 @@ class Hero
     {
         for (const enemy of this.enemies)
         {
-            if (enemy.name === "王异")
-            {
-                if (distance(this, enemy) <= enemy?.mi_ji_limit)
-                {
-                    return enemy?.mi_ji_X;
-                }
-                break;
-            }
+            if (enemy.name !== "王异") continue;
+            return (distance(this, enemy) <= enemy?.mi_ji_limit) ? enemy?.mi_ji_X : 0;
         }
         return 0;
     }
@@ -1815,10 +1740,10 @@ class Dong_Zhuo extends Hero
     {
         for (const ally of this.allies)
         {
-            if (ally.alive && distance(this, ally) <= this.yong_quan_limit)
-            {
-                return true;
-            }
+            if (!ally.alive) continue;
+            if (distance(this, ally) > this.yong_quan_limit) continue;
+
+            return true;
         }
         return false;
     }
@@ -1826,21 +1751,12 @@ class Dong_Zhuo extends Hero
     // 〖拒敌〗
     get affected_by_ju_di()
     {
-        if (this.yong_quan)
-        {
-            return false;
-        }
+        if (this.yong_quan) return false;
 
         for (const enemy of this.enemies)
         {
-            if (enemy.name === "王异")
-            {
-                if (distance(this, enemy) <= enemy?.ju_di_limit)
-                {
-                    return true;
-                }
-                break;
-            }
+            if (enemy.name !== "王异") continue;
+            return distance(this, enemy) <= enemy?.ju_di_limit;
         }
         return false;
     }
@@ -1848,21 +1764,12 @@ class Dong_Zhuo extends Hero
     // 〖秘计〗
     get affected_by_mi_ji()
     {
-        if (this.yong_quan)
-        {
-            return 0;
-        }
+        if (this.yong_quan) return 0;
 
         for (const enemy of this.enemies)
         {
-            if (enemy.name === "王异")
-            {
-                if (distance(this, enemy) <= enemy?.mi_ji_limit)
-                {
-                    return enemy?.mi_ji_X;
-                }
-                break;
-            }
+            if (enemy.name !== "王异") continue;
+            return (distance(this, enemy) <= enemy?.mi_ji_limit) ? enemy?.mi_ji_X : 0;
         }
         return 0;
     }
@@ -2251,10 +2158,8 @@ class Pang_Tong extends Hero
     // 是否装备特定类型的坐骑
     is_ride_on(type)
     {
-        if (horses[this.horse] === type || horses[this.horse2] === type)
-        {
-            return true;
-        }
+        if (horses[this.horse] === type || horses[this.horse2] === type) return true;
+
         return false;
     }
 }
@@ -2296,10 +2201,10 @@ class Zuo_Ci extends Hero
         const areas = [];
         for (const area of Areas.flat())
         {
-            if (this.can_stay(area) && area.heroes.length === 0)
-            {
-                areas.push(area);
-            }
+            if (!this.can_stay(area)) continue;
+            if (area.heroes.length !== 0) continue;
+
+            areas.push(area);
         }
 
         this.leap_to_areas(areas, true);
@@ -2369,18 +2274,19 @@ class Yu_Jin extends Hero
             for (const area of Areas.flat())
             {
                 // TODO: 重合区域算不算该角色所在的方向上？
-                if (object.can_stay(area) && Math.sign(this.area.row - area.row) === signX && Math.sign(this.area.col - area.col) === signY)
+                if (!object.can_stay(area)) continue;
+                if (Math.sign(this.area.row - area.row) !== signX) continue;
+                if (Math.sign(this.area.col - area.col) !== signY) continue;
+
+                const d = distance(this, area);
+                if (d < min_d)
                 {
-                    const d = distance(this, area);
-                    if (d < min_d)
-                    {
-                        min_d = d;
-                        nearest_areas = [area];
-                    }
-                    else if (d === min_d)
-                    {
-                        nearest_areas.push(area);
-                    }
+                    min_d = d;
+                    nearest_areas = [area];
+                }
+                else if (d === min_d)
+                {
+                    nearest_areas.push(area);
                 }
             }
             if (nearest_areas.length > 1)
@@ -2394,12 +2300,24 @@ class Yu_Jin extends Hero
             }
         }
 
+        const targets = [];
+
         for (const hero of Heroes)
         {
-            if (hero.alive && hero !== this && distance(hero, this) <= limit && isOnSameLine(hero, this) && (hero.color === this.color || !(hero.is_ride_on("阻动") || hero?.yong_quan)))
-            {
-                hero.highlight("choose-target", click_to_pull);
-            }
+            if (!hero.alive) continue;
+            if (hero === this) continue;
+            if (distance(hero, this) > limit) continue;
+            if (!isOnSameLine(hero, this)) continue;
+            if (hero.color !== this.color && (hero.is_ride_on("阻动") || hero?.yong_quan)) continue;
+
+            targets.push(hero);
+        }
+
+        if (targets.length <= 0) return;
+
+        for (const hero of targets)
+        {
+            hero.highlight("choose-target", click_to_pull);
         }
 
         // 若如此做，本回合你不能对其使用牌。
@@ -2421,86 +2339,29 @@ class Zhang_Xiu extends Hero
         // 如果不是重新进入，且棋子已经在该区域，那么可以停留
         if (area === this.area && !reentry)
         {
-            if (area.terrain === "山岭")
-            {
-                return false;
-            }
-            else if (area.terrain === "军营" || area.terrain === "大本营")
-            {
-                return true;
-            }
-            else if (area.heroes.length > 1)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
+            if (area.terrain === "军营" || area.terrain === "大本营") return true;
+            if (area.terrain === "山岭") return false;
+            if (area.heroes.length > 1) return false;
 
-        let hold_by_enemy = false;
-        for (const enemy of this.enemies)
-        {
-            if (area.contains(enemy))
-            {
-                hold_by_enemy = true;
-                break;
-            }
+            return true;
         }
 
         // 〖固城〗
-        let gu_cheng = false;
-        for (const enemy of this.enemies)
-        {
-            if (enemy.name === "曹仁")
-            {
-                gu_cheng = true;
-                break;
-            }
-        }
+        if (area.heroes.some(hero => hero.color !== this.color) && this.enemies.some(hero => hero.name === "曹仁") && area !== this.base) return false;
 
-        if (hold_by_enemy && gu_cheng)
-        {
-            if (area !== this.base)
-            {
-                return false;
-            }
-        }
+        if (area.terrain === "军营" || area.terrain === "大本营") return true;
+        if (area.terrain === "山岭") return false;
 
-        if (area.terrain === "军营" || area.terrain === "大本营")
+        for (const hero of area.heroes)
         {
-            return true;
-        }
-        else if (area.terrain === "山岭")
-        {
-            return false;
-        }
-        else
-        {
-            for (const hero of area.heroes)
-            {
-                if (hero !== this)
-                {
-                    if (hero.color === this.color) // 区域里有己方棋子
-                    {
-                        return false; // 不能停留
-                    }
-                    else // 区域里有敌方棋子
-                    {
-                        // 〖冲杀〗
-                        // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域；
-                        if (this === currentPlayer && currentPhase == "移动" && !hero?.yong_quan && !hero.is_ride_on("阻动")) // 如果是当前玩家的移动阶段，且敌方棋子可以被推动
-                        {
-                            continue; // 可以停留
-                        }
-                        else
-                        {
-                            return false; // 不能停留
-                        }
-                    }
-                }
-            }
+            if (hero === this) continue;
+
+            if (hero.color === this.color) return false; // 区域里有己方棋子
+
+            // 〖冲杀〗
+            // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域；
+            if (this !== currentPlayer || currentPhase !== "移动") return false;
+            if (hero?.yong_quan || hero.is_ride_on("阻动")) return false;
         }
 
         return true;
@@ -2636,7 +2497,7 @@ class Zhang_Xiu extends Hero
                 object.move_steps = 1;
                 object.move_start = object.area;
                 object.move(Areas[target_area_row][target_area_col], false, false, this);
-                object.move_start = null;
+                delete object.move_start;
             }
             // 若该角色不可以执行步数为1且方向与你相同的移动且其可以转移，你控制其转移至与其距离最近的可进入区域，
             else
@@ -2808,10 +2669,10 @@ class Zu_Mao extends Hero
             cls(1000);
             document.removeEventListener("contextmenu", this.move_phase_end);
             document.removeEventListener("click", this.move_phase_end);
-            this.move_phase_click_to_move = null;
-            this.move_phase_highlight = null;
-            this.move_phase_end = null;
-            this.move_start = null;
+            delete this.move_phase_click_to_move;
+            delete this.move_phase_highlight;
+            delete this.move_phase_end;
+            delete this.move_start;
 
             setCurrentPhase(null);
         }
@@ -2890,7 +2751,7 @@ class Zu_Mao extends Hero
                 object.move_steps = 1;
                 object.move_start = object.area;
                 object.move(Areas[target_area_row][target_area_col], false, true, this);
-                object.move_start = null;
+                delete object.move_start;
             }
         }
     }

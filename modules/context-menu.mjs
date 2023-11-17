@@ -201,7 +201,7 @@ function hideContextMenu()
         menu.ontrasitionend = function ()
         {
             menu.innerHTML = "";
-            menu.ontrasitionend = null;
+            delete menu.ontrasitionend;
         }
     }
 }
@@ -389,7 +389,7 @@ function hideSkillPanel()
     skillPanel.ontrasitionend = function ()
     {
         skillPanel.innerHTML = "";
-        skillPanel.ontrasitionend = null;
+        delete skillPanel.ontrasitionend;
     }
 }
 
@@ -478,7 +478,7 @@ function hideTerrainPanel()
     terrainEffectPanel.ontrasitionend = function ()
     {
         terrainEffectPanel.innerHTML = "";
-        terrainEffectPanel.ontrasitionend = null;
+        delete terrainEffectPanel.ontrasitionend;
     }
 
     // all cells in the same terrain
