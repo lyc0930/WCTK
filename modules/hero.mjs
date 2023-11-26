@@ -949,6 +949,8 @@ class Hero
         {
             const current_area = queue.shift();
 
+            if (this.stop_at(current_area)) continue;
+
             const row = current_area.row;
             const col = current_area.col;
 
@@ -967,6 +969,12 @@ class Hero
         Paths[start_row][start_col] = null;
 
         return Paths;
+    }
+
+    // 判断是否停下，不再自动寻路
+    stop_at(area)
+    {
+        return false;
     }
 
     // 距离最近的可进入区域
@@ -1013,7 +1021,6 @@ class Hero
         const Paths = this.paths;
 
         if (Paths[row][col] === null) return false;
-        if (!this.can_pass(area)) return false;
 
         const steps = Paths[row][col].length - 1;
 
@@ -1090,11 +1097,19 @@ class Hero
 
         this.area = area;
 
+        this.after_step(this.area, area, direction);
+
         return {
             start: this.area,
             end: area,
             direction: direction
         };
+    }
+
+    // 移动一步后
+    after_step(start, end, direction)
+    {
+        return;
     }
 
     // 移动阶段
@@ -1165,7 +1180,6 @@ class Hero
                 for (const area of this.area.adjacent_areas)
                 {
                     if (Paths[area.row][area.col] === null) continue;
-                    if (!this.can_pass(area)) continue;
                     if (this.move_points === 1 && !this.can_stay(area)) continue;
 
                     if (area === this.area.next_area)
@@ -1185,7 +1199,6 @@ class Hero
             {
                 if (Paths[area.row][area.col] === null) continue;
                 if (Paths[area.row][area.col].length - 1 > this.move_points) continue;
-                if (!this.can_pass(area)) continue;
                 if (Paths[area.row][area.col].length - 1 === this.move_points && !this.can_stay(area)) continue;
 
                 area.highlight("move-target", this.move_phase_click_to_move);
@@ -1320,7 +1333,6 @@ class Hero
             for (const area of this.area.adjacent_areas)
             {
                 if (Paths[area.row][area.col] === null) continue;
-                if (!this.can_pass(area)) continue;
                 if (this.move_steps === 1 && !this.can_stay(area)) continue;
 
                 if (area === this.area.next_area)
@@ -1340,7 +1352,6 @@ class Hero
         {
             if (Paths[area.row][area.col] === null) continue;
             if (Paths[area.row][area.col].length - 1 > this.move_steps) continue;
-            if (!this.can_pass(area)) continue;
             if (Paths[area.row][area.col].length - 1 === this.move_steps && !this.can_stay(area)) continue;
 
             area.highlight("move-target", this.click_to_move);
@@ -2367,113 +2378,38 @@ class Zhang_Xiu extends Hero
         return true;
     }
 
-    // 路径
-    get paths()
+    // 判断是否停下，不再自动寻路
+    stop_at(area)
     {
-        const Paths = new Array(7)
-        for (let row = 0; row < 7; row++)
+        // 〖冲杀〗
+        // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域；
+        // 特殊处理：在进入有敌方角色的区域后停下，不再自动寻路。
+        if (this !== currentPlayer || currentPhase !== "移动") return false;
+
+        for (const hero of area.heroes)
         {
-            Paths[row] = new Array(7)
-            for (let col = 0; col < 7; col++)
-            {
-                Paths[row][col] = null;
-            }
+            if (hero.color === this.color) continue;
+            if (hero?.yong_quan || hero.is_ride_on("阻动")) return false;
+
+            return true;
         }
 
-        const queue = [];
-        queue.push(this.area);
-        const start_row = this.area.row;
-        const start_col = this.area.col;
-        Paths[start_row][start_col] = [this.area];
-
-        while (queue.length)
-        {
-            const current_area = queue.shift();
-
-            // 〖冲杀〗
-            // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域；
-            // 特殊处理：在进入有敌方角色的区域后停下，不再自动寻路。
-            var chong_sha_stop = false;
-            for (const hero of current_area.heroes)
-            {
-                if (hero.color !== this.color && this === currentPlayer && currentPhase == "移动" && !hero?.yong_quan && !hero.is_ride_on("阻动"))
-                {
-                    chong_sha_stop = true;
-                    break;
-                }
-            }
-            if (chong_sha_stop) continue;
-
-            const row = current_area.row;
-            const col = current_area.col;
-
-            for (const area of current_area.adjacent_areas)
-            {
-                if (Paths[area.row][area.col] !== null) continue;
-                if (!this.can_pass(area, current_area)) continue;
-                if (current_area.terrain === "拒马刺" && current_area !== this.move_start && area !== current_area.next_area) continue;
-
-                Paths[area.row][area.col] = Paths[row][col].concat([area]);
-                queue.push(area);
-            }
-        }
-
-        // 删除起点
-        Paths[start_row][start_col] = null;
-
-        return Paths;
+        return false;
     }
 
-    // 移动一步
-    step(area, isDraw = false)
+    // 移动一步后
+    after_step(start, end, direction)
     {
-        if (!this.can_pass(area)) throw new Error(`无法进入(${area.row + 1}, ${area.col + 1})`);
-
-        const start_row = this.area.row;
-        const start_col = this.area.col;
-        const end_row = area.row;
-        const end_col = area.col;
-
-        let direction = null;
-        if (start_row === end_row && Math.abs(start_col - end_col) === 1)
-        {
-            direction = start_col < end_col ? "+X" : "-X";
-        }
-        else if (start_col === end_col && Math.abs(start_row - end_row) === 1)
-        {
-            direction = start_row < end_row ? "+Y" : "-Y";
-        }
-
-        if (isDraw)
-        {
-            if (direction !== null) // 有方向
-            {
-                drawArrow([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
-            }
-            else // 无方向
-            {
-                drawTeleport([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
-            }
-        }
-
-        this.area = area;
-
         // 〖冲杀〗
         // 当你移动一步后，若你进入有敌方角色的区域；
         // TODO: 张绣冲向一个同时存在{己方曹仁、敌方A、敌方B}的区域
         for (const hero of area.heroes)
         {
-            if (hero.color !== this.color && !hero?.yong_quan && !hero.is_ride_on("阻动"))
-            {
-                this.chong_sha(hero, direction);
-            }
-        }
+            if (hero.color === this.color) continue;
+            if (hero?.yong_quan || hero.is_ride_on("阻动")) continue;
 
-        return {
-            start: this.area,
-            end: area,
-            direction: direction
-        };
+            this.chong_sha(hero, direction);
+        }
     }
 
     // 〖冲杀〗
@@ -2620,7 +2556,6 @@ class Zu_Mao extends Hero
                 for (const area of this.area.adjacent_areas)
                 {
                     if (Paths[area.row][area.col] === null) continue;
-                    if (!this.can_pass(area)) continue;
                     if (this.move_points === 1 && !this.can_stay(area)) continue;
 
                     if (area === this.area.next_area)
@@ -2641,7 +2576,6 @@ class Zu_Mao extends Hero
             for (const area of areas)
             {
                 if (Paths[area.row][area.col] === null) continue;
-                if (!this.can_pass(area)) continue;
                 if (this.move_points === 1 && !this.can_stay(area)) continue;
 
                 area.highlight("move-target", this.move_phase_click_to_move);
