@@ -949,12 +949,12 @@ class Hero
         {
             const current_area = queue.shift();
 
-            if (this.stop_at(current_area)) continue;
+            if (this._stop_at(current_area)) continue;
 
             const row = current_area.row;
             const col = current_area.col;
 
-            for (const area of current_area.adjacent_areas)
+            for (const area of this._next_areas_at(current_area))
             {
                 if (Paths[area.row][area.col] !== null) continue;
                 if (!this.can_pass(area, current_area)) continue;
@@ -972,9 +972,15 @@ class Hero
     }
 
     // 判断是否停下，不再自动寻路
-    stop_at(area)
+    _stop_at(area)
     {
         return false;
+    }
+
+    // 相邻区域
+    _next_areas_at(current_area)
+    {
+        return current_area.adjacent_areas;
     }
 
     // 距离最近的可进入区域
@@ -1702,6 +1708,10 @@ function create_hero(name, color, index)
     {
         return new Sun_Qian(color, index);
     }
+    else if (name === "吕蒙")
+    {
+        return new Lv_Meng(color, index);
+    }
     else
     {
         return new Hero(name, color, index);
@@ -2383,7 +2393,7 @@ class Zhang_Xiu extends Hero
     }
 
     // 判断是否停下，不再自动寻路
-    stop_at(area)
+    _stop_at(area)
     {
         // 〖冲杀〗
         // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域；
@@ -2753,6 +2763,48 @@ class Sun_Qian extends Hero
         cls(1000);
 
         // TODO: 摸一张牌
+    }
+}
+
+// 吕蒙
+class Lv_Meng extends Hero
+{
+    constructor(color, index)
+    {
+        super("吕蒙", color, index);
+    }
+
+    // 相邻区域
+    _next_areas_at(current_area)
+    {
+        // 〖渡江〗
+        // 当你于回合内声明你执行的移动时，你可以将一步出发点为湖泊的移动的停留点改为另一个湖泊；
+        const next_areas = current_area.adjacent_areas;
+
+        if (currentPlayer !== this) return next_areas;
+        // TODO 你执行的移动
+        if (current_area.terrain !== "湖泊") return next_areas;
+
+        for (const area of Areas.flat())
+        {
+            if (area.terrain !== "湖泊") continue;
+            if (area === current_area) continue;
+
+            next_areas.push(area);
+        }
+
+        return next_areas;
+
+    }
+
+    // 移动一步后
+    after_step(start, end, direction)
+    {
+        // 〖渡江〗
+        // 若你本回合以此法移动过，本回合你使用【杀】的距离限制改为1且你使用的第一张【杀】伤害基数+1。
+        if (start.terrain !== "湖泊" || end.terrain !== "湖泊") return;
+
+        // TODO: 使用【杀】的距离限制改为1且你使用的第一张【杀】伤害基数+1。
     }
 }
 
