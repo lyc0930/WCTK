@@ -1698,6 +1698,10 @@ function create_hero(name, color, index)
     {
         return new Zu_Mao(color, index);
     }
+    else if (name === "孙乾")
+    {
+        return new Sun_Qian(color, index);
+    }
     else
     {
         return new Hero(name, color, index);
@@ -2688,6 +2692,67 @@ class Zu_Mao extends Hero
                 delete object.move_start;
             }
         }
+    }
+}
+
+// 孙乾
+class Sun_Qian extends Hero
+{
+    constructor(color, index)
+    {
+        super("孙乾", color, index);
+    }
+
+    get context_menu_items()
+    {
+        const items = {
+            "查看技能": () => { showSkillPanel(this); }
+        };
+
+        if (this.alive)
+        {
+            items["break-line-1"] = "<hr>";
+            items["移动阶段"] = () => { this.move_phase_begin(); };
+            items["break-line-2"] = "<hr>";
+            items["〖归营〗"] = () => { this.gui_ying(); };
+            items["break-line-3"] = "<hr>";
+            items["迅【闪】"] = () => { this.use("迅【闪】") };
+            items["break-line-4"] = "<hr>";
+            items["【暗度陈仓】"] = () => { this.use("【暗度陈仓】") };
+            items["【兵贵神速】"] = () => { this.use("【兵贵神速】") };
+            items["【奇门遁甲】"] = () => { this.use("【奇门遁甲】") };
+            items["【诱敌深入】"] = () => { this.use("【诱敌深入】") };
+        }
+        return items;
+    }
+
+    // 生成移动力
+    generate_move_points()
+    {
+        let move_points = this.HP;
+
+        // 〖拒敌〗
+        if (this.affected_by_ju_di)
+        {
+            record(`王异发动〖拒敌〗`);
+            move_points -= 1;
+        }
+
+        // 〖奔命〗
+        // 锁定技，移动阶段开始时，你改为获得4点移动力。
+        move_points = 4;
+
+        return move_points;
+    }
+
+    // 〖归营〗结束阶段，你可以转移至己方大本营，然后你摸一张牌。
+    gui_ying()
+    {
+        record(`孙乾发动〖归营〗`);
+        this.leap(this.base, true, this);
+        cls(1000);
+
+        // TODO: 摸一张牌
     }
 }
 
