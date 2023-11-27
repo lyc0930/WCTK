@@ -288,4 +288,4 @@ function initializeGame(mode = "野战", names = [])
 }
 
 // 启动游戏
-initializeGame("攻城", ["祖茂", "张绣"]);
+document.body.onload = () => { initializeGame("野战", []); };
