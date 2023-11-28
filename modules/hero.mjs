@@ -1,5 +1,5 @@
 import { HERO_DATA, weapons, armors, horses } from './data.mjs';
-import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, distance, isOnSameLine } from "./utils.mjs";
+import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, calc_distance, calc_direction, Direction, isOnSameLine } from "./utils.mjs";
 import { addContextMenu, showSkillPanel } from './context-menu.mjs';
 import { Areas, Heroes } from '../scripts/main.js';
 import { redFlag, blueFlag } from './flags.mjs';
@@ -896,7 +896,7 @@ class Hero
         }
 
         // 〖固城〗
-        if (area.heroes.some(hero => hero.color !== this.color) && this.enemies.some(hero => hero.name === "曹仁") && area !== this.base) return false;
+        if (this._cannot_pass_because_of_gu_cheng(area)) return false;
 
         if (area.terrain === "军营" || area.terrain === "大本营") return true;
 
@@ -905,6 +905,12 @@ class Hero
         if (this._cannot_stay_because_of_other_heroes(area)) return false;
 
         return true;
+    }
+
+    // 因〖固城〗而形成的不可进入区域
+    _cannot_pass_because_of_gu_cheng(area)
+    {
+        return area.heroes.some(hero => hero.color !== this.color) && this.enemies.some(hero => hero.name === "曹仁" && hero.alive) && area !== this.base;
     }
 
     // 因地形而形成的不可进入区域
@@ -931,12 +937,29 @@ class Hero
         }
 
         // 〖固城〗
-        if (area.heroes.some(hero => hero.color !== this.color) && this.enemies.some(hero => hero.name === "曹仁") && area !== this.base) return false;
+        if (this._cannot_pass_because_of_gu_cheng(area)) return false;
 
         // 【穿越马】
         if (this.is_ride_on("穿越") && currentPlayer === this) return true;
 
         return false;
+    }
+
+    // 可沿方向执行移动
+    can_step_towards(direction, subject = this)
+    {
+        if (this.color !== subject.color && this.is_ride_on("阻动")) return false;
+        if (this.color !== subject.color && this?.yong_quan) return false;
+
+        const target_area_row = this.area.row + Direction[direction][0];
+        const target_area_col = this.area.col + Direction[direction][1];
+
+        if (target_area_row < 0 || target_area_row >= 7) return false;
+        if (target_area_col < 0 || target_area_col >= 7) return false;
+        if (!this.can_pass(Areas[target_area_row][target_area_col])) return false;
+        if (!this.can_stay(Areas[target_area_row][target_area_col])) return false;
+
+        return true;
     }
 
     // 路径
@@ -1000,7 +1023,7 @@ class Hero
     get nearest_area()
     {
         let nearest_areas = [];
-        let min_d = 100;
+        let min_distance = 100;
         for (let row = 0; row < 7; row++)
         {
             for (let col = 0; col < 7; col++)
@@ -1008,13 +1031,13 @@ class Hero
                 const area = Areas[row][col]
                 if (this.can_stay(area))
                 {
-                    const d = distance(this, area);
-                    if (d < min_d)
+                    const distance = calc_distance(this, area);
+                    if (distance < min_distance)
                     {
-                        min_d = d;
+                        min_distance = distance;
                         nearest_areas = [area];
                     }
-                    else if (d === min_d)
+                    else if (distance === min_distance)
                     {
                         nearest_areas.push(area);
                     }
@@ -1090,15 +1113,7 @@ class Hero
         const start = this.area;
         const end = area;
 
-        let direction = null;
-        if (start.row === end.row && Math.abs(start.col - end.col) === 1)
-        {
-            direction = start.col < end.col ? "+X" : "-X";
-        }
-        else if (start.col === end.col && Math.abs(start.row - end.row) === 1)
-        {
-            direction = start.row < end.row ? "+Y" : "-Y";
-        }
+        let direction = calc_direction(start, end);
 
         if (isDraw)
         {
@@ -1556,7 +1571,7 @@ class Hero
             for (const area of ally.area.adjacent_areas)
             {
                 if (!this.can_stay(area)) continue;
-                if (distance(this, area) > limit) continue;
+                if (calc_distance(this, area) > limit) continue;
 
                 targets.push(area);
             }
@@ -1603,7 +1618,7 @@ class Hero
         {
             if (!hero.alive) continue;
             if (hero === this) continue;
-            if (distance(this, hero) > limit) continue;
+            if (calc_distance(this, hero) > limit) continue;
             if (hero.color !== this.color && (hero.is_ride_on("阻动") || hero?.yong_quan)) continue;
 
             targets.push(hero);
@@ -1645,7 +1660,7 @@ class Hero
         for (const hero of Heroes)
         {
             if (!hero.alive) continue;
-            if (distance(this, hero) > limit) continue;
+            if (calc_distance(this, hero) > limit) continue;
             if (hero.color !== this.color && (hero.is_ride_on("阻动") || hero?.yong_quan)) continue;
 
             targets.push(hero);
@@ -1667,7 +1682,7 @@ class Hero
         for (const enemy of this.enemies)
         {
             if (enemy.name !== "王异") continue;
-            return distance(this, enemy) <= enemy?.ju_di_limit;
+            return calc_distance(this, enemy) <= enemy?.ju_di_limit;
         }
         return false;
     }
@@ -1678,7 +1693,7 @@ class Hero
         for (const enemy of this.enemies)
         {
             if (enemy.name !== "王异") continue;
-            return (distance(this, enemy) <= enemy?.mi_ji_limit) ? enemy?.mi_ji_X : 0;
+            return (calc_distance(this, enemy) <= enemy?.mi_ji_limit) ? enemy?.mi_ji_X : 0;
         }
         return 0;
     }
@@ -1777,7 +1792,7 @@ class Dong_Zhuo extends Hero
         for (const ally of this.allies)
         {
             if (!ally.alive) continue;
-            if (distance(this, ally) > this.yong_quan_limit) continue;
+            if (calc_distance(this, ally) > this.yong_quan_limit) continue;
 
             return true;
         }
@@ -1792,7 +1807,7 @@ class Dong_Zhuo extends Hero
         for (const enemy of this.enemies)
         {
             if (enemy.name !== "王异") continue;
-            return distance(this, enemy) <= enemy?.ju_di_limit;
+            return calc_distance(this, enemy) <= enemy?.ju_di_limit;
         }
         return false;
     }
@@ -1805,7 +1820,7 @@ class Dong_Zhuo extends Hero
         for (const enemy of this.enemies)
         {
             if (enemy.name !== "王异") continue;
-            return (distance(this, enemy) <= enemy?.mi_ji_limit) ? enemy?.mi_ji_X : 0;
+            return (calc_distance(this, enemy) <= enemy?.mi_ji_limit) ? enemy?.mi_ji_X : 0;
         }
         return 0;
     }
@@ -2306,7 +2321,7 @@ class Yu_Jin extends Hero
             const signX = Math.sign(this.area.row - object.area.row);
             const signY = Math.sign(this.area.col - object.area.col);
             let nearest_areas = [];
-            let min_d = 100;
+            let min_distance = 100;
             for (const area of Areas.flat())
             {
                 if (!object.can_stay(area)) continue;
@@ -2315,13 +2330,13 @@ class Yu_Jin extends Hero
                 if (Math.sign(this.area.row - area.row) * signX < 0) continue;
                 if (Math.sign(this.area.col - area.col) * signY < 0) continue;
 
-                const d = distance(this, area);
-                if (d < min_d)
+                const distance = calc_distance(this, area);
+                if (distance < min_distance)
                 {
-                    min_d = d;
+                    min_distance = distance;
                     nearest_areas = [area];
                 }
-                else if (d === min_d)
+                else if (distance === min_distance)
                 {
                     nearest_areas.push(area);
                 }
@@ -2343,7 +2358,7 @@ class Yu_Jin extends Hero
         {
             if (!hero.alive) continue;
             if (hero === this) continue;
-            if (distance(hero, this) > limit) continue;
+            if (calc_distance(hero, this) > limit) continue;
             if (!isOnSameLine(hero, this)) continue;
             if (hero.color !== this.color && (hero.is_ride_on("阻动") || hero?.yong_quan)) continue;
 
@@ -2426,42 +2441,36 @@ class Zhang_Xiu extends Hero
     chong_sha(object, direction)
     {
         record(`张绣发动〖冲杀〗`);
-        const Direction = {
-            "-X": [0, -1],
-            "+X": [0, +1],
-            "-Y": [-1, 0],
-            "+Y": [+1, 0],
-        }
 
-        if (object.color !== this.color && !object?.yong_quan && !object.is_ride_on("阻动"))
+        if (object.color === this.color) return;
+        if (object?.yong_quan || object.is_ride_on("阻动")) return;
+
+        const target_area_row = object.area.row + Direction[direction][0];
+        const target_area_col = object.area.col + Direction[direction][1];
+        // 若该角色可以执行步数为1且方向与你相同的移动，你控制其执行之；
+        if (object.can_step_towards(direction, this))
         {
-            const target_area_row = object.area.row + Direction[direction][0];
-            const target_area_col = object.area.col + Direction[direction][1];
-            // 若该角色可以执行步数为1且方向与你相同的移动，你控制其执行之；
-            if (target_area_row >= 0 && target_area_row < 7 && target_area_col >= 0 && target_area_col < 7 && object.can_pass(Areas[target_area_row][target_area_col]) && object.can_stay(Areas[target_area_row][target_area_col]))
-            {
-                object.move_steps = 1;
-                object.move_start = object.area;
-                object.move(Areas[target_area_row][target_area_col], false, false, this);
-                delete object.move_start;
-            }
-            // 若该角色不可以执行步数为1且方向与你相同的移动且其可以转移，你控制其转移至与其距离最近的可进入区域，
-            else
-            {
-                this.move_phase_end();
+            object.move_steps = 1;
+            object.move_start = object.area;
+            object.move(Areas[target_area_row][target_area_col], false, false, this);
+            delete object.move_start;
+        }
+        // 若该角色不可以执行步数为1且方向与你相同的移动且其可以转移，你控制其转移至与其距离最近的可进入区域，
+        else
+        {
+            this.move_phase_end();
 
-                const nearest_areas = object.nearest_area;
-                if (nearest_areas.length > 1)
-                {
-                    object.leap_to_areas(nearest_areas, false, this);
-                }
-                else // 只有一个最近的可进入区域
-                {
-                    object.leap(nearest_areas[0], false, this);
-                }
-                // 然后你对该角色造成1点普通伤害
-                // TODO
+            const nearest_areas = object.nearest_area;
+            if (nearest_areas.length > 1)
+            {
+                object.leap_to_areas(nearest_areas, false, this);
             }
+            else // 只有一个最近的可进入区域
+            {
+                object.leap(nearest_areas[0], false, this);
+            }
+            // 然后你对该角色造成1点普通伤害
+            // TODO
         }
     }
 }
@@ -2586,7 +2595,16 @@ class Zu_Mao extends Hero
             for (const area of areas)
             {
                 if (Paths[area.row][area.col] === null) continue;
-                if (this.move_points === 1 && !this.can_stay(area)) continue;
+                if (this.move_points === 1)
+                {
+                    if (this._cannot_stay_because_of_terrain(area)) continue;
+                    if (!this.can_pass(area)) continue;
+                    if (!this.is_ride_on("穿越") && !this.can_stay(area)) continue;
+
+                    if (area.heroes.some(hero => hero !== this.you_bing_object)) continue;
+
+                    if (area.heroes.length > 0 && !this.you_bing_object.can_step_towards(calc_direction(this.area, area), this)) continue;
+                }
 
                 area.highlight("move-target", this.move_phase_click_to_move);
             }
@@ -2665,7 +2683,7 @@ class Zu_Mao extends Hero
 
         for (const hero of Heroes)
         {
-            if (hero.alive && hero !== this && distance(hero, this) <= limit && !hero.carrier && !(hero.color !== this.color && hero?.yong_quan))
+            if (hero.alive && hero !== this && calc_distance(hero, this) <= limit && !hero.carrier && !(hero.color !== this.color && hero?.yong_quan))
             {
                 hero.highlight("choose-target", click_to_choose);
             }
@@ -2675,29 +2693,20 @@ class Zu_Mao extends Hero
     // 〖诱兵〗2
     you_bing_2(direction)
     {
+        if (!this.you_bing_object.can_step_towards(direction, this)) return;
+
         // 若如此做，当你于本阶段移动一步后，
         // 你控制该角色执行一次步数为1且方向与你此步移动相同的移动。
         const object = this.you_bing_object;
-        const Direction = {
-            "-X": [0, -1],
-            "+X": [0, +1],
-            "-Y": [-1, 0],
-            "+Y": [+1, 0],
-        }
-        // 若该角色可以执行步数为1且方向与你此步移动相同的移动，你控制其执行之；
-        if (object.color === this.color || !(object.is_ride_on("阻动") || object?.yong_quan))
-        {
-            const target_area_row = object.area.row + Direction[direction][0];
-            const target_area_col = object.area.col + Direction[direction][1];
-            if (target_area_row >= 0 && target_area_row < 7 && target_area_col >= 0 && target_area_col < 7 && object.can_pass(Areas[target_area_row][target_area_col]) && object.can_stay(Areas[target_area_row][target_area_col]))
-            {
-                record(`祖茂发动〖诱兵〗`);
-                object.move_steps = 1;
-                object.move_start = object.area;
-                object.move(Areas[target_area_row][target_area_col], false, true, this);
-                delete object.move_start;
-            }
-        }
+
+        const target_area_row = object.area.row + Direction[direction][0];
+        const target_area_col = object.area.col + Direction[direction][1];
+
+        record(`祖茂发动〖诱兵〗`);
+        object.move_steps = 1;
+        object.move_start = object.area;
+        object.move(Areas[target_area_row][target_area_col], false, true, this);
+        delete object.move_start;
     }
 }
 

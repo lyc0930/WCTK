@@ -5,7 +5,7 @@ import { Hero } from './hero.mjs';
 import { Area } from './area.mjs';
 
 // 计算距离
-function distance(P, Q)
+function calc_distance(P, Q)
 {
     var area_P = P;
     var area_Q = Q;
@@ -18,6 +18,28 @@ function distance(P, Q)
         area_Q = Q.area;
     }
     return Math.abs(area_P.row - area_Q.row) + Math.abs(area_P.col - area_Q.col);
+}
+
+// 计算方向
+function calc_direction(start, end)
+{
+    let direction = null;
+    if (start.row === end.row && Math.abs(start.col - end.col) === 1)
+    {
+        direction = start.col < end.col ? "+X" : "-X";
+    }
+    else if (start.col === end.col && Math.abs(start.row - end.row) === 1)
+    {
+        direction = start.row < end.row ? "+Y" : "-Y";
+    }
+    return direction;
+}
+
+const Direction = {
+    "-X": [0, -1],
+    "+X": [0, +1],
+    "-Y": [-1, 0],
+    "+Y": [+1, 0],
 }
 
 // 是否位于同一直线
@@ -219,4 +241,4 @@ function record(message)
     console.info(message);
 }
 
-export { distance, isOnSameLine, isHighlighting, HPColor, drawArrow, drawTeleport, cls, record };
+export { calc_distance, calc_direction, Direction, isOnSameLine, isHighlighting, HPColor, drawArrow, drawTeleport, cls, record };
