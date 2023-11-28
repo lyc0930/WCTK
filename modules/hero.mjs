@@ -899,11 +899,24 @@ class Hero
         if (area.heroes.some(hero => hero.color !== this.color) && this.enemies.some(hero => hero.name === "曹仁") && area !== this.base) return false;
 
         if (area.terrain === "军营" || area.terrain === "大本营") return true;
-        if (area.terrain === "山岭") return false;
 
-        if (area.heroes.some(hero => hero !== this)) return false;
+        if (this._cannot_stay_because_of_terrain(area)) return false;
+
+        if (this._cannot_stay_because_of_other_heroes(area)) return false;
 
         return true;
+    }
+
+    // 因地形而形成的不可进入区域
+    _cannot_stay_because_of_terrain(area)
+    {
+        return area.terrain === "山岭";
+    }
+
+    // 因其他角色而形成的不可进入区域
+    _cannot_stay_because_of_other_heroes(area)
+    {
+        return area.heroes.some(hero => hero !== this);
     }
 
     // 可穿越
@@ -1074,40 +1087,38 @@ class Hero
     {
         if (!this.can_pass(area)) throw new Error(`无法进入(${area.row + 1}, ${area.col + 1})`);
 
-        const start_row = this.area.row;
-        const start_col = this.area.col;
-        const end_row = area.row;
-        const end_col = area.col;
+        const start = this.area;
+        const end = area;
 
         let direction = null;
-        if (start_row === end_row && Math.abs(start_col - end_col) === 1)
+        if (start.row === end.row && Math.abs(start.col - end.col) === 1)
         {
-            direction = start_col < end_col ? "+X" : "-X";
+            direction = start.col < end.col ? "+X" : "-X";
         }
-        else if (start_col === end_col && Math.abs(start_row - end_row) === 1)
+        else if (start.col === end.col && Math.abs(start.row - end.row) === 1)
         {
-            direction = start_row < end_row ? "+Y" : "-Y";
+            direction = start.row < end.row ? "+Y" : "-Y";
         }
 
         if (isDraw)
         {
             if (direction !== null) // 有方向
             {
-                drawArrow([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+                drawArrow([[start.row, start.col], [end.row, end.col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
             }
             else // 无方向
             {
-                drawTeleport([[start_row, start_col], [end_row, end_col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
+                drawTeleport([[start.row, start.col], [end.row, end.col]], this.color === "Red" ? 'rgb(255,0,0)' : 'rgb(0,0,255)');
             }
         }
 
         this.area = area;
 
-        this.after_step(this.area, area, direction);
+        this.after_step(start, end, direction);
 
         return {
-            start: this.area,
-            end: area,
+            start: start,
+            end: end,
             direction: direction
         };
     }
@@ -2358,38 +2369,22 @@ class Zhang_Xiu extends Hero
         super("张绣", color, index);
     }
 
-    // 可停留
-    can_stay(area, reentry = true)
+    // 因其他角色而形成的不可进入区域
+    _cannot_stay_because_of_other_heroes(area)
     {
-        // 如果不是重新进入，且棋子已经在该区域，那么可以停留
-        if (area === this.area && !reentry)
-        {
-            if (area.terrain === "军营" || area.terrain === "大本营") return true;
-            if (area.terrain === "山岭") return false;
-            if (area.heroes.length > 1) return false;
-
-            return true;
-        }
-
-        // 〖固城〗
-        if (area.heroes.some(hero => hero.color !== this.color) && this.enemies.some(hero => hero.name === "曹仁") && area !== this.base) return false;
-
-        if (area.terrain === "军营" || area.terrain === "大本营") return true;
-        if (area.terrain === "山岭") return false;
-
         for (const hero of area.heroes)
         {
             if (hero === this) continue;
 
-            if (hero.color === this.color) return false; // 区域里有己方棋子
+            if (hero.color === this.color) return true; // 区域里有己方棋子
 
             // 〖冲杀〗
             // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域；
-            if (this !== currentPlayer || currentPhase !== "移动") return false;
-            if (hero?.yong_quan || hero.is_ride_on("阻动")) return false;
+            if (this !== currentPlayer || currentPhase !== "移动") return true;
+            if (hero?.yong_quan || hero.is_ride_on("阻动")) return true;
         }
 
-        return true;
+        return false;
     }
 
     // 判断是否停下，不再自动寻路
@@ -2417,7 +2412,7 @@ class Zhang_Xiu extends Hero
         // 〖冲杀〗
         // 当你移动一步后，若你进入有敌方角色的区域；
         // TODO: 张绣冲向一个同时存在{己方曹仁、敌方A、敌方B}的区域
-        for (const hero of area.heroes)
+        for (const hero of this.area.heroes)
         {
             if (hero.color === this.color) continue;
             if (hero?.yong_quan || hero.is_ride_on("阻动")) continue;
