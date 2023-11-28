@@ -2309,10 +2309,11 @@ class Yu_Jin extends Hero
             let min_d = 100;
             for (const area of Areas.flat())
             {
-                // TODO: 重合区域算不算该角色所在的方向上？
                 if (!object.can_stay(area)) continue;
-                if (Math.sign(this.area.row - area.row) !== signX) continue;
-                if (Math.sign(this.area.col - area.col) !== signY) continue;
+                if (signX !== 0 && this.area.col !== area.col) continue;
+                if (signY !== 0 && this.area.row !== area.row) continue;
+                if (Math.sign(this.area.row - area.row) * signX < 0) continue;
+                if (Math.sign(this.area.col - area.col) * signY < 0) continue;
 
                 const d = distance(this, area);
                 if (d < min_d)
