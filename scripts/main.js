@@ -78,8 +78,8 @@ function initializeGame(mode = "野战", names = [])
     createChessboard(mode);
     generateFlags();
 
-    const chessboard = document.getElementById("chessboard");
-    document.addEventListener('contextmenu', event => { event.preventDefault(); event.stopPropagation(); }); // 禁用右键菜单
+    document.addEventListener("contextmenu", event => { event.preventDefault(); event.stopPropagation(); }); // 禁用右键菜单
+
     document.addEventListener('mouseup', function (event)
     {
         if (event.button === 2)
