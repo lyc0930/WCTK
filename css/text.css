@@ -2,22 +2,24 @@
 
 @font-face {
     font-family: 'fzlb';
-    src: url("https://inku-resource-bucket.oss-accelerate.aliyuncs.com/方正隶变_GBK.woff2") format("woff2"); /* , url("https://inku-resource-bucket.oss-accelerate.aliyuncs.com/方正隶变_GBK.ttf") format("truetype")；*/
+    src: url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/方正隶变_GBK.woff2") format("woff2");
+    /* , url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/方正隶变_GBK.ttf") format("truetype")；*/
 }
 
 /* @font-face {
     font-family: 'fzls';
-    src: url("https://inku-resource-bucket.oss-accelerate.aliyuncs.com/方正隶书_GBK.woff2") format("woff2") , url("https://inku-resource-bucket.oss-accelerate.aliyuncs.com/方正隶书_GBK.ttf") format("truetype")；
+    src: url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/方正隶书_GBK.woff2") format("woff2") , url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/方正隶书_GBK.ttf") format("truetype")；
 } */
 
 @font-face {
     font-family: 'fzzyjt';
-    src: url("https://inku-resource-bucket.oss-accelerate.aliyuncs.com/方正准圆简体.woff2") format("woff2"); /* , url("https://inku-resource-bucket.oss-accelerate.aliyuncs.com/方正准圆简体.ttf") format("truetype")；*/
+    src: url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/方正准圆简体.woff2") format("woff2");
+    /* , url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/方正准圆简体.ttf") format("truetype")；*/
 }
 
 /* @font-face {
     font-family: 'hyzyj';
-    src: url("https://inku-resource-bucket.oss-accelerate.aliyuncs.com/汉仪中圆简.woff2") format("woff2") , url("https://inku-resource-bucket.oss-accelerate.aliyuncs.com/汉仪中圆简.ttf") format("truetype")；
+    src: url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/汉仪中圆简.woff2") format("woff2") , url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/汉仪中圆简.ttf") format("truetype")；
 } */
 
 .skill-name {

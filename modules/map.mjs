@@ -6,7 +6,7 @@ import { addContextMenu, removeContextMenu } from "./context-menu.mjs";
 function setMode(mode)
 {
     const mainboard = document.getElementById("mainboard");
-    mainboard.style.backgroundImage = `url('../assets/Map/${mode}.jpg')`;
+    mainboard.style.backgroundImage = `url('https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Map/${mode}.webp')`;
     mainboard.mode = mode;
 }
 
@@ -37,7 +37,7 @@ function setMode(mode)
 
         const modeItem = document.createElement("div");
         modeItem.classList.add("mode-item");
-        modeItem.style.backgroundImage = `url('../assets/Map/${mode}.jpg')`;
+        modeItem.style.backgroundImage = `url('https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Map/${mode}.webp')`;
 
         modeItem.appendChild(modeName);
         modeTable.appendChild(modeItem);

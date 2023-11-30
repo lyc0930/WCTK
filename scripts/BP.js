@@ -89,7 +89,7 @@ function createHeroCandidate(name, index)
 {
     const piece = document.createElement("div");
     const avatar = document.createElement("img");
-    avatar.src = "./assets/Avatar/active/" + HERO_DATA[name]["拼音"] + ".png";
+    avatar.src = "https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Avatar/" + HERO_DATA[name]["拼音"] + "_active.webp";
     avatar.draggable = false;
     avatar.className = "avatar";
     piece.appendChild(avatar);

@@ -577,7 +577,7 @@ function showHeroTable(piece)
                 piece.name = heroName.textContent;
 
                 const avatar = piece.getElementsByClassName("avatar")[0];
-                avatar.src = "./assets/Avatar/active/" + HERO_DATA[piece.name]["拼音"] + ".png";
+                avatar.src = "https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Avatar" + HERO_DATA[piece.name]["拼音"] + "_active.webp";
 
                 const nameTag = document.getElementById("unpickedName" + piece.id.slice(4));
                 nameTag.innerHTML = piece.name;

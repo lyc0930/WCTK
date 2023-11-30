@@ -46,7 +46,7 @@ img {
     border-radius: 2%;
     border: 1vmin outset gray;
 
-    background-image: url('../assets/Map/野战.jpg');
+    background-image: url('https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Map/野战.webp');
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: local;

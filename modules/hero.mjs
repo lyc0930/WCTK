@@ -161,7 +161,7 @@ class Hero
             const actedCheckbox = document.getElementById("actedCheckbox" + this.index);
             actedCheckbox.checked = value;
             const avatar = this.piece.querySelector(".avatar");
-            avatar.src = `./assets/Avatar/${value ? "inactive" : "active"}/${HERO_DATA[this.name]["拼音"]}.png`;
+            avatar.src = `https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Avatar/${HERO_DATA[this.name]["拼音"]}_${value ? "inactive" : "active"}.webp`;
         }
     }
 
@@ -380,7 +380,7 @@ class Hero
     {
         const piece = document.createElement("div");
         const avatar = document.createElement("img");
-        avatar.src = "./assets/Avatar/active/" + HERO_DATA[this.name]["拼音"] + ".png";
+        avatar.src = "https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Avatar/" + HERO_DATA[this.name]["拼音"] + "_active.webp";
         avatar.draggable = false;
         avatar.className = "avatar";
         piece.appendChild(avatar);
@@ -2458,7 +2458,7 @@ class Zhang_Xiu extends Hero
         // 若该角色不可以执行步数为1且方向与你相同的移动且其可以转移，你控制其转移至与其距离最近的可进入区域，
         else
         {
-            this.move_phase_end();
+            if (this?.move_phase_end) this.move_phase_end();
 
             const nearest_areas = object.nearest_area;
             if (nearest_areas.length > 1)
