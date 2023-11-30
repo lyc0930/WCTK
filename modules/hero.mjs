@@ -985,7 +985,7 @@ class Hero
         {
             const current_area = queue.shift();
 
-            if (this._stop_at(current_area)) continue;
+            if (current_area !== this.move_start && queue.length !== 0 &&this._stop_at(current_area)) continue;
 
             const row = current_area.row;
             const col = current_area.col;
