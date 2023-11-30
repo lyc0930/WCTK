@@ -883,10 +883,10 @@ class Hero
     }
 
     // 可停留
-    can_stay(area, reentry = true)
+    can_stay(area)
     {
         // 如果不是重新进入，且棋子已经在该区域，那么可以停留
-        if (area === this.area && !reentry)
+        if (area === this.area && area === this?.move_start)
         {
             if (area.terrain === "军营" || area.terrain === "大本营") return true;
             if (area.terrain === "山岭") return false;
@@ -1240,7 +1240,7 @@ class Hero
         // 结束移动阶段
         this.move_phase_end = (event = null) =>
         {
-            if (this.move_points > 0 && !this.can_stay(this.area, false)) return;
+            if (this.move_points > 0 && !this.can_stay(this.area)) return;
 
             if (event !== null)
             {
@@ -2613,7 +2613,7 @@ class Zu_Mao extends Hero
         // 结束移动阶段
         this.move_phase_end = (event = null) =>
         {
-            if (this.move_points > 0 && !this.can_stay(this.area, false)) return;
+            if (this.move_points > 0 && !this.can_stay(this.area)) return;
 
             if (event !== null)
             {
