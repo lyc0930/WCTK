@@ -1,7 +1,8 @@
 import { HERO_DATA, weapons, armors, horses } from './data.mjs';
 import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, calc_distance, calc_direction, Direction, isOnSameLine } from "./utils.mjs";
 import { addContextMenu, showSkillPanel } from './context-menu.mjs';
-import { Areas, Heroes } from '../scripts/main.js';
+import { Areas, Heroes } from "./global_variables.mjs";
+
 import { redFlag, blueFlag } from './flags.mjs';
 import { currentPlayer, currentPhase, setCurrentPhase, setCurrentPlayer } from './global_variables.mjs';
 import { Area } from './area.mjs';

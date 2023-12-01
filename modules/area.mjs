@@ -1,6 +1,5 @@
 import { TERRAIN, TERRAIN_INFO } from "./data.mjs";
-import { Heroes } from "../scripts/main.js";
-import { Areas } from "../scripts/main.js";
+import { Areas, Heroes } from "./global_variables.mjs";
 
 class Area
 {

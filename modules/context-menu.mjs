@@ -1,7 +1,5 @@
 import { HERO_DATA, TERRAIN_INFO } from './data.mjs';
 import { isHighlighting } from './utils.mjs';
-import { showModeTable } from './map.mjs';
-import { Hero } from './hero.mjs';
 
 const MENU_LOGO = {
     "更换武将": "class='fas fa-users'",
@@ -597,7 +595,7 @@ document.addEventListener("click", function (event)
         hideContextMenu();
     }
     hideSkillPanel();
-    hideTerrainPanel();
+    // hideTerrainPanel();
 
     const heroTable = document.getElementById("hero-table");
     if (heroTable)

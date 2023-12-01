@@ -4,19 +4,7 @@ import { HPColor, cls, record } from '../modules/utils.mjs';
 import { setMode } from '../modules/map.mjs';
 import { Hero, create_hero } from '../modules/hero.mjs';
 import { Area, create_area } from '../modules/area.mjs';
-
-export var Heroes = [];
-export var Areas = [];
-
-for (let row = 0; row < 7; row++)
-{
-    Areas.push([]);
-    for (let col = 0; col < 7; col++)
-    {
-        Areas[row].push(null);
-    }
-}
-
+import { Areas, Heroes } from "../modules/global_variables.mjs";
 
 // 创建棋盘
 function createChessboard(mode = "野战")
@@ -54,7 +42,6 @@ function createMenuList()
 // 初始化棋盘上的棋子
 function initializePieces(names = [])
 {
-    const chessboard = document.getElementById("chessboard");
     const HERO_DATAList = Array.from(Object.keys(HERO_DATA)).filter(name => !names.includes(name));
     let init_heroes = names;
     for (let i = names.length; i < 6; i++)
