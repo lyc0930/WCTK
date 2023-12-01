@@ -561,23 +561,22 @@ function showHeroTable(heroNames_existed, handler = () => { })
         {
             heroName.style.opacity = 0.4;
             heroName.style.pointerEvents = 'none';
+            heroName.onclick = null;
         }
         else
         {
             heroName.style.opacity = 1;
             heroName.style.pointerEvents = 'auto';
-            heroName.addEventListener("click",
-                (event) =>
-                {
-                    if (event.cancelable) event.preventDefault();
-                    event.stopPropagation();
+            heroName.onclick = (event) =>
+            {
+                if (event.cancelable) event.preventDefault();
+                event.stopPropagation();
 
-                    handler(heroName.textContent);
+                handler(heroName.textContent);
 
-                    heroTable.style.visibility = 'hidden';
-                    heroTable.style.opacity = 0;
-                },
-            { once: true });
+                heroTable.style.visibility = 'hidden';
+                heroTable.style.opacity = 0;
+            };
         }
     }
 }
