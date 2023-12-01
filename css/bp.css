@@ -62,12 +62,20 @@ img {
     border-radius: 2vmin;
 }
 
+@keyframes twinkle {
+    50% {
+        opacity: 0.5;
+    }
+}
+
 #redBoard {
     background-color: rgb(255, 0, 0, 0.3);
+    animation: twinkle 1s infinite ease-in-out;
 }
 
 #blueBoard {
     background-color: rgb(0, 0, 255, 0.3);
+    animation: twinkle 1s infinite ease-in-out;
 }
 
 .candidate {
@@ -95,6 +103,18 @@ img {
     /* box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 255, 0.3); */
 }
 
+#first-move-tooltip {
+    font-family: "fzlb";
+    font-weight: bold;
+    font-size: 1.8em;
+    text-align: center;
+    text-wrap: nowrap;
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+    visibility: visible;
+    opacity: 1;
+}
+
 @media screen and (orientation:landscape) {
     #heroBoard {
         width: 48%;
@@ -118,6 +138,10 @@ img {
 
     .hero-name {
         font-size: 3vh;
+    }
+
+    #first-move-tooltip {
+        top: 49vw;
     }
 }
 
@@ -144,5 +168,9 @@ img {
 
     .hero-name {
         font-size: 3.6vw;
+    }
+
+    #first-move-tooltip {
+        top: 98vw;
     }
 }

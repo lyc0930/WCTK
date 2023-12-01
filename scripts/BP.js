@@ -5,9 +5,6 @@ var side1st = "red";
 var side2nd = side1st === "red" ? "blue" : "red";
 var INDEX = 0;
 
-// side1st = window.confirm("红方是否先选？") ? "red" : "blue";
-// side2nd = side1st === "red" ? "blue" : "red";
-
 const Candidates = new Array(16).fill(null);
 
 class Candidate
@@ -310,7 +307,10 @@ function createHeroBoard(number = 16)
         candidate.appendChild(nameTag);
         heroBoard.appendChild(candidate);
     }
+}
 
+function createSideBoard(number = 16)
+{
     const board1st = document.getElementById(side1st + 'Board');
     const board2nd = document.getElementById(side2nd + 'Board');
 
@@ -350,6 +350,45 @@ function initializeCandidates(number = 16)
     {
         Candidates[i] = create_candidate(initHeroes[i], i);
     }
+}
+
+function chooseFirstMove()
+{
+    const first_move_tooltip = document.getElementById("first-move-tooltip");
+    const redBoard = document.getElementById("redBoard");
+    const blueBoard = document.getElementById("blueBoard");
+
+    const choose_red = () =>
+    {
+        side1st = "red";
+        side2nd = "blue";
+        after_choose();
+    }
+
+    const choose_blue = () =>
+    {
+        side1st = "blue";
+        side2nd = "red";
+        after_choose();
+    }
+
+    const after_choose = () =>
+    {
+        redBoard.removeEventListener("click", choose_red);
+        blueBoard.removeEventListener("click", choose_blue);
+        first_move_tooltip.style.visibility = "hidden";
+        first_move_tooltip.style.opacity = "0";
+        redBoard.style.animation = "none";
+        blueBoard.style.animation = "none";
+        createSideBoard();
+        highlightVacancy(0);
+        history.save();
+    }
+
+
+    redBoard.addEventListener("click", choose_red);
+
+    blueBoard.addEventListener("click", choose_blue);
 }
 
 function highlightVacancy(index = INDEX)
@@ -711,11 +750,8 @@ function initializeBP()
 
     createHeroTable();
     createHeroBoard();
-
     initializeCandidates();
-    highlightVacancy(0);
-
-    history.save();
+    chooseFirstMove();
 }
 
 document.body.onload = () => { initializeBP(); }
