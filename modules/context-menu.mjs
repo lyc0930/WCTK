@@ -548,14 +548,11 @@ function createHeroTable()
     }
 }
 
-function showHeroTable(piece)
+function showHeroTable(heroNames_existed, handler = () => { })
 {
     const heroTable = document.getElementById("hero-table");
     heroTable.style.visibility = 'visible';
     heroTable.style.opacity = 1;
-
-    const pieces = document.getElementsByClassName("piece");
-    const heroNames_existed = Array.from(pieces, piece => piece.name);
 
     const heroNames = heroTable.getElementsByClassName("hero-name");
     for (const heroName of heroNames)
@@ -569,20 +566,18 @@ function showHeroTable(piece)
         {
             heroName.style.opacity = 1;
             heroName.style.pointerEvents = 'auto';
-            heroName.onclick = function (event)
-            {
-                if (event.cancelable) event.preventDefault();
-                piece.name = heroName.textContent;
+            heroName.addEventListener("click",
+                (event) =>
+                {
+                    if (event.cancelable) event.preventDefault();
+                    event.stopPropagation();
 
-                const avatar = piece.getElementsByClassName("avatar")[0];
-                avatar.src = "https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Avatar" + HERO_DATA[piece.name]["拼音"] + "_active.webp";
+                    handler(heroName.textContent);
 
-                const nameTag = document.getElementById("unpickedName" + piece.id.slice(4));
-                nameTag.innerHTML = piece.name;
-
-                heroTable.style.visibility = 'hidden';
-                heroTable.style.opacity = 0;
-            };
+                    heroTable.style.visibility = 'hidden';
+                    heroTable.style.opacity = 0;
+                },
+            { once: true });
         }
     }
 }
