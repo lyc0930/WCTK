@@ -925,7 +925,7 @@ class Hero
         if (area === this.area && area === this?.move_start)
         {
             if (area.terrain === "军营" || area.terrain === "大本营") return true;
-            if (area.terrain === "山岭") return false;
+            if (this._cannot_stay_because_of_terrain(area)) return false;
             if (area.heroes.length > 1) return false;
 
             return true;
@@ -952,7 +952,7 @@ class Hero
     // 因地形而形成的不可进入区域
     _cannot_stay_because_of_terrain(area)
     {
-        return area.terrain === "山岭";
+        return area.terrain === "山岭" || area.terrain === "礁石";
     }
 
     // 因其他角色而形成的不可进入区域
