@@ -362,19 +362,51 @@ class Hero
             "查看技能": () => { showSkillPanel(this); }
         };
 
-        if (this.alive)
+        if (!this.alive) return items;
+
+        let i = 0;
+        items[`break-line-${i++}`] = "<hr>";
+        Object.assign(items, this._context_menu_items_move_phase());
+
+        let skill_items = this._context_menu_items_skills();
+        if (skill_items)
         {
-            items["break-line-1"] = "<hr>";
-            items["移动阶段"] = () => { this.move_phase_begin(); };
-            items["break-line-2"] = "<hr>";
-            items["迅【闪】"] = () => { this.use("迅【闪】") };
-            items["break-line-3"] = "<hr>";
-            items["【暗度陈仓】"] = () => { this.use("【暗度陈仓】") };
-            items["【兵贵神速】"] = () => { this.use("【兵贵神速】") };
-            items["【奇门遁甲】"] = () => { this.use("【奇门遁甲】") };
-            items["【诱敌深入】"] = () => { this.use("【诱敌深入】") };
+            items[`break-line-${i++}`] = "<hr>";
+            Object.assign(items, skill_items);
         }
+
+        items[`break-line-${i++}`] = "<hr>";
+        Object.assign(items, this._context_menu_items_basics());
+
+        items[`break-line-${i++}`] = "<hr>";
+        Object.assign(items, this._context_menu_items_scrolls());
+
         return items;
+    }
+
+    _context_menu_items_move_phase()
+    {
+        return { "移动阶段": () => { this.move_phase_begin(); } };
+    }
+
+    _context_menu_items_skills()
+    {
+        return null;
+    }
+
+    _context_menu_items_basics()
+    {
+        return { "迅【闪】": () => { this.use("迅【闪】") } };
+    }
+
+    _context_menu_items_scrolls()
+    {
+        return {
+            "【暗度陈仓】": () => { this.use("【暗度陈仓】") },
+            "【兵贵神速】": () => { this.use("【兵贵神速】") },
+            "【奇门遁甲】": () => { this.use("【奇门遁甲】") },
+            "【诱敌深入】": () => { this.use("【诱敌深入】") }
+        };
     }
 
     _create_piece()
@@ -2224,26 +2256,12 @@ class Zuo_Ci extends Hero
         super("左慈", color, index);
     }
 
-    get context_menu_items()
+    _context_menu_items_move_phase()
     {
-        const items = {
-            "查看技能": () => { showSkillPanel(this); }
+        return {
+            "移动阶段": () => { this.move_phase_begin(); },
+            "移动阶段〖神行〗": () => { this.shen_xing(); },
         };
-
-        if (this.alive)
-        {
-            items["break-line-1"] = "<hr>";
-            items["移动阶段"] = () => { this.move_phase_begin(); };
-            items["移动阶段〖神行〗"] = () => { this.shen_xing(); };
-            items["break-line-2"] = "<hr>";
-            items["迅【闪】"] = () => { this.use("迅【闪】") };
-            items["break-line-3"] = "<hr>";
-            items["【暗度陈仓】"] = () => { this.use("【暗度陈仓】") };
-            items["【兵贵神速】"] = () => { this.use("【兵贵神速】") };
-            items["【奇门遁甲】"] = () => { this.use("【奇门遁甲】") };
-            items["【诱敌深入】"] = () => { this.use("【诱敌深入】") };
-        }
-        return items;
     }
 
     // 〖神行〗
@@ -2271,27 +2289,9 @@ class Yu_Jin extends Hero
         super("于禁", color, index);
     }
 
-    get context_menu_items()
+    _context_menu_items_skills()
     {
-        const items = {
-            "查看技能": () => { showSkillPanel(this); }
-        };
-
-        if (this.alive)
-        {
-            items["break-line-1"] = "<hr>";
-            items["移动阶段"] = () => { this.move_phase_begin(); };
-            items["break-line-2"] = "<hr>";
-            items["〖节钺〗"] = () => { this.jie_yue(); };
-            items["break-line-3"] = "<hr>";
-            items["迅【闪】"] = () => { this.use("迅【闪】") };
-            items["break-line-4"] = "<hr>";
-            items["【暗度陈仓】"] = () => { this.use("【暗度陈仓】") };
-            items["【兵贵神速】"] = () => { this.use("【兵贵神速】") };
-            items["【奇门遁甲】"] = () => { this.use("【奇门遁甲】") };
-            items["【诱敌深入】"] = () => { this.use("【诱敌深入】") };
-        }
-        return items;
+        return { "〖节钺〗": () => { this.jie_yue(); } };
     }
 
     // 〖节钺〗
@@ -2484,26 +2484,12 @@ class Zu_Mao extends Hero
         super("祖茂", color, index);
     }
 
-    get context_menu_items()
+    _context_menu_items_move_phase()
     {
-        const items = {
-            "查看技能": () => { showSkillPanel(this); }
+        return {
+            "移动阶段": () => { this.move_phase_begin(); },
+            "移动阶段〖诱兵〗": () => { this.you_bing_1(); },
         };
-
-        if (this.alive)
-        {
-            items["break-line-1"] = "<hr>";
-            items["移动阶段"] = () => { this.move_phase_begin(); };
-            items["移动阶段〖诱兵〗"] = () => { this.you_bing_1(); };
-            items["break-line-2"] = "<hr>";
-            items["迅【闪】"] = () => { this.use("迅【闪】") };
-            items["break-line-3"] = "<hr>";
-            items["【暗度陈仓】"] = () => { this.use("【暗度陈仓】") };
-            items["【兵贵神速】"] = () => { this.use("【兵贵神速】") };
-            items["【奇门遁甲】"] = () => { this.use("【奇门遁甲】") };
-            items["【诱敌深入】"] = () => { this.use("【诱敌深入】") };
-        }
-        return items;
     }
 
     // 〖诱兵〗移动阶段
@@ -2719,27 +2705,9 @@ class Sun_Qian extends Hero
         super("孙乾", color, index);
     }
 
-    get context_menu_items()
+    _context_menu_items_skills()
     {
-        const items = {
-            "查看技能": () => { showSkillPanel(this); }
-        };
-
-        if (this.alive)
-        {
-            items["break-line-1"] = "<hr>";
-            items["移动阶段"] = () => { this.move_phase_begin(); };
-            items["break-line-2"] = "<hr>";
-            items["〖归营〗"] = () => { this.gui_ying(); };
-            items["break-line-3"] = "<hr>";
-            items["迅【闪】"] = () => { this.use("迅【闪】") };
-            items["break-line-4"] = "<hr>";
-            items["【暗度陈仓】"] = () => { this.use("【暗度陈仓】") };
-            items["【兵贵神速】"] = () => { this.use("【兵贵神速】") };
-            items["【奇门遁甲】"] = () => { this.use("【奇门遁甲】") };
-            items["【诱敌深入】"] = () => { this.use("【诱敌深入】") };
-        }
-        return items;
+        return { "〖归营〗": () => { this.gui_ying(); } };
     }
 
     // 生成移动力
