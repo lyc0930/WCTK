@@ -269,7 +269,6 @@ class Candidate
                         cell.innerHTML = "";
 
                         Candidates[index] = create_candidate(name, index);
-                        console.log(Candidates);
                     }
                 );
             };
