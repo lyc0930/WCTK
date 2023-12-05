@@ -375,11 +375,14 @@ class Hero
             Object.assign(items, skill_items);
         }
 
-        items[`break-line-${i++}`] = "<hr>";
-        Object.assign(items, this._context_menu_items_basics());
+        // items[`break-line-${i++}`] = "<hr>";
+        // Object.assign(items, this._context_menu_items_basics());
 
         items[`break-line-${i++}`] = "<hr>";
         Object.assign(items, this._context_menu_items_scrolls());
+
+        items[`break-line-${i++}`] = "<hr>";
+        Object.assign(items, this.area._context_menu_items_terrain());
 
         return items;
     }

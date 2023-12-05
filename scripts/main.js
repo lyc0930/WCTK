@@ -6,24 +6,6 @@ import { Hero, create_hero } from '../modules/hero.mjs';
 import { Area, create_area } from '../modules/area.mjs';
 import { Areas, Heroes } from "../modules/global_variables.mjs";
 
-// 创建棋盘
-function createChessboard(mode = "野战")
-{
-    const chessboard = document.getElementById("chessboard");
-    const Map = TERRAIN[mode];
-
-    for (let row = 0; row < 7; row++)
-    {
-        for (let col = 0; col < 7; col++)
-        {
-            const area = create_area(row, col, Map[row][col]);
-            chessboard.appendChild(area.cell);
-        }
-    }
-
-    setMode(mode);
-}
-
 // 创建菜单
 function createMenuList()
 {
@@ -62,7 +44,7 @@ function initializePieces(names = [])
 // 初始化游戏
 function initializeGame(mode = "野战", names = [])
 {
-    createChessboard(mode);
+    setMode(mode);
     generateFlags();
 
     document.addEventListener("contextmenu", event => { event.preventDefault(); event.stopPropagation(); }); // 禁用右键菜单

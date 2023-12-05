@@ -1,5 +1,8 @@
 import { TERRAIN, TERRAIN_INFO } from "./data.mjs";
 import { Areas, Heroes } from "./global_variables.mjs";
+import { isHighlighting } from "./utils.mjs";
+import { addContextMenu, showTerrainPanel } from './context-menu.mjs';
+import { showModeTable } from "./map.mjs";
 
 class Area
 {
@@ -24,7 +27,34 @@ class Area
         cell.style.gridRow = this.row + 1;
         cell.style.gridColumn = this.col + 1;
         cell.area = this;
+
+        addContextMenu(cell, this, isHighlighting);
+
         return cell;
+    }
+
+    get context_menu_items()
+    {
+        const items = { };
+
+        let i = 0;
+
+        Object.assign(items, this._context_menu_items_terrain());
+
+        items[`break-line-${i++}`] = "<hr>";
+        Object.assign(items, this._context_menu_items_change_mode());
+
+        return items;
+    }
+
+    _context_menu_items_terrain()
+    {
+        return { [this.terrain]: () => { showTerrainPanel(this); } };
+    }
+
+    _context_menu_items_change_mode()
+    {
+        return { "更换地图": () => { showModeTable(); } };
     }
 
     // 相邻区域

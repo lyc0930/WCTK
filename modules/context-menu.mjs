@@ -393,7 +393,7 @@ function hideSkillPanel()
 
 // TERRAIN PANEL
 
-function showTerrainPanel(cell)
+function showTerrainPanel(area)
 {
     const terrainPanel = document.getElementById("terrain-panel");
 
@@ -404,31 +404,31 @@ function showTerrainPanel(cell)
 
     const terrainEffectName = document.createElement("label");
     terrainEffectName.classList.add("skill-name");
-    if (TERRAIN_INFO[cell.terrain]["neutral"])
+    if (TERRAIN_INFO[area.terrain]["neutral"])
     {
-        terrainEffectName.style.color = TERRAIN_INFO[cell.terrain]["color"];
+        terrainEffectName.style.color = TERRAIN_INFO[area.terrain]["color"];
     }
     else
     {
-        if (cell.classList.contains("Red"))
+        if (area.color === "Red")
         {
             terrainEffectName.style.color = "rgba(255, 46, 46, 0.8)";
         }
-        else if (cell.classList.contains("Blue"))
+        else if (area.color === "Blue")
         {
             terrainEffectName.style.color = "rgba(46, 46, 255, 0.8)";
         }
         else
         {
-            terrainEffectName.style.color = TERRAIN_INFO[cell.terrain]["color"];
+            terrainEffectName.style.color = TERRAIN_INFO[area.terrain]["color"];
         }
     }
-    terrainEffectName.innerHTML = cell.terrain;
+    terrainEffectName.innerHTML = area.terrain;
 
     terrainEffectItem.appendChild(terrainEffectName);
     const terrainEffectText = document.createElement("p");
     terrainEffectText.classList.add("terrainEffect-text");
-    terrainEffectText.innerHTML = TERRAIN_INFO[cell.terrain]["地形效果"];
+    terrainEffectText.innerHTML = TERRAIN_INFO[area.terrain]["地形效果"];
     terrainEffectItem.appendChild(terrainEffectText);
 
     terrainPanel.appendChild(terrainEffectItem);
@@ -438,29 +438,29 @@ function showTerrainPanel(cell)
 
     // all cells in the same terrain
     const cells = document.getElementsByClassName("cell");
-    for (const c of cells)
+    for (const cell of cells)
     {
-        if (TERRAIN_INFO[cell.terrain]["neutral"])
+        if (TERRAIN_INFO[area.terrain]["neutral"])
         {
-            if (c.terrain === cell.terrain)
+            if (cell.area.terrain === area.terrain)
             {
-                c.style.boxShadow = "0 0 0.25em 0.25em" + TERRAIN_INFO[cell.terrain]["color"];
-                c.style.zIndex = 10;
+                cell.style.boxShadow = "0 0 0.25em 0.25em" + TERRAIN_INFO[area.terrain]["color"];
+                cell.style.zIndex = 10;
             }
         }
         else
         {
-            if (c.terrain === cell.terrain)
+            if (cell.area.terrain === area.terrain)
             {
-                if (c.classList.contains("Red") && cell.classList.contains("Red"))
+                if (cell.classList.contains("Red") && area.color === "Red")
                 {
-                    c.style.boxShadow = "0 0 0.25em 0.25em rgba(255, 46, 46, 0.8)";
-                    c.style.zIndex = 10;
+                    cell.style.boxShadow = "0 0 0.25em 0.25em rgba(255, 46, 46, 0.8)";
+                    cell.style.zIndex = 10;
                 }
-                else if (c.classList.contains("Blue") && cell.classList.contains("Blue"))
+                else if (cell.classList.contains("Blue") && area.color === "Blue")
                 {
-                    c.style.boxShadow = "0 0 0.25em 0.25em rgba(46, 46, 255, 0.8)";
-                    c.style.zIndex = 10;
+                    cell.style.boxShadow = "0 0 0.25em 0.25em rgba(46, 46, 255, 0.8)";
+                    cell.style.zIndex = 10;
                 }
             }
         }
@@ -481,10 +481,10 @@ function hideTerrainPanel()
 
     // all cells in the same terrain
     const cells = document.getElementsByClassName("cell");
-    for (const c of cells)
+    for (const cell of cells)
     {
-        c.style.boxShadow = "none";
-        c.style.zIndex = "auto";
+        cell.style.boxShadow = "none";
+        cell.style.zIndex = "auto";
     }
 }
 
@@ -589,7 +589,7 @@ document.addEventListener("click", function (event)
         hideContextMenu();
     }
     hideSkillPanel();
-    // hideTerrainPanel();
+    hideTerrainPanel();
 
     const heroTable = document.getElementById("hero-table");
     if (heroTable)
@@ -606,4 +606,4 @@ document.addEventListener("click", function (event)
     }
 });
 
-export { addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel };
+export { addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel, showTerrainPanel };
