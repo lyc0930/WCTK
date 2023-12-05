@@ -119,6 +119,18 @@ function create_area(row, col, terrain)
     {
         return new caltrop(row, col, terrain);
     }
+    else if (terrain.startsWith("校场"))
+    {
+        return new ground(row, col, terrain);
+    }
+    else if (terrain.startsWith("点将台"))
+    {
+        return new command_platform(row, col, terrain);
+    }
+    else if (terrain.startsWith("粮道"))
+    {
+        return new supply_route(row, col, terrain);
+    }
     else
     {
         return new Area(row, col, terrain);
@@ -225,6 +237,66 @@ class caltrop extends Area
     get next_area()
     {
         return Areas[this._next_area_row][this._next_area_col];
+    }
+}
+
+// 校场
+class ground extends Area
+{
+    constructor(row, col, terrain)
+    {
+        super(row, col, "校场");
+
+        if (terrain.endsWith("-红方"))
+        {
+            this.color = "Red";
+            this.cell.classList.add("Red");
+        }
+        else if (terrain.endsWith("-蓝方"))
+        {
+            this.color = "Blue";
+            this.cell.classList.add("Blue");
+        }
+    }
+}
+
+// 点将台
+class command_platform extends Area
+{
+    constructor(row, col, terrain)
+    {
+        super(row, col, "点将台");
+
+        if (terrain.endsWith("-红方"))
+        {
+            this.color = "Red";
+            this.cell.classList.add("Red");
+        }
+        else if (terrain.endsWith("-蓝方"))
+        {
+            this.color = "Blue";
+            this.cell.classList.add("Blue");
+        }
+    }
+}
+
+// 粮道
+class supply_route extends Area
+{
+    constructor(row, col, terrain)
+    {
+        super(row, col, "粮道");
+
+        if (terrain.endsWith("-红方"))
+        {
+            this.color = "Red";
+            this.cell.classList.add("Red");
+        }
+        else if (terrain.endsWith("-蓝方"))
+        {
+            this.color = "Blue";
+            this.cell.classList.add("Blue");
+        }
     }
 }
 

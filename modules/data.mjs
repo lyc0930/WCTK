@@ -274,7 +274,7 @@ const TERRAIN_INFO = {
         "icon": "class='fad fa-square'"
     },
     "粮道": {
-        "className": "grain-path",
+        "className": "supply-route",
         "地形效果": "此地形区分阵营。位于此地形的角色出牌阶段限一次，其可以弃置一张方块牌，然后移除对应阵营的所有“步旅”。",
         "neutral": false,
         "color": "#9ADD32",
