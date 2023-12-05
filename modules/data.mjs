@@ -124,70 +124,70 @@ const TERRAIN_INFO = {
         "地形效果": "位于此地形的角色的出牌阶段限一次，其可以将一张黑色牌当一张普【杀】使用。位于护城河地形的角色使用的普【杀】对位于此地形的目标角色的结算开始时，此【杀】对此目标无效。",
         "neutral": true,
         "color": "#708090",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fad fa-square-xmark'"
     },
     "护城河": {
         "className": "moat",
         "地形效果": "位于此地形的角色不能使用或打出【闪】。位于此地形的角色的出牌阶段限一次，其可以弃置一张牌，然后其摸一张牌。",
         "neutral": true,
         "color": "#00CED1",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fad fa-water'"
     },
     "投石车": {
         "className": "catapult",
         "地形效果": "位于此地形的角色的出牌阶段内，其使用【杀】可以选择位于城墙地形的角色。当位于此地形的角色使用的【杀】被位于城墙地形的目标角色使用的【闪】响应时，弃置目标角色装备区里的所有牌。",
         "neutral": true,
         "color": "#999999",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fad fa-truck-ramp-box'"
     },
     "粮仓": {
         "className": "granary",
         "地形效果": "位于此地形的角色的移动阶段开始时，其多获得1点移动力。位于此地形的角色受到火焰伤害时，此伤害值+1。",
         "neutral": true,
         "color": "#FCFF00",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fad fa-warehouse'"
     },
     "拒马刺": {
         "className": "caltrop",
         "地形效果": "当一名角色移动一步前，若拒马刺不是此次移动的起点且此步移动的方向与此地形的指示箭头方向不同，终止此次移动。",
         "neutral": true,
         "color": "#705D78",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fad fa-road-spikes'"
     },
     "水寨": {
         "className": "water-stockade",
         "地形效果": "位于此地形的角色的准备阶段，其弃置一张手牌。位于此地形的角色的摸牌阶段，其多摸一张牌。",
         "neutral": true,
         "color": "#005C8B",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fad fa-anchor'"
     },
     "瞭望塔": {
         "className": "watchtower",
         "地形效果": "位于此地形的角色的出牌阶段限一次，其可以观看牌堆底的一张牌。",
         "neutral": true,
         "color": "#DDD700",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fad fa-eye'"
     },
     "江面": {
         "className": "river",
         "地形效果": "在“起风”结算中，所有位于此地形的角色向风向方向移动一格（不能执行则不移动）。",
         "neutral": true,
         "color": "#1EF1EE",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fad fa-water'"
     },
     "礁石": {
         "className": "reef",
         "地形效果": "该地形不能成为移动路径的终点或转移的目标点。当位于江面的角色执行“起风”结算的移动时，若一名角色因此地形而无法移动，其失去1点体力。",
         "neutral": true,
         "color": "#2F4F4F",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fas fa-mound'"
     },
     "祭坛": {
         "className": "altar",
         "地形效果": "位于此地形的角色的出牌阶段限一次，其可以将一张手牌置于牌堆底，然后其摸一张牌。",
         "neutral": true,
         "color": "#8A2BE2",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fad fa-yin-yang'"
     },
     "沙地": {
         "className": "sand",
