@@ -1,40 +1,73 @@
-.attackable {
-    background-color: rgba(255, 36, 0, 0.1);
-}
-
-.attackable:hover {
-    background-color: rgba(255, 36, 0, 0.2);
-}
-
-.reachable {
+.cell.move-target {
     background-color: rgba(255, 255, 0, 0.2);
 }
 
-.reachable:hover {
+.cell.move-target:hover {
     background-color: rgba(255, 255, 0, 0.4);
 }
 
-.landable {
+@keyframes twinkle-trap {
+    50% {
+        background-color: rgba(255, 0, 179, 0.3);
+    }
+}
+
+.cell.trap-target {
+    background-color: rgba(255, 0, 179, 0.15);
+    animation: twinkle-trap 0.5s infinite ease-in-out;
+}
+
+.cell.trap-target:hover {
+    background-color: rgba(255, 0, 179, 0.3);
+    animation: none;
+}
+
+@keyframes twinkle-transfer {
+    50% {
+        background-color: rgba(20, 200, 43, 0.3);
+    }
+}
+
+.cell.transfer-target {
+    background-color: rgba(20, 200, 43, 0.15);
+    animation: twinkle-transfer 0.8s infinite ease-in-out;
+}
+
+.cell.transfer-target:hover {
     background-color: rgba(20, 200, 43, 0.3);
+    animation: none;
 }
 
-.landable:hover {
-    background-color: rgba(20, 200, 43, 0.6);
-}
-
-.cell.targetable {
+.cell.choose-target {
     background-color: rgb(255, 100, 0, 0.15);
 }
 
-.cell.targetable:hover {
+.cell.choose-target:hover {
     background-color: rgb(255, 100, 0, 0.3);
 }
 
-.piece.targetable {
-    box-shadow: 0 0 0.4em 0.4em rgb(20, 200, 43, 0.5);
+@keyframes twinkle-choose {
+    50% {
+        box-shadow: 0 0 0.3em 0.3em rgb(20, 200, 43, 0.5);
+    }
 }
 
-.piece.targetable:hover {
+.piece.choose-target {
+    box-shadow: 0 0 0.3em 0.3em rgb(20, 200, 43, 0.25);
+    animation: twinkle-choose 0.8s infinite ease-in-out;
+}
+
+.piece.choose-target:hover {
     border-color: rgb(20, 200, 43);
-    box-shadow: 0 0 0.4em 0.4em rgb(20, 200, 43, 0.5);
+    box-shadow: 0 0 0.3em 0.3em rgb(20, 200, 43, 0.5);
+    animation: none;
+}
+
+.piece.attack-target {
+    box-shadow: 0 0 0.3em 0.3em rgb(255, 36, 0, 0.5);
+}
+
+.piece.attack-target:hover {
+    border-color: rgb(255, 36, 0);
+    box-shadow: 0 0 0.3em 0.3em rgb(255, 36, 0, 0.5);
 }

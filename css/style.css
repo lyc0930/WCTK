@@ -1,25 +1,24 @@
 @import "./cell.css";
 @import "./piece.css";
 @import "./flag.css";
-/* @import "./function.css"; */
 @import "./highlight.css";
 @import "./menu.css";
 @import "./text.css";
 @import "./context-menu.css";
 @import "./history.css";
 
-* {
+*:not(input) {
     -webkit-touch-callout: none !important;
-    -webkit-user-select: none;
-       -moz-user-select: none;
-        -ms-user-select: none;
-            user-select: none;
+    -webkit-user-select: none !important;
+       -moz-user-select: none !important;
+        -ms-user-select: none !important;
+            user-select: none !important;
 }
 
 html,
 body {
     -ms-scroll-chaining: none;
-        overscroll-behavior: none;
+    overscroll-behavior: none;
 }
 
 body {
@@ -37,8 +36,8 @@ label {
 }
 
 img {
-    touch-action: none;
-    pointer-events: none;
+    touch-action: none !important;
+    pointer-events: none !important;
 }
 
 #mainboard {
@@ -47,7 +46,7 @@ img {
     border-radius: 2%;
     border: 1vmin outset gray;
 
-    background-image: url('../assets/Map/野战.jpg');
+    background-image: url('https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Map/野战.webp');
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: local;
@@ -56,8 +55,10 @@ img {
 #chessboard {
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(7, 1fr);
+    gap: 0;
     justify-content: space-between;
     align-content: space-between;
     z-index: 90;

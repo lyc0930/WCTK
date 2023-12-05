@@ -1,6 +1,14 @@
-var Pieces = [];
+var Heroes = [];
 
-
+var Areas = [];
+for (let row = 0; row < 7; row++)
+{
+    Areas.push([]);
+    for (let col = 0; col < 7; col++)
+    {
+        Areas[row].push(null);
+    }
+}
 
 var currentPlayer = null; // 当前回合玩家
 function setCurrentPlayer(player)
@@ -14,4 +22,4 @@ function setCurrentPhase(phase)
     currentPhase = phase;
 }
 
-export { Pieces, currentPlayer, setCurrentPlayer, currentPhase, setCurrentPhase };
+export { Heroes, Areas, currentPlayer, setCurrentPlayer, currentPhase, setCurrentPhase };

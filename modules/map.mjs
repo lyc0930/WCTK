@@ -1,65 +1,13 @@
 import { TERRAIN, TERRAIN_INFO } from "./data.mjs";
-import { isHighlighting } from "./highlight.mjs";
-import { piecesIn } from "./utils.mjs";
-import { addContextMenu, removeContextMenu, contextMenuItems } from "./context-menu.mjs";
+import { isHighlighting } from "./utils.mjs";
+import { addContextMenu, removeContextMenu } from "./context-menu.mjs";
 
 // 更换地图
 function setMode(mode)
 {
     const mainboard = document.getElementById("mainboard");
-    mainboard.style.backgroundImage = `url('../assets/Map/${mode}.jpg')`;
+    mainboard.style.backgroundImage = `url('https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Map/${mode}.webp')`;
     mainboard.mode = mode;
-
-    const Map = TERRAIN[mode];
-
-    const cells = document.getElementsByClassName("cell");
-
-    for (var row = 0; row < 7; row++)
-    {
-        for (var col = 0; col < 7; col++)
-        {
-            const cell = cells[row * 7 + col];
-            setTerrain(cell, Map[row][col]);
-        }
-    }
-}
-
-// 更改地形
-function setTerrain(cell, terrain)
-{
-    cell.className = "cell";
-
-    if (terrain.includes("红方") || terrain.includes("蓝方"))
-    {
-        if (terrain.includes("红方"))
-        {
-            cell.classList.add("Red");
-        }
-        else
-        {
-            cell.classList.add("Blue");
-        }
-        cell.classList.add(TERRAIN_INFO[terrain.slice(0, -3)]["className"]);
-        cell.terrain = terrain.slice(0, -3);
-    }
-    else
-    {
-        cell.classList.add(TERRAIN_INFO[terrain]["className"]);
-        cell.terrain = terrain;
-    }
-
-    removeContextMenu(cell);
-    addContextMenu(cell, contextMenuItems(cell), function ()
-    {
-        if (piecesIn(cell).length > 0 || isHighlighting())
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    });
 }
 
 (function createModeTable()
@@ -89,7 +37,7 @@ function setTerrain(cell, terrain)
 
         const modeItem = document.createElement("div");
         modeItem.classList.add("mode-item");
-        modeItem.style.backgroundImage = `url('../assets/Map/${mode}.jpg')`;
+        modeItem.style.backgroundImage = `url('https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Map/${mode}.webp')`;
 
         modeItem.appendChild(modeName);
         modeTable.appendChild(modeItem);
@@ -131,4 +79,4 @@ function showModeTable()
 }
 
 
-export { setMode, setTerrain, showModeTable };
+export { setMode, showModeTable };

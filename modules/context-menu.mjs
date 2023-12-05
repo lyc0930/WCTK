@@ -1,10 +1,5 @@
 import { HERO_DATA, TERRAIN_INFO } from './data.mjs';
-import { isHighlighting } from './highlight.mjs';
-import { movePhase, movePhase_you_bing } from './phases.mjs';
-import { xunShan } from './basics.mjs';
-import { shen_xing, jie_yue, gui_ying } from './skills.mjs';
-import { AnDuChenCang, BingGuiShenSu, QiMenDunJia, YouDiShenRu } from './scrolls.mjs';
-import { showModeTable } from './map.mjs';
+import { isHighlighting } from './utils.mjs';
 
 const MENU_LOGO = {
     "更换武将": "class='fas fa-users'",
@@ -25,93 +20,26 @@ const MENU_LOGO = {
 
 for (let name in TERRAIN_INFO)
 {
-    var icon = TERRAIN_INFO[name]["icon"];
-    MENU_LOGO[name] = icon;
+    MENU_LOGO[name] = TERRAIN_INFO[name]["icon"];
 }
 
-function contextMenuItems(element)
-{
-    if (element.classList.contains("piece"))
-    {
-        const piece = element;
-        const items = {
-            "查看技能": function () { showSkillPanel(piece); }
-        };
+// CONTEXT MENU
 
-        if (piece.alive)
-        {
-            items["break-line-1"] = "<hr>";
-            items["移动阶段"] = function () { movePhase(piece); };
-
-            if (piece.name == "祖茂")
-            {
-                items["移动阶段〖诱兵〗"] = function () { movePhase_you_bing(piece); };
-            }
-            else if (piece.name == "左慈")
-            {
-                items["移动阶段〖神行〗"] = function () { shen_xing(piece); };
-            }
-
-            if (piece.name == "于禁")
-            {
-                items["break-line-4"] = "<hr>";
-                items["〖节钺〗"] = function () { jie_yue(piece); };
-            }
-            else if (piece.name == "孙乾")
-            {
-                items["break-line-4"] = "<hr>";
-                items["〖归营〗"] = function () { gui_ying(piece); };
-            }
-
-            items["break-line-2"] = "<hr>";
-            items["迅【闪】"] = function () { xunShan(piece); };
-            items["break-line-3"] = "<hr>";
-            // 〖奇才〗
-            items["【暗度陈仓】"] = function () { AnDuChenCang(piece, (piece.name == "黄月英") ? 4 : 3); };
-            items["【兵贵神速】"] = function () { BingGuiShenSu(piece); };
-            items["【奇门遁甲】"] = function () { QiMenDunJia(piece, (piece.name == "黄月英") ? 3 : 2); };
-            items["【诱敌深入】"] = function () { YouDiShenRu(piece, (piece.name == "黄月英") ? 5 : 4); };
-        }
-        return items;
-    }
-    else if (element.classList.contains("cell"))
-    {
-        const cell = element;
-        const items = {
-            [cell.terrain]: function () { showTerrainPanel(cell); },
-            "break-line-1": "<hr>",
-            "更换地图": function () { showModeTable(); }
-        };
-        return items;
-    }
-    return {};
-}
-
-function addContextMenu(element, items = {}, disable = function () { return false; })
+function addContextMenu(element, object, disable = function () { return false; })
 {
     const menu = document.getElementById("context-menu");
 
     element.contextmenuEventListener = {
         "contextmenu": function (event)
         {
-            if (disable())
-            {
-                return;
-            }
+            if (disable()) return;
             if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
         },
         "mousedown": function (event)
         {
-            if (event.button != 2)
-            {
-                return;
-            }
-
-            if (disable())
-            {
-                return;
-            }
+            if (event.button != 2) return;
+            if (disable()) return;
 
             if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
@@ -122,10 +50,7 @@ function addContextMenu(element, items = {}, disable = function () { return fals
 
             function onmouseup(event)
             {
-                if (event.button != 2)
-                {
-                    return;
-                }
+                if (event.button != 2) return;
 
                 // 计算移动距离
                 const moveX = event.clientX + window.scrollX - startX;
@@ -136,7 +61,7 @@ function addContextMenu(element, items = {}, disable = function () { return fals
                 {
                     if (event.cancelable) event.preventDefault();
                     // event.stopPropagation();
-                    updateContextMenu(menu, items);
+                    updateContextMenu(menu, object.context_menu_items);
                     positionMenu(menu, event);
                     if (menu.style.visibility != 'visible')
                     {
@@ -151,21 +76,9 @@ function addContextMenu(element, items = {}, disable = function () { return fals
         },
         "touchstart": function (event)
         {
-            if (event.touches.length > 1)
-            {
-                return;
-            }
-
-            if (disable())
-            {
-                return;
-            }
-
-            // 正在等待响应
-            if (isHighlighting())
-            {
-                return;
-            }
+            if (event.touches.length > 1) return;
+            if (disable()) return;
+            if (isHighlighting()) return;
 
             // if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
@@ -178,7 +91,7 @@ function addContextMenu(element, items = {}, disable = function () { return fals
 
             const timeoutId = setTimeout(function ()
             {
-                updateContextMenu(menu, items);
+                updateContextMenu(menu, object.context_menu_items);
                 positionMenu(menu, event);
                 if (menu.style.visibility != 'visible')
                 {
@@ -230,6 +143,40 @@ function addContextMenu(element, items = {}, disable = function () { return fals
 
 }
 
+function updateContextMenu(menu, items = {})
+{
+    menu.innerHTML = "";
+    for (const item in items)
+    {
+        if (items[item] != "<hr>")
+        {
+            const menuItem = document.createElement("div");
+            menuItem.classList.add("context-menu-item");
+            const itemLabel = document.createElement("label");
+            itemLabel.innerHTML = `<i ${MENU_LOGO[item]} ></i> ${item}`;
+            menuItem.appendChild(itemLabel);
+            menuItem.addEventListener("click", function (event)
+            {
+                if (event.cancelable) event.preventDefault();
+                event.stopPropagation();
+                hideContextMenu();
+                items[item]();
+            });
+            menu.appendChild(menuItem);
+        }
+        else
+        {
+            const hr = document.createElement("hr");
+            hr.style.border = "none";
+            hr.style.backgroundColor = "rgba(0, 0, 0, 0.3)";
+            hr.style.height = "2px";
+            hr.style.margin = "2px 0 2px 0";
+            hr.style.boxShadow = "none";
+            menu.appendChild(hr);
+        }
+    }
+}
+
 function removeContextMenu(element)
 {
     if (element.contextmenuEventListener != null)
@@ -252,10 +199,56 @@ function hideContextMenu()
         menu.ontrasitionend = function ()
         {
             menu.innerHTML = "";
-            menu.ontrasitionend = null;
+            delete menu.ontrasitionend;
         }
     }
 }
+
+function positionMenu(menu, event)
+{
+    if (event?.clientX || event?.clientY)
+    {
+        var posX = event.clientX;
+        var posY = event.clientY;
+    }
+    else if (event?.touches[0].clientX || event?.touches[0].clientY)
+    {
+        var posX = event.touches[0].clientX;
+        var posY = event.touches[0].clientY;
+    }
+    else if (event?.changedTouches[0].clientX || event?.changedTouches[0].clientY)
+    {
+        var posX = event.changedTouches[0].clientX;
+        var posY = event.changedTouches[0].clientY;
+    }
+
+    const clickCoordsX = posX + window.scrollX;
+    const clickCoordsY = posY + window.scrollY;
+
+    const menuWidth = menu.offsetWidth + 4;
+    const menuHeight = menu.offsetHeight + 4;
+
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    if (windowWidth - clickCoordsX < menuWidth)
+    {
+        menu.style.left = windowWidth - menuWidth + "px";
+    } else
+    {
+        menu.style.left = clickCoordsX + "px";
+    }
+
+    if (windowHeight - clickCoordsY < menuHeight)
+    {
+        menu.style.top = windowHeight - menuHeight + "px";
+    } else
+    {
+        menu.style.top = clickCoordsY + "px";
+    }
+}
+
+// SKILL PANEL
 
 function addSkillPanel(piece)
 {
@@ -283,16 +276,8 @@ function addSkillPanel(piece)
         },
         "touchstart": function (event)
         {
-            if (event.touches.length > 1)
-            {
-                return;
-            }
-
-            // 正在等待响应
-            if (isHighlighting())
-            {
-                return;
-            }
+            if (event.touches.length > 1) return;
+            if (isHighlighting()) return;
 
             if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
@@ -358,19 +343,19 @@ function updateSkillPanel(panel, name)
         skillName.classList.add("skill-name");
         skillName.innerHTML = skill;
 
-        if (faction == "魏")
+        if (faction === "魏")
         {
             skillName.classList.add("wei-front");
         }
-        else if (faction == "蜀")
+        else if (faction === "蜀")
         {
             skillName.classList.add("shu-front");
         }
-        else if (faction == "吴")
+        else if (faction === "吴")
         {
             skillName.classList.add("wu-front");
         }
-        else if (faction == "群")
+        else if (faction === "群")
         {
             skillName.classList.add("qun-front");
         }
@@ -385,12 +370,10 @@ function updateSkillPanel(panel, name)
     }
 }
 
-function showSkillPanel(piece)
+function showSkillPanel(hero)
 {
-    // hideContextMenu();
-
     const skillPanel = document.getElementById("skill-panel");
-    updateSkillPanel(skillPanel, piece.name);
+    updateSkillPanel(skillPanel, hero.name);
     skillPanel.style.visibility = 'visible';
     skillPanel.style.opacity = 1;
 }
@@ -404,9 +387,11 @@ function hideSkillPanel()
     skillPanel.ontrasitionend = function ()
     {
         skillPanel.innerHTML = "";
-        skillPanel.ontrasitionend = null;
+        delete skillPanel.ontrasitionend;
     }
 }
+
+// TERRAIN PANEL
 
 function showTerrainPanel(cell)
 {
@@ -457,7 +442,7 @@ function showTerrainPanel(cell)
     {
         if (TERRAIN_INFO[cell.terrain]["neutral"])
         {
-            if (c.terrain == cell.terrain)
+            if (c.terrain === cell.terrain)
             {
                 c.style.boxShadow = "0 0 0.25em 0.25em" + TERRAIN_INFO[cell.terrain]["color"];
                 c.style.zIndex = 10;
@@ -465,7 +450,7 @@ function showTerrainPanel(cell)
         }
         else
         {
-            if (c.terrain == cell.terrain)
+            if (c.terrain === cell.terrain)
             {
                 if (c.classList.contains("Red") && cell.classList.contains("Red"))
                 {
@@ -491,7 +476,7 @@ function hideTerrainPanel()
     terrainEffectPanel.ontrasitionend = function ()
     {
         terrainEffectPanel.innerHTML = "";
-        terrainEffectPanel.ontrasitionend = null;
+        delete terrainEffectPanel.ontrasitionend;
     }
 
     // all cells in the same terrain
@@ -503,94 +488,7 @@ function hideTerrainPanel()
     }
 }
 
-function updateContextMenu(menu, items = {})
-{
-    menu.innerHTML = "";
-    for (const item in items)
-    {
-        if (items[item] != "<hr>")
-        {
-            const menuItem = document.createElement("div");
-            menuItem.classList.add("context-menu-item");
-            const itemLabel = document.createElement("label");
-            itemLabel.innerHTML = `<i ${MENU_LOGO[item]} ></i> ${item}`;
-            menuItem.appendChild(itemLabel);
-            menuItem.addEventListener("click", function (event)
-            {
-                if (event.cancelable) event.preventDefault();
-                event.stopPropagation();
-                hideContextMenu();
-                items[item]();
-            });
-            menu.appendChild(menuItem);
-        }
-        else
-        {
-            const hr = document.createElement("hr");
-            hr.style.border = "none";
-            hr.style.backgroundColor = "rgba(0, 0, 0, 0.3)";
-            hr.style.height = "2px";
-            hr.style.margin = "2px 0 2px 0";
-            hr.style.boxShadow = "none";
-            menu.appendChild(hr);
-        }
-    }
-}
-
-function getPosition(event)
-{
-    var posX = 0;
-    var posY = 0;
-    if (event?.clientX || event?.clientY)
-    {
-        posX = event.clientX;
-        posY = event.clientY;
-    }
-    else if (event?.touches[0].clientX || event?.touches[0].clientY)
-    {
-        posX = event.touches[0].clientX;
-        posY = event.touches[0].clientY;
-    }
-    else if (event?.changedTouches[0].clientX || event?.changedTouches[0].clientY)
-    {
-        posX = event.changedTouches[0].clientX;
-        posY = event.changedTouches[0].clientY;
-    }
-
-    return {
-        x: posX + window.scrollX,
-        y: posY + window.scrollY
-    };
-}
-
-function positionMenu(menu, event)
-{
-    let clickCoords = getPosition(event);
-    let clickCoordsX = clickCoords.x;
-    let clickCoordsY = clickCoords.y;
-
-    let menuWidth = menu.offsetWidth + 4;
-    let menuHeight = menu.offsetHeight + 4;
-
-    let windowWidth = window.innerWidth;
-    let windowHeight = window.innerHeight;
-
-    if (windowWidth - clickCoordsX < menuWidth)
-    {
-        menu.style.left = windowWidth - menuWidth + "px";
-    } else
-    {
-        menu.style.left = clickCoordsX + "px";
-    }
-
-    if (windowHeight - clickCoordsY < menuHeight)
-    {
-        menu.style.top = windowHeight - menuHeight + "px";
-    } else
-    {
-        menu.style.top = clickCoordsY + "px";
-    }
-}
+// HERO TABLE
 
 function createHeroTable()
 {
@@ -616,28 +514,28 @@ function createHeroTable()
         factionHeroes.classList.add("faction-heroes");
         factionTable.appendChild(factionHeroes);
 
-        if (faction == "魏")
+        if (faction === "魏")
         {
             factionLabel.classList.add("wei-front");
             factionTable.classList.add("wei-back");
         }
-        else if (faction == "蜀")
+        else if (faction === "蜀")
         {
             factionLabel.classList.add("shu-front");
             factionTable.classList.add("shu-back");
         }
-        else if (faction == "吴")
+        else if (faction === "吴")
         {
             factionLabel.classList.add("wu-front");
             factionTable.classList.add("wu-back");
         }
-        else if (faction == "群")
+        else if (faction === "群")
         {
             factionLabel.classList.add("qun-front");
             factionTable.classList.add("qun-back");
         }
 
-        const heroes = (Object.keys(HERO_DATA)).filter(hero => HERO_DATA[hero]["势力"] == faction);
+        const heroes = (Object.keys(HERO_DATA)).filter(hero => HERO_DATA[hero]["势力"] === faction);
 
         for (const hero of heroes)
         {
@@ -650,14 +548,11 @@ function createHeroTable()
     }
 }
 
-function showHeroTable(piece)
+function showHeroTable(heroNames_existed, handler = () => { })
 {
     const heroTable = document.getElementById("hero-table");
     heroTable.style.visibility = 'visible';
     heroTable.style.opacity = 1;
-
-    const pieces = document.getElementsByClassName("piece");
-    const heroNames_existed = Array.from(pieces, piece => piece.name);
 
     const heroNames = heroTable.getElementsByClassName("hero-name");
     for (const heroName of heroNames)
@@ -666,21 +561,18 @@ function showHeroTable(piece)
         {
             heroName.style.opacity = 0.4;
             heroName.style.pointerEvents = 'none';
+            heroName.onclick = null;
         }
         else
         {
             heroName.style.opacity = 1;
             heroName.style.pointerEvents = 'auto';
-            heroName.onclick = function (event)
+            heroName.onclick = (event) =>
             {
                 if (event.cancelable) event.preventDefault();
-                piece.name = heroName.textContent;
+                event.stopPropagation();
 
-                const avatar = piece.getElementsByClassName("avatar")[0];
-                avatar.src = "./assets/Avatar/active/" + HERO_DATA[piece.name]["拼音"] + ".png";
-
-                const nameTag = document.getElementById("unpickedName" + piece.id.slice(4));
-                nameTag.innerHTML = piece.name;
+                handler(heroName.textContent);
 
                 heroTable.style.visibility = 'hidden';
                 heroTable.style.opacity = 0;
@@ -689,6 +581,7 @@ function showHeroTable(piece)
     }
 }
 
+// CLICK TO HIDE
 document.addEventListener("click", function (event)
 {
     if (event.button === 0)
@@ -696,7 +589,7 @@ document.addEventListener("click", function (event)
         hideContextMenu();
     }
     hideSkillPanel();
-    hideTerrainPanel();
+    // hideTerrainPanel();
 
     const heroTable = document.getElementById("hero-table");
     if (heroTable)
@@ -712,4 +605,5 @@ document.addEventListener("click", function (event)
         modeTable.style.opacity = 0;
     }
 });
-export { contextMenuItems, addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel };
+
+export { addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, createHeroTable, showHeroTable, showSkillPanel };

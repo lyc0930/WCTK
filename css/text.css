@@ -2,28 +2,25 @@
 
 @font-face {
     font-family: 'fzlb';
-    src: url("../assets/Fonts/方正隶变_GBK.ttf");
+    src: url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/方正隶变_GBK.woff2") format("woff2");
+    /* , url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/方正隶变_GBK.ttf") format("truetype")；*/
 }
 
-@font-face {
-    font-family: 'fzlsjt';
-    src: url("../assets/Fonts/方正隶书简体.ttf");
-}
-
-@font-face {
-    font-family: 'fzlsft';
-    src: url("../assets/Fonts/方正隶书繁体.ttf");
-}
+/* @font-face {
+    font-family: 'fzls';
+    src: url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/方正隶书_GBK.woff2") format("woff2") , url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/方正隶书_GBK.ttf") format("truetype")；
+} */
 
 @font-face {
     font-family: 'fzzyjt';
-    src: url("../assets/Fonts/方正准圆简体.ttf");
+    src: url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/方正准圆简体.woff2") format("woff2");
+    /* , url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/方正准圆简体.ttf") format("truetype")；*/
 }
 
-@font-face {
+/* @font-face {
     font-family: 'hyzyj';
-    src: url("../assets/Fonts/汉仪中圆简.ttf");
-}
+    src: url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/汉仪中圆简.woff2") format("woff2") , url("https://lyc-sgs.oss-accelerate.aliyuncs.com/fonts/汉仪中圆简.ttf") format("truetype")；
+} */
 
 .skill-name {
     font-family: 'fzlb';
