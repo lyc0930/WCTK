@@ -100,8 +100,7 @@ class base extends Area
 {
     constructor(row, col, terrain)
     {
-        super(row, col, terrain);
-        this.terrain = "大本营";
+        super(row, col, "大本营");
 
         if (terrain.endsWith("-红方"))
         {
@@ -113,14 +112,6 @@ class base extends Area
             this.color = "Blue";
             this.cell.classList.add("Blue");
         }
-    }
-
-    _create_cell()
-    {
-        const cell = document.createElement("div");
-        cell.className = `cell ${TERRAIN_INFO["大本营"]["className"]}`;
-        cell.area = this;
-        return cell;
     }
 }
 
@@ -129,8 +120,7 @@ class barrack extends Area
 {
     constructor(row, col, terrain)
     {
-        super(row, col, terrain);
-        this.terrain = "军营";
+        super(row, col, "军营");
 
         if (terrain.endsWith("-红方"))
         {
@@ -143,14 +133,6 @@ class barrack extends Area
             this.cell.classList.add("Blue");
         }
     }
-
-    _create_cell()
-    {
-        const cell = document.createElement("div");
-        cell.className = `cell ${TERRAIN_INFO["军营"]["className"]}`;
-        cell.area = this;
-        return cell;
-    }
 }
 
 // 城墙
@@ -158,8 +140,7 @@ class wall extends Area
 {
     constructor(row, col, terrain)
     {
-        super(row, col, terrain);
-        this.terrain = "城墙";
+        super(row, col, "城墙");
 
         if (terrain.endsWith("-红方"))
         {
@@ -173,17 +154,10 @@ class wall extends Area
         }
     }
 
+    // 墙脚
     get foot_area()
     {
         return Areas[this._foot_row][this._foot_col];
-    }
-
-    _create_cell()
-    {
-        const cell = document.createElement("div");
-        cell.className = `cell ${TERRAIN_INFO["城墙"]["className"]}`;
-        cell.area = this;
-        return cell;
     }
 }
 
@@ -192,8 +166,7 @@ class caltrop extends Area
 {
     constructor(row, col, terrain)
     {
-        super(row, col, terrain);
-        this.terrain = "拒马刺";
+        super(row, col, "拒马刺");
 
         this.direction = terrain.substr(-1);
         if (this.direction === "上")
@@ -218,17 +191,10 @@ class caltrop extends Area
         }
     }
 
+    // 通行区域
     get next_area()
     {
         return Areas[this._next_area_row][this._next_area_col];
-    }
-
-    _create_cell()
-    {
-        const cell = document.createElement("div");
-        cell.className = `cell ${TERRAIN_INFO["拒马刺"]["className"]}`;
-        cell.area = this;
-        return cell;
     }
 }
 
