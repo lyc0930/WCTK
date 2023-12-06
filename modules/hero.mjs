@@ -931,6 +931,9 @@ class Hero
             return true;
         }
 
+        // 擂台
+        if (area.terrain === "擂台" && this._cannot_pass_because_of_arena()) return false;
+
         // 〖固城〗
         if (this._cannot_pass_because_of_gu_cheng(area)) return false;
 
@@ -941,6 +944,12 @@ class Hero
         if (this._cannot_stay_because_of_other_heroes(area)) return false;
 
         return true;
+    }
+
+    // 因己方其他角色位于擂台而不可进入擂台
+    _cannot_pass_because_of_arena()
+    {
+        return this.allies.some(hero => hero.alive && hero.area.terrain === "擂台");
     }
 
     // 因〖固城〗而形成的不可进入区域
@@ -971,6 +980,9 @@ class Hero
             if (area.terrain === "城墙" && from !== area.foot_area) return true;
             if (from.terrain === "城墙" && area !== from.foot_area) return true;
         }
+
+        // 擂台
+        if (area.terrain === "擂台" && this._cannot_pass_because_of_arena()) return false;
 
         // 〖固城〗
         if (this._cannot_pass_because_of_gu_cheng(area)) return false;
