@@ -322,6 +322,10 @@ function createSideBoard(number = 16)
         vacancy.classList.add("candidate");
         vacancy.id = "candidate" + i;
 
+        const number = document.createElement('label');
+        number.classList.add('vacancy-number');
+        number.innerHTML = i + 1;
+
         const cell = document.createElement('div');
         cell.classList.add('cell');
         cell.id = 'cell' + i;
@@ -330,6 +334,7 @@ function createSideBoard(number = 16)
         nameTag.classList.add('hero-name');
         nameTag.id = 'name' + i;
 
+        vacancy.appendChild(number);
         vacancy.appendChild(cell);
         vacancy.appendChild(nameTag);
         board.appendChild(vacancy);

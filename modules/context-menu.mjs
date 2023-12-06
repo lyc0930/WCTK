@@ -470,6 +470,7 @@ function showTerrainPanel(area)
 function hideTerrainPanel()
 {
     const terrainEffectPanel = document.getElementById("terrain-panel");
+    if (terrainEffectPanel === null) return;
 
     terrainEffectPanel.style.visibility = 'hidden';
     terrainEffectPanel.style.opacity = 0;

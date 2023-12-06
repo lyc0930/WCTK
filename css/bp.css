@@ -95,13 +95,41 @@ img {
 }
 
 .candidate.waiting-red {
-    border: 3px solid rgb(255, 0, 0, 0.5);
-    /* box-shadow: 0 0 0.2em 0.2em rgb(255, 0, 0, 0.3); */
+    /* border: 3px solid rgb(255, 0, 0, 0.5); */
+    box-shadow: 0 0 0.2em 0.2em rgb(255, 0, 0, 0.3);
 }
 
 .candidate.waiting-blue {
-    border: 3px solid rgb(0, 0, 255, 0.5);
-    /* box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 255, 0.3); */
+    /* border: 3px solid rgb(0, 0, 255, 0.5); */
+    box-shadow: 0 0 0.2em 0.2em rgb(0, 0, 255, 0.3);
+}
+
+.candidate>.vacancy-number {
+    position: absolute;
+    font-family: fantasy;
+    font-weight: bold;
+    text-wrap: nowrap;
+    color: rgb(0, 0, 0, 0.10);
+    transition: all 0.3s ease-in-out;
+}
+
+.candidate:has(.cell:empty)>.vacancy-number {
+    text-align: center;
+    line-height: 100%;
+}
+
+.candidate:has(.cell:not(:empty))>.vacancy-number {
+    text-align: right;
+    margin-left: 100%;
+    transform: translate(-60%, -95%);
+}
+
+.candidate.waiting-red>.vacancy-number {
+    color: rgb(255, 0, 0, 0.20);
+}
+
+.candidate.waiting-blue>.vacancy-number {
+    color: rgb(0, 0, 255, 0.20);
 }
 
 #first-move-tooltip {
@@ -128,6 +156,14 @@ img {
 
     .candidate {
         width: 18vh;
+    }
+
+    .candidate:has(.cell:empty)>.vacancy-number {
+        font-size: 15vh;
+    }
+
+    .candidate:has(.cell:not(:empty))>.vacancy-number {
+        font-size: 5vh;
     }
 
     #redBoard {
@@ -158,6 +194,14 @@ img {
 
     .candidate {
         width: 20vw;
+    }
+
+    .candidate:has(.cell:empty)>.vacancy-number {
+        font-size: 18vw;
+    }
+
+    .candidate:has(.cell:not(:empty))>.vacancy-number {
+        font-size: 6vw;
     }
 
     #redBoard {
