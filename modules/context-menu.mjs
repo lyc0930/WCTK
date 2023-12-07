@@ -1,5 +1,6 @@
 import { HERO_DATA, TERRAIN_INFO } from './data.mjs';
 import { isHighlighting } from './utils.mjs';
+import { Areas } from './global_variables.mjs';
 
 const MENU_LOGO = {
     "更换武将": "class='fas fa-users'",
@@ -440,28 +441,105 @@ function showTerrainPanel(area)
     const cells = document.getElementsByClassName("cell");
     for (const cell of cells)
     {
+        if (cell.area.terrain !== area.terrain) continue;
+
         if (TERRAIN_INFO[area.terrain]["neutral"])
         {
-            if (cell.area.terrain === area.terrain)
+            let code = '';
+            for (let i = 0; i < 4; i++)
             {
-                cell.style.boxShadow = "0 0 0.25em 0.25em" + TERRAIN_INFO[area.terrain]["color"];
-                cell.style.zIndex = 10;
+                // 下上右左
+                const next_row = cell.area.row + (i === 0 ? 1 : (i === 1 ? -1 : 0));
+                const next_col = cell.area.col + (i === 2 ? 1 : (i === 3 ? -1 : 0));
+                if (next_row < 0 || next_row >= 7 || next_col < 0 || next_col >= 7 || Areas[next_row][next_col].terrain !== area.terrain)
+                {
+                    code += '1';
+                }
+                else
+                {
+                    code += '0';
+                }
             }
+
+            const color = TERRAIN_INFO[area.terrain]["color"];
+            const offset = `0.20em`;
+            const blur = `0.10em`;
+            const spread = `0`;
+
+            const left = `-${offset} 0 ${blur} -${spread} ${color}`;
+            const right = `${offset} 0 ${blur} -${spread} ${color}`;
+            const top = `0 -${offset} ${blur} -${spread} ${color}`;
+            const bottom = `0 ${offset} ${blur} -${spread} ${color}`;
+
+            const top_left = `-${offset} -${offset} ${blur} -${spread} ${color}`;
+            const top_right = `${offset} -${offset} ${blur} -${spread} ${color}`;
+            const bottom_left = `-${offset} ${offset} ${blur} -${spread} ${color}`;
+            const bottom_right = `${offset} ${offset} ${blur} -${spread} ${color}`;
+
+            switch (code)
+            {
+                case '0000':
+                    cell.style.boxShadow = `0 0 0 0 ${color}`;
+                    break;
+                case '0001': // 左
+                    cell.style.boxShadow = `${left}`;
+                    break;
+                case '0010': // 右
+                    cell.style.boxShadow = `${right}`;
+                    break;
+                case '0011': // 左右
+                    cell.style.boxShadow = `${left}, ${right}`;
+                    break;
+                case '0100': // 上
+                    cell.style.boxShadow = `${top}`;
+                    break;
+                case '0101': // 上左
+                    cell.style.boxShadow = `${top_left}, ${top}, ${left}`;
+                    break;
+                case '0110': // 上右
+                    cell.style.boxShadow = `${top_right}, ${top}, ${right}`;
+                    break;
+                case '0111': // 上左右
+                    cell.style.boxShadow = `${top_left}, ${top_right}, ${left}, ${right}`;
+                    break;
+                case '1000': // 下
+                    cell.style.boxShadow = `${bottom}`;
+                    break;
+                case '1001': // 下左
+                    cell.style.boxShadow = `${bottom_left}, ${bottom}, ${left}`;
+                    break;
+                case '1010': // 下右
+                    cell.style.boxShadow = `${bottom_right}, ${bottom}, ${right}`;
+                    break;
+                case '1011': // 下左右
+                    cell.style.boxShadow = `${bottom_left}, ${bottom_right}, ${left}, ${right}`;
+                    break;
+                case '1100': // 下上
+                    cell.style.boxShadow = `${bottom}, ${top}`;
+                    break;
+                case '1101': // 下上左
+                    cell.style.boxShadow = `${bottom_left}, ${top_left}`;
+                    break;
+                case '1110': // 下上右
+                    cell.style.boxShadow = `${bottom_right}, ${top_right}`;
+                    break;
+                case '1111': // 下上左右
+                    cell.style.boxShadow = `${bottom_left}, ${bottom_right}, ${top_left}, ${top_right}`;
+                    break;
+            }
+            cell.style.zIndex = 10;
         }
         else
         {
-            if (cell.area.terrain === area.terrain)
+            if (cell.classList.contains("Red") && area.color === "Red")
             {
-                if (cell.classList.contains("Red") && area.color === "Red")
-                {
-                    cell.style.boxShadow = "0 0 0.25em 0.25em rgba(255, 46, 46, 0.8)";
-                    cell.style.zIndex = 10;
-                }
-                else if (cell.classList.contains("Blue") && area.color === "Blue")
-                {
-                    cell.style.boxShadow = "0 0 0.25em 0.25em rgba(46, 46, 255, 0.8)";
-                    cell.style.zIndex = 10;
-                }
+                cell.style.boxShadow = "0 0 ${half} ${half} rgba(255, 46, 46, 0.8)";
+                cell.style.zIndex = 10;
+            }
+            else if (cell.classList.contains("Blue") && area.color === "Blue")
+            {
+                cell.style.boxShadow = "0 0 ${half} ${half} rgba(46, 46, 255, 0.8)";
+                cell.style.zIndex = 10;
             }
         }
     }
