@@ -999,13 +999,13 @@ class Hero
         if (this.color !== subject.color && this.is_ride_on("阻动")) return false;
         if (this.color !== subject.color && this?.yong_quan) return false;
 
-        const target_area_row = this.area.row + Direction[direction][0];
-        const target_area_col = this.area.col + Direction[direction][1];
+        const next_area_row = this.area.row + Direction[direction][0];
+        const next_area_col = this.area.col + Direction[direction][1];
 
-        if (target_area_row < 0 || target_area_row >= 7) return false;
-        if (target_area_col < 0 || target_area_col >= 7) return false;
-        if (!this.can_pass(Areas[target_area_row][target_area_col])) return false;
-        if (!this.can_stay(Areas[target_area_row][target_area_col])) return false;
+        if (next_area_row < 0 || next_area_row >= 7) return false;
+        if (next_area_col < 0 || next_area_col >= 7) return false;
+        if (!this.can_pass(Areas[next_area_row][next_area_col])) return false;
+        if (!this.can_stay(Areas[next_area_row][next_area_col])) return false;
 
         return true;
     }
@@ -1668,6 +1668,7 @@ class Hero
             if (hero === this) continue;
             if (calc_distance(this, hero) > limit) continue;
             if (hero.color !== this.color && (hero.is_ride_on("阻动") || hero?.yong_quan)) continue;
+            if (this.area.terrain !== hero.area.terrain && (this.area.terrain === "擂台" || hero.area.terrain === "擂台")) continue;
 
             targets.push(hero);
         }
@@ -1710,6 +1711,7 @@ class Hero
             if (!hero.alive) continue;
             if (calc_distance(this, hero) > limit) continue;
             if (hero.color !== this.color && (hero.is_ride_on("阻动") || hero?.yong_quan)) continue;
+            if (this.area.terrain !== hero.area.terrain && (this.area.terrain === "擂台" || hero.area.terrain === "擂台")) continue;
 
             targets.push(hero);
         }
@@ -2461,14 +2463,14 @@ class Zhang_Xiu extends Hero
         if (object.color === this.color) return;
         if (object?.yong_quan || object.is_ride_on("阻动")) return;
 
-        const target_area_row = object.area.row + Direction[direction][0];
-        const target_area_col = object.area.col + Direction[direction][1];
+        const next_area_row = object.area.row + Direction[direction][0];
+        const next_area_col = object.area.col + Direction[direction][1];
         // 若该角色可以执行步数为1且方向与你相同的移动，你控制其执行之；
         if (object.can_step_towards(direction, this))
         {
             object.move_steps = 1;
             object.move_start = object.area;
-            object.move(Areas[target_area_row][target_area_col], false, false, this);
+            object.move(Areas[next_area_row][next_area_col], false, false, this);
             delete object.move_start;
         }
         // 若该角色不可以执行步数为1且方向与你相同的移动且其可以转移，你控制其转移至与其距离最近的可进入区域，
@@ -2701,13 +2703,13 @@ class Zu_Mao extends Hero
         // 你控制该角色执行一次步数为1且方向与你此步移动相同的移动。
         const object = this.you_bing_object;
 
-        const target_area_row = object.area.row + Direction[direction][0];
-        const target_area_col = object.area.col + Direction[direction][1];
+        const next_area_row = object.area.row + Direction[direction][0];
+        const next_area_col = object.area.col + Direction[direction][1];
 
         record(`祖茂发动〖诱兵〗`);
         object.move_steps = 1;
         object.move_start = object.area;
-        object.move(Areas[target_area_row][target_area_col], false, true, this);
+        object.move(Areas[next_area_row][next_area_col], false, true, this);
         delete object.move_start;
     }
 }
