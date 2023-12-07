@@ -4,6 +4,7 @@ import { addContextMenu, removeContextMenu, hideContextMenu, addSkillPanel, show
 var side1st = "red";
 var side2nd = side1st === "red" ? "blue" : "red";
 var INDEX = 0;
+var INITIALIZED = false;
 
 const Candidates = new Array(16).fill(null);
 
@@ -71,6 +72,7 @@ class Candidate
         // 添加鼠标事件
         piece.addEventListener("mousedown", (event) =>
         {
+            if (!INITIALIZED) return;
             if (this.recruited) return;
             if (event.button !== 0) return;
             if (event.cancelable) event.preventDefault();
@@ -158,6 +160,7 @@ class Candidate
         // 添加触摸事件
         piece.addEventListener("touchstart", (event) =>
         {
+            if (!INITIALIZED) return;
             if (event.touches.length > 1) return;
             if (this.recruited) return;
 
@@ -272,7 +275,10 @@ class Candidate
                     }
                 );
             };
-            items["选择"] = () => { this.recruit(); };
+            if (INITIALIZED)
+            {
+                items["选择"] = () => { this.recruit(); };
+            }
         }
 
         return items;
@@ -386,6 +392,7 @@ function chooseFirstMove()
         redBoard.style.animation = "none";
         blueBoard.style.animation = "none";
         createSideBoard();
+        INITIALIZED = true;
         highlightVacancy(0);
         history.save();
     }
