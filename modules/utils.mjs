@@ -80,12 +80,17 @@ function isHighlighting(className = null)
 // 血量颜色
 function HPColor(HP, maxHP)
 {
-    var factor = HP / maxHP;
 
     const color1 = { r: 255, g: 50, b: 50 }; // 红色
     const color2 = { r: 255, g: 127, b: 0 }; // 橙色
     const color3 = { r: 50, g: 160, b: 50 }; // 绿色
 
+    if (HP <= 0)
+    {
+        return color1;
+    }
+
+    var factor = HP / maxHP;
     var result = {};
 
     if (factor >= 0.5)

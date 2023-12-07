@@ -235,10 +235,10 @@ class Hero
             {
                 value = this.maxHP;
             }
-            else if (value < 0)
-            {
-                value = 0;
-            }
+            // else if (value < 0)
+            // {
+            //     value = 0;
+            // }
 
             this._HP = value;
             const labelHP = document.getElementById("HP" + this.index);
@@ -759,7 +759,7 @@ class Hero
 
         HPMinus.addEventListener("click", (event) =>
         {
-            this.HP = Math.max(0, this.HP - 1);
+            this.HP = this.HP - 1;
         });
 
         const labelHP = document.createElement("label");
@@ -785,7 +785,7 @@ class Hero
 
         HPPlus.addEventListener("click", (event) =>
         {
-            this.HP = Math.min(this.HP + 1, HERO_DATA[this.name]["体力上限"]);
+            this.HP = this.HP + 1;
         });
 
         HPBlock.appendChild(HPLabel);
@@ -1240,7 +1240,7 @@ class Hero
             record(`${this.name}试图执行移动：(${this.area.row + 1}, ${this.area.col + 1}) ▶ (${event.currentTarget.area.row + 1}, ${event.currentTarget.area.col + 1})，触发拒马刺的地形效果！`);
 
             // 失去1点体力
-            // TODO
+            this.deplete_HP(1);
 
             // 移动阶段没有被提前结束
             if (this?.move_phase_highlight === undefined || this?.move_phase_end === undefined) return;
@@ -1395,7 +1395,7 @@ class Hero
             record(`${this.name}试图执行移动：(${this.area.row + 1}, ${this.area.col + 1}) ▶ (${event.currentTarget.area.row + 1}, ${event.currentTarget.area.col + 1})，触发拒马刺的地形效果！`);
 
             // 失去1点体力
-            // TODO
+            this.deplete_HP(1);
 
             // 结束移动
             delete this.move_start;
@@ -1561,6 +1561,26 @@ class Hero
     {
         this.piece.classList.remove(className);
         this.piece.removeEventListener("click", listener);
+    }
+
+    // 造成伤害
+    deal_damage(sufferer, damage_value, element = null)
+    {
+        record(`${this.name}对${sufferer.name}造成${damage_value}点${(element === null ? "普通" : element + "属性")}伤害`);
+        sufferer.take_damage(this, damage_value, element);
+    }
+
+    // 受到伤害
+    take_damage(source, damage_value, element = null)
+    {
+        this.HP = this.HP - damage_value;
+    }
+
+    // 失去体力
+    deplete_HP(value)
+    {
+        record(`${this.name}失去${value}点体力`);
+        this.HP = this.HP - value;
     }
 
     use(card)
@@ -2051,7 +2071,7 @@ class Pang_Tong extends Hero
 
         HPMinus.addEventListener("click", (event) =>
         {
-            this.HP = Math.max(0, this.HP - 1);
+            this.HP = this.HP - 1;
         });
 
         const labelHP = document.createElement("label");
@@ -2077,7 +2097,7 @@ class Pang_Tong extends Hero
 
         HPPlus.addEventListener("click", (event) =>
         {
-            this.HP = Math.min(this.HP + 1, HERO_DATA[this.name]["体力上限"]);
+            this.HP = this.HP + 1;
         });
 
         HPBlock.appendChild(HPLabel);
@@ -2488,7 +2508,8 @@ class Zhang_Xiu extends Hero
                 object.leap(nearest_areas[0], false, this);
             }
             // 然后你对该角色造成1点普通伤害
-            // TODO
+            // TODO 造成伤害的先后顺序
+            this.deal_damage(object, 1);
         }
     }
 }
@@ -2559,7 +2580,7 @@ class Zu_Mao extends Hero
             record(`${this.name}试图执行移动：(${this.area.row + 1}, ${this.area.col + 1}) ▶ (${event.currentTarget.area.row + 1}, ${event.currentTarget.area.col + 1})，触发拒马刺的地形效果！`);
 
             // 失去1点体力
-            // TODO
+            this.deplete_HP(1);
 
             // 移动阶段没有被提前结束
             if (this?.move_phase_highlight === undefined || this?.move_phase_end === undefined) return;
