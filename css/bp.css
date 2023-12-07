@@ -140,7 +140,7 @@ img {
     text-wrap: nowrap;
     -webkit-transform: translateX(-50%);
             transform: translateX(-50%);
-    z-index: 98;
+    z-index: 96;
     visibility: visible;
     opacity: 1;
 }

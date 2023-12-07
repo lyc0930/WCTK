@@ -24,7 +24,7 @@ function createMenuList()
 // 初始化棋盘上的棋子
 function initializePieces(names = [])
 {
-    const HERO_DATAList = Array.from(Object.keys(HERO_DATA)).filter(name => !names.includes(name));
+    const HERO_DATAList = Array.from(Object.keys(HERO_DATA)).slice(0, 70).filter(name => !names.includes(name));
     let init_heroes = names;
     for (let i = names.length; i < 6; i++)
     {

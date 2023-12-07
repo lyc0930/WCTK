@@ -343,7 +343,7 @@ function createSideBoard(number = 16)
 
 function initializeCandidates(number = 16)
 {
-    const HERO_DATAList = Object.keys(HERO_DATA);
+    const HERO_DATAList = Object.keys(HERO_DATA).slice(0, 70);
     var initHeroes = [];
     for (let i = 0; i < number; i++)
     {

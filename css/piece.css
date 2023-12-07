@@ -143,7 +143,7 @@ body>.piece {
     border-color: rgba(0, 0, 255, 1);
 }
 
-body>.piece:hover {
+body .piece:hover {
     width: 11vmin;
     height: 11vmin;
     z-index: 92;
@@ -152,13 +152,11 @@ body>.piece:hover {
 .cell>.piece:only-of-type:hover {
     width: 11vmin;
     height: 11vmin;
-    z-index: 92;
 }
 
 .grave>.piece:hover {
     width: 11vmin;
     height: 11vmin;
-    z-index: 92;
 }
 
 .cell>.piece:nth-of-type(2):nth-last-of-type(1):hover {
@@ -167,7 +165,6 @@ body>.piece:hover {
     top: 0%;
     left: 0%;
     border-width: .72vmin;
-    z-index: 92;
 }
 
 .cell>.piece:nth-of-type(1):nth-last-of-type(2):hover {
@@ -176,7 +173,6 @@ body>.piece:hover {
     bottom: 0%;
     right: 0%;
     border-width: .64vmin;
-    z-index: 92;
 }
 
 .cell>.piece:nth-of-type(n+3):nth-last-of-type(1):hover {
@@ -185,7 +181,6 @@ body>.piece:hover {
     top: 0%;
     left: 0%;
     border-width: .72vmin;
-    z-index: 92;
 }
 
 .cell>.piece:nth-of-type(1):nth-last-of-type(n+3):hover {
@@ -194,7 +189,6 @@ body>.piece:hover {
     bottom: 0%;
     right: 0%;
     border-width: .48vmin;
-    z-index: 92;
 }
 
 .cell>.piece:nth-of-type(2):nth-last-of-type(n+2):hover {
@@ -206,7 +200,6 @@ body>.piece:hover {
     -webkit-transform: translate(0, -50%);
     transform: translate(0, -50%);
     border-width: .48vmin;
-    z-index: 92;
 }
 
 .cell>.piece:nth-of-type(3):nth-last-of-type(n+2):hover {
@@ -215,7 +208,6 @@ body>.piece:hover {
     top: 0%;
     right: 0%;
     border-width: .48vmin;
-    z-index: 92;
 }
 
 .cell>.piece:nth-of-type(4):nth-last-of-type(n+2):hover {
@@ -227,7 +219,6 @@ body>.piece:hover {
     -webkit-transform: translate(-50%, 0);
     transform: translate(-50%, 0);
     border-width: .48vmin;
-    z-index: 92;
 }
 
 .cell>.piece:nth-of-type(5):nth-last-of-type(n+2):hover {
@@ -236,5 +227,4 @@ body>.piece:hover {
     bottom: 0%;
     left: 0%;
     border-width: .48vmin;
-    z-index: 92;
 }
