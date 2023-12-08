@@ -11,11 +11,13 @@ const MENU_LOGO = {
     "移动阶段〖神行〗": "class='fas fa-smog'",
     "〖节钺〗": "class='fas fa-person-walking-arrow-loop-left'",
     "〖归营〗": "class='fas fa-tent-arrow-down-to-line'",
+    "〖纵傀〗": "class='fas fa-ghost'",
     "迅【闪】": "class='fas fa-arrow-right-from-bracket'",
     "【暗度陈仓】": "class='fas fa-person-arrow-down-to-line'",
     "【兵贵神速】": "class='fas fa-angles-right'",
     "【奇门遁甲】": "class='fas fa-arrows-rotate'",
     "【诱敌深入】": "class='fas fa-person-walking-arrow-right'",
+    "【草木皆兵】": "class='fas fa-snowman'",
     "更换地图": "class='fas fa-grip'",
 }
 

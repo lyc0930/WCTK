@@ -297,13 +297,13 @@ body .piece:hover {
 }
 
 .piece.token {
-    scale: 0.5;
+    scale: 0.70;
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
     border: none;
 
-    font-weight: bold;
+    /* font-weight: bold; */
     text-shadow: 0.05em 0.05em 0.05em rgba(0, 0, 0, 0.8);
 }
 

@@ -84,6 +84,26 @@ class Area
         return Array.from(Heroes).filter(hero => hero.area === this);
     }
 
+    // 空区域
+    get empty()
+    {
+        return this.heroes.length === 0;
+    }
+
+    // 标记
+    get tokens()
+    {
+        const tokens = [];
+        for (const piece of this.cell.children)
+        {
+            if (piece.token)
+            {
+                tokens.push(piece.token);
+            }
+        }
+        return tokens;
+    }
+
     highlight(className, listener = null)
     {
         this.cell.classList.add(className);

@@ -2,7 +2,7 @@ import { HERO_DATA, weapons, armors, horses } from './data.mjs';
 import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, calc_distance, calc_direction, Direction, isOnSameLine } from "./utils.mjs";
 import { addContextMenu, showSkillPanel } from './context-menu.mjs';
 import { Areas, Heroes } from "./global_variables.mjs";
-
+import { create_token } from './token.mjs';
 import { redFlag, blueFlag } from './flags.mjs';
 import { currentPlayer, currentPhase, setCurrentPhase, setCurrentPlayer } from './global_variables.mjs';
 import { Area } from './area.mjs';
@@ -406,7 +406,8 @@ class Hero
             "【暗度陈仓】": () => { this.use("【暗度陈仓】") },
             "【兵贵神速】": () => { this.use("【兵贵神速】") },
             "【奇门遁甲】": () => { this.use("【奇门遁甲】") },
-            "【诱敌深入】": () => { this.use("【诱敌深入】") }
+            "【诱敌深入】": () => { this.use("【诱敌深入】") },
+            "【草木皆兵】": () => { this.use("【草木皆兵】") }
         };
     }
 
@@ -1586,31 +1587,34 @@ class Hero
         // 正在等待响应
         if (isHighlighting()) return;
 
-        if (card === "迅【闪】")
+        switch (card)
         {
-            this._xun_Shan();
-        }
-        // 锦囊
-        // 〖秘计〗
-        else if (card === "【暗度陈仓】")
-        {
-            setCurrentPlayer(this)
-            this._An_Du_Chen_Cang(3 - this.affected_by_mi_ji);
-        }
-        else if (card === "【兵贵神速】")
-        {
-            setCurrentPlayer(this)
-            this._Bing_Gui_Shen_Su();
-        }
-        else if (card === "【奇门遁甲】")
-        {
-            setCurrentPlayer(this)
-            this._Qi_Men_Dun_Jia(2 - this.affected_by_mi_ji);
-        }
-        else if (card === "【诱敌深入】")
-        {
-            setCurrentPlayer(this)
-            this._You_Di_Shen_Ru(4 - this.affected_by_mi_ji);
+            // 基本牌
+            case "迅【闪】":
+                this._xun_Shan();
+                break;
+            // 普通锦囊牌
+            // 〖秘计〗
+            case "【暗度陈仓】":
+                setCurrentPlayer(this)
+                this._An_Du_Chen_Cang(3 - this.affected_by_mi_ji);
+                break;
+            case "【兵贵神速】":
+                setCurrentPlayer(this)
+                this._Bing_Gui_Shen_Su();
+                break;
+            case "【奇门遁甲】":
+                setCurrentPlayer(this)
+                this._Qi_Men_Dun_Jia(2 - this.affected_by_mi_ji);
+                break;
+            case "【诱敌深入】":
+                setCurrentPlayer(this)
+                this._You_Di_Shen_Ru(4 - this.affected_by_mi_ji);
+                break;
+            case "【草木皆兵】":
+                setCurrentPlayer(this)
+                this._Cao_Mu_Jie_Bing(4 - this.affected_by_mi_ji);
+                break;
         }
     }
 
@@ -1709,7 +1713,7 @@ class Hero
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
 
-            if (navigator.vibrate) navigator.vibrate(20);;
+            if (navigator.vibrate) navigator.vibrate(20);
 
             for (const hero of Heroes)
             {
@@ -1744,6 +1748,45 @@ class Hero
         }
     }
 
+    // 【草木皆兵】
+    _Cao_Mu_Jie_Bing(limit = 4)
+    {
+        const click_to_create = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            if (navigator.vibrate) navigator.vibrate(20);
+
+            for (const area of Areas.flat())
+            {
+                area.unhighlight("choose-target", click_to_create);
+            }
+
+            create_token("稻草人", event.currentTarget.area, this);
+        }
+
+        const targets = [];
+
+        for (const area of Areas.flat())
+        {
+            if (calc_distance(this, area) > limit) continue;
+            if (!area.empty) continue;
+            if (area.tokens.some(token => token.name === "稻草人")) continue;
+
+            targets.push(area);
+        }
+
+        if (targets.length <= 0) return;
+
+        record(`${this.name}使用【草木皆兵】`);
+
+        for (const area of targets)
+        {
+            area.highlight("choose-target", click_to_create);
+        }
+    }
+
     // 〖拒敌〗
     get affected_by_ju_di()
     {
@@ -1770,45 +1813,30 @@ class Hero
 // 工厂函数
 function create_hero(name, color, index)
 {
-    if (name === "王异")
+    switch (name)
     {
-        return new Wang_Yi(color, index);
-    }
-    else if (name === "董卓")
-    {
-        return new Dong_Zhuo(color, index);
-    }
-    else if (name === "庞统")
-    {
-        return new Pang_Tong(color, index);
-    }
-    else if (name === "左慈")
-    {
-        return new Zuo_Ci(color, index);
-    }
-    else if (name === "于禁")
-    {
-        return new Yu_Jin(color, index);
-    }
-    else if (name === "张绣")
-    {
-        return new Zhang_Xiu(color, index);
-    }
-    else if (name === "祖茂")
-    {
-        return new Zu_Mao(color, index);
-    }
-    else if (name === "孙乾")
-    {
-        return new Sun_Qian(color, index);
-    }
-    else if (name === "吕蒙")
-    {
-        return new Lv_Meng(color, index);
-    }
-    else
-    {
-        return new Hero(name, color, index);
+        case "王异":
+            return new Wang_Yi(color, index);
+        case "董卓":
+            return new Dong_Zhuo(color, index);
+        case "庞统":
+            return new Pang_Tong(color, index);
+        case "左慈":
+            return new Zuo_Ci(color, index);
+        case "于禁":
+            return new Yu_Jin(color, index);
+        case "张绣":
+            return new Zhang_Xiu(color, index);
+        case "祖茂":
+            return new Zu_Mao(color, index);
+        case "孙乾":
+            return new Sun_Qian(color, index);
+        case "吕蒙":
+            return new Lv_Meng(color, index);
+        case "卑弥呼":
+            return new Himiko(color, index);
+        default:
+            return new Hero(name, color, index);
     }
 }
 
@@ -2307,7 +2335,7 @@ class Zuo_Ci extends Hero
         for (const area of Areas.flat())
         {
             if (!this.can_stay(area)) continue;
-            if (area.heroes.length !== 0) continue;
+            if (!area.empty) continue;
 
             areas.push(area);
         }
@@ -2815,6 +2843,72 @@ class Lv_Meng extends Hero
         if (start.terrain !== "湖泊" || end.terrain !== "湖泊") return;
 
         // TODO: 使用【杀】的距离限制改为1且你使用的第一张【杀】伤害基数+1。
+    }
+}
+
+// 卑弥呼
+class Himiko extends Hero
+{
+    constructor(color, index)
+    {
+        super("卑弥呼", color, index);
+    }
+
+    _context_menu_items_skills()
+    {
+        return { "〖纵傀〗": () => { this.zong_kui(); } };
+    }
+
+    // 〖纵傀〗
+    // 出牌阶段，若场上“傀儡”的数量小于3，你可以在一个与你的距离为<4>以内的可进入空区域上放置一枚“傀儡”。
+    zong_kui()
+    {
+        // 若场上“傀儡”的数量小于3
+        let count = 0;
+        for (const area of Areas.flat())
+        {
+            for (const token of area.tokens)
+            {
+                if (token.name === "傀儡") count++;
+                if (count >= 3) return;
+            }
+        }
+
+        var limit = 4;
+
+        // 可进入空区域
+        const areas = [];
+        for (const area of Areas.flat())
+        {
+            if (!this.can_stay(area)) continue;
+            if (!area.empty) continue;
+            if (calc_distance(area, this) > limit) continue;
+
+            areas.push(area);
+        }
+
+        // 定义点击高亮区域行为
+        const click_to_create = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            if (navigator.vibrate) navigator.vibrate(20);;
+
+            record(`卑弥呼发动〖纵傀〗`);
+
+            for (const area of Areas.flat())
+            {
+                area.unhighlight("choose-target", click_to_create);
+            }
+
+            create_token("傀儡", event.currentTarget.area, this);
+        }
+
+        for (const area of areas)
+        {
+            area.highlight("choose-target", click_to_create);
+        }
     }
 }
 
