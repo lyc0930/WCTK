@@ -38,7 +38,6 @@ class Candidate
 
                 this.piece.style.width = "12vmin";
                 this.piece.style.height = "12vmin";
-                this.piece.style.transition = "width 100ms ease-out, height 100ms ease-out";
                 document.body.appendChild(this.piece);
             }
             else // 结束拖动
@@ -47,7 +46,6 @@ class Candidate
                 this.piece.style.top = null;
                 this.piece.style.width = "10vmin";
                 this.piece.style.height = "10vmin";
-                this.piece.style.transition = "width 100ms ease-out, height 100ms ease-out, left 70ms ease-out, top 70ms ease-out";
             }
         }
     }

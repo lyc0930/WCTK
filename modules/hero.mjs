@@ -304,7 +304,6 @@ class Hero
             this._dragging = value;
             if (value) // 开始拖动
             {
-                this.piece.style.transition = "width 100ms ease-out, height 100ms ease-out";
                 document.body.appendChild(this.piece);
 
                 for (const area of Areas.flat())
@@ -320,7 +319,6 @@ class Hero
             {
                 this.piece.style.left = null;
                 this.piece.style.top = null;
-                this.piece.style.transition = "width 100ms ease-out, height 100ms ease-out, left 70ms ease-out, top 70ms ease-out";
             }
         }
     }
