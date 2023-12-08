@@ -266,4 +266,4 @@ function create_token(name, area, creator)
     return token;
 }
 
-export { create_token };
+export { Token, create_token };

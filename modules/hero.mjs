@@ -2,7 +2,7 @@ import { HERO_DATA, weapons, armors, horses } from './data.mjs';
 import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, calc_distance, calc_direction, Direction, isOnSameLine } from "./utils.mjs";
 import { addContextMenu, showSkillPanel } from './context-menu.mjs';
 import { Areas, Heroes } from "./global_variables.mjs";
-import { create_token } from './token.mjs';
+import { Token, create_token } from './token.mjs';
 import { redFlag, blueFlag } from './flags.mjs';
 import { currentPlayer, currentPhase, setCurrentPhase, setCurrentPlayer } from './global_variables.mjs';
 import { Area } from './area.mjs';
@@ -69,6 +69,16 @@ class Hero
                 {
                     this.base.cell.appendChild(this.color === "Red" ? redFlag : blueFlag);
                 }
+            }
+
+            // 踩中稻草人/傀儡
+            for (const token of value.tokens)
+            {
+                if (token.name !== "稻草人") continue;
+                // 当一名角色进入有“稻草人”的区域时，终止此次移动并移除“稻草人”，然后该角色受到1点普通伤害"
+                this._stop_moving();
+                token.remove();
+                this.take_damage(token, 1);
             }
         }
         else
@@ -1032,7 +1042,7 @@ class Hero
         {
             const current_area = queue.shift();
 
-            if (current_area !== this.move_start && queue.length !== 0 &&this._stop_at(current_area)) continue;
+            if (current_area !== this.move_start && queue.length !== 0 &&this._pause_at(current_area)) continue;
 
             const row = current_area.row;
             const col = current_area.col;
@@ -1055,9 +1065,30 @@ class Hero
     }
 
     // 判断是否停下，不再自动寻路
-    _stop_at(area)
+    _pause_at(area)
     {
+        if (area.tokens.some(token => token.name === "稻草人")) return true;
         return false;
+    }
+
+    // 终止移动
+    _stop_moving()
+    {
+        // 移动阶段没有被提前结束
+        if (this?.move_phase_end !== undefined)
+        {
+            // 结束移动阶段
+            this.move_phase_end();
+        }
+        else
+        {
+            // 结束移动
+            if (this?.move_start === undefined) return;
+            if (this.move_steps > 0) this.move_steps = 0;
+            delete this.move_start;
+            cls(1000);
+        }
+        record(`${this.name}终止移动`);
     }
 
     // 相邻区域
@@ -1241,11 +1272,7 @@ class Hero
             // 失去1点体力
             this.deplete_HP(1);
 
-            // 移动阶段没有被提前结束
-            if (this?.move_phase_highlight === undefined || this?.move_phase_end === undefined) return;
-
-            // 结束移动阶段
-            this.move_phase_end();
+            this._stop_moving();
         }
 
         // 高亮可进入的区域
@@ -1396,12 +1423,7 @@ class Hero
             // 失去1点体力
             this.deplete_HP(1);
 
-            // 结束移动
-            delete this.move_start;
-            if (isDraw)
-            {
-                cls(1000);
-            }
+            this._stop_moving();
         }
 
         // 计算可到达的区域
@@ -1572,6 +1594,14 @@ class Hero
     // 受到伤害
     take_damage(source, damage_value, element = null)
     {
+        if (source === null)
+        {
+            record(`${this.name}受到${damage_value}点无来源的${(element === null ? "普通" : element + "属性")}伤害`)
+        }
+        else if (source instanceof Token)
+        {
+            record(`${this.name}受到${damage_value}点${source.name}造成的${(element === null ? "普通" : element + "属性")}伤害`)
+        }
         this.HP = this.HP - damage_value;
     }
 
@@ -2468,8 +2498,10 @@ class Zhang_Xiu extends Hero
     }
 
     // 判断是否停下，不再自动寻路
-    _stop_at(area)
+    _pause_at(area)
     {
+        if (area.tokens.some(token => token.name === "稻草人")) return true;
+
         // 〖冲杀〗
         // 当你于移动阶段声明你执行的移动时，你可以进入有敌方角色的区域；
         // 特殊处理：在进入有敌方角色的区域后停下，不再自动寻路。
@@ -2608,11 +2640,7 @@ class Zu_Mao extends Hero
             // 失去1点体力
             this.deplete_HP(1);
 
-            // 移动阶段没有被提前结束
-            if (this?.move_phase_highlight === undefined || this?.move_phase_end === undefined) return;
-
-            // 结束移动阶段
-            this.move_phase_end();
+            this._stop_moving();
         }
 
         // 高亮可进入的区域
