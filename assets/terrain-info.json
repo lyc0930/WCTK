@@ -60,7 +60,7 @@
         "地形效果": "位于此地形的角色的出牌阶段限一次，其可以将一张黑色牌当一张普【杀】使用。位于护城河地形的角色使用的普【杀】对位于此地形的目标角色的结算开始时，此【杀】对此目标无效。",
         "neutral": true,
         "color": "#708090",
-        "icon": "class='fas fa-square-xmark'"
+        "icon": "class='fas fa-rectangle-xmark'"
     },
     "护城河": {
         "className": "moat",
@@ -165,28 +165,28 @@
         "地形效果": "位于此地形的角色的出牌阶段限一次，其可以将一张手牌交给位于擂台地形的己方阵营角色。",
         "neutral": true,
         "color": "#995C4E",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fas fa-drum fa-rotate-90'"
     },
     "擂台": {
         "className": "arena",
         "地形效果": "与位于此地形的角色阵营相同的另一名角色不能以任何形式进入擂台。擂台上的角色使用牌或发动技能的目标不能是不位于擂台地形的角色；不位于擂台地形的角色使用牌的目标不能是位于擂台地形的角色；不位于战鼓地形和擂台地形的角色发动技能的目标不能是位于擂台地形的角色。",
         "neutral": true,
         "color": "#800000",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fas fa-road-barrier'"
     },
     "大纛": {
         "className": "banner",
         "地形效果": "每回合限一次，当一名角色于其回合内途经此地形时（即此地形既不是起点也不是终点），该角色获得效果：本回合你使用的下一张【杀】的伤害基数+1。",
         "neutral": true,
         "color": "#C34347",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fas fa-house-flag'"
     },
     "马厩": {
         "className": "stable",
         "地形效果": "位于此地形的角色的结束阶段，其可以执行一次步数至多为3的移动。",
         "neutral": true,
         "color": "#D2691E",
-        "icon": "class='fad fa-horse'"
+        "icon": "class='fas fa-horse'"
     },
     "校场": {
         "className": "ground",

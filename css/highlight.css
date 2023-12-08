@@ -48,26 +48,26 @@
 
 @keyframes twinkle-choose {
     50% {
-        box-shadow: 0 0 0.3em 0.3em rgb(20, 200, 43, 0.5);
+        box-shadow: 0 0 0.9vmin 0.9vmin rgb(20, 200, 43, 0.5);
     }
 }
 
 .piece.choose-target {
-    box-shadow: 0 0 0.3em 0.3em rgb(20, 200, 43, 0.25);
+    box-shadow: 0 0 0.9vmin 0.9vmin rgb(20, 200, 43, 0.25);
     animation: twinkle-choose 0.8s infinite ease-in-out;
 }
 
 .piece.choose-target:hover {
     border-color: rgb(20, 200, 43);
-    box-shadow: 0 0 0.3em 0.3em rgb(20, 200, 43, 0.5);
+    box-shadow: 0 0 0.9vmin 0.9vmin rgb(20, 200, 43, 0.5);
     animation: none;
 }
 
 .piece.attack-target {
-    box-shadow: 0 0 0.3em 0.3em rgb(255, 36, 0, 0.5);
+    box-shadow: 0 0 0.9vmin 0.9vmin rgb(255, 36, 0, 0.5);
 }
 
 .piece.attack-target:hover {
     border-color: rgb(255, 36, 0);
-    box-shadow: 0 0 0.3em 0.3em rgb(255, 36, 0, 0.5);
+    box-shadow: 0 0 0.9vmin 0.9vmin rgb(255, 36, 0, 0.5);
 }
