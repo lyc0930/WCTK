@@ -74,11 +74,27 @@ class Hero
             // 踩中稻草人/傀儡
             for (const token of value.tokens)
             {
-                if (token.name !== "稻草人") continue;
-                // 当一名角色进入有“稻草人”的区域时，终止此次移动并移除“稻草人”，然后该角色受到1点普通伤害"
-                this._stop_moving();
-                token.remove();
-                this.take_damage(token, 1);
+                if (token.name !== "稻草人" && token.name !== "傀儡") continue;
+                switch (token.name)
+                {
+                    case "稻草人":
+                        // 当一名角色进入有“稻草人”的区域时，终止此次移动并移除“稻草人”，然后该角色受到1点普通伤害"
+                        record(`${this.name}踩中稻草人`);
+                        this._stop_moving();
+                        token.remove();
+                        this.take_damage(token, 1);
+                        break;
+                    case "傀儡":
+                        // 当敌方角色进入有“傀儡”的区域时，移去此“傀儡”并终止当前移动，
+                        if (token.color === this.color) continue;
+                        if (!Heroes.some(hero => hero.name === "卑弥呼" && hero.alive)) continue;
+                        this._stop_moving();
+                        token.remove();
+                        break;
+                        // TODO: 然后直到该角色的下个回合开始：其无法移动或转移；当其受到【杀】造成的伤害时，若其为此【杀】的目标，此伤害值+1。
+                    default:
+                        throw new Error(`Unknown token name: ${token.name}`);
+                }
             }
         }
         else
@@ -1068,6 +1084,7 @@ class Hero
     _pause_at(area)
     {
         if (area.tokens.some(token => token.name === "稻草人")) return true;
+        if (area.tokens.some(token => token.name === "傀儡" && token.color !== this.color) && Heroes.some(hero => hero.name === "卑弥呼" && hero.alive)) return true;
         return false;
     }
 
