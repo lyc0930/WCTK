@@ -38,7 +38,10 @@
     box-shadow: 0 0 0.25em 0.25em rgb(0, 0, 0, 0.15);
 }
 
-.context-menu .fas, .context-menu .far {
+.context-menu .fas,
+.context-menu .far,
+.context-menu .fab,
+.context-menu .fad {
     width: 1em;
     margin-right: 0.5em;
 }
