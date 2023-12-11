@@ -1025,6 +1025,7 @@ class Hero
         {
             if (area.terrain === "军营" || area.terrain === "大本营") return true;
             if (this._cannot_stay_because_of_terrain(area)) return false;
+            if (this._cannot_stay_because_of_infantry(area)) return false;
             if (area.heroes.length > 1) return false;
 
             return true;
@@ -1039,6 +1040,8 @@ class Hero
         if (area.terrain === "军营" || area.terrain === "大本营") return true;
 
         if (this._cannot_stay_because_of_terrain(area)) return false;
+
+        if (this._cannot_stay_because_of_infantry(area)) return false;
 
         if (this._cannot_stay_because_of_other_heroes(area)) return false;
 
@@ -1061,6 +1064,12 @@ class Hero
     _cannot_stay_because_of_terrain(area)
     {
         return area.terrain === "山岭" || area.terrain === "礁石";
+    }
+
+    // 因步旅而形成的不可进入区域
+    _cannot_stay_because_of_infantry(area)
+    {
+        return area.tokens.some(token => token.name === "步旅" && token.color !== this.color);
     }
 
     // 因其他角色而形成的不可进入区域
@@ -2768,6 +2777,7 @@ class Zu_Mao extends Hero
                 if (this.move_points === 1)
                 {
                     if (this._cannot_stay_because_of_terrain(area)) continue;
+                    if (this._cannot_stay_because_of_infantry(area)) continue;
                     if (!this.can_pass(area)) continue;
                     if (!this.is_ride_on("穿越") && !this.can_stay(area)) continue;
 
