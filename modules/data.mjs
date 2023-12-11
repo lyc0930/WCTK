@@ -194,7 +194,7 @@ const TERRAIN_INFO = {
         "地形效果": "位于此地形的角色成为其他角色使用【杀】的目标后，若此目标角色与此【杀】的使用者的距离大于1，此目标角色不能响应此【杀】。位于此地形的角色受到火焰伤害时，防止之。",
         "neutral": true,
         "color": "#ACA766",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fab fa-squarespace'"
     },
     "烽火台": {
         "className": "beacon",
@@ -257,35 +257,35 @@ const TERRAIN_INFO = {
         "地形效果": "此地形区分阵营。游戏开始时，在此地形放置一个对应阵营的“步旅”。",
         "neutral": false,
         "color": "#FFAE90",
-        "icon": "class='fad fa-square'"
+        "icon": "class='far fa-hexagon'"
     },
     "前锋校场": {
         "className": "front-ground",
         "地形效果": "位于此地形的角色的结束阶段，将此地形改为由己方阵营控制。被控制的前锋校场视为该阵营的校场。",
         "neutral": true,
         "color": "#FFAE90",
-        "icon": "class='fad fa-square'"
+        "icon": "class='far fa-times-hexagon'"
     },
     "点将台": {
         "className": "command-platform",
         "地形效果": "此地形区分阵营。位于此地形的对应阵营角色的回合开始时，选择一个没有“步旅”的对应阵营校场（若该角色的体力上限为3，则改为选择两个），在目标校场放置一个“步旅”。",
         "neutral": false,
         "color": "#AD3523",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fas fa-award'"
     },
     "粮道": {
         "className": "supply-route",
         "地形效果": "此地形区分阵营。位于此地形的角色出牌阶段限一次，其可以弃置一张方块牌，然后移除对应阵营的所有“步旅”。",
         "neutral": false,
         "color": "#9ADD32",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fas fa-wheat-awn'"
     },
     "高地": {
         "className": "highland",
         "地形效果": "位于此地形的角色使用射【杀】无距离限制。位于此地形的角色移动己方“步旅”至敌方“步旅”所在区域时，仅移除敌方“步旅”。",
         "neutral": true,
         "color": "#B49265",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fas fa-glass-whiskey fa-rotate-180'"
     }
 };
 

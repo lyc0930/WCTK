@@ -42,8 +42,9 @@
 .context-menu .far,
 .context-menu .fab,
 .context-menu .fad {
-    width: 1em;
-    margin-right: 0.5em;
+    width: 1.2em;
+    text-align: center;
+    margin-right: 0.2em;
 }
 
 .context-menu label {

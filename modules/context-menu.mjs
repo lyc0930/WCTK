@@ -18,7 +18,8 @@ const MENU_LOGO = {
     "【奇门遁甲】": "class='fas fa-arrows-rotate'",
     "【诱敌深入】": "class='fas fa-person-walking-arrow-right'",
     "【草木皆兵】": "class='fas fa-snowman'",
-    "占领": "class='fas fa-arrows-to-circle'",
+    "控制": "class='fas fa-arrows-to-circle'",
+    "放置步旅": "class='fas fa-street-view'",
     "更换地图": "class='fas fa-grip'",
 }
 

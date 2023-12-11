@@ -1,0 +1,61 @@
+.fa-hexagon:before {
+    font-family: 'Font Awesome 5 Pro';
+    content: "\f312";
+}
+
+.fa-minus-hexagon:before {
+    font-family: 'Font Awesome 5 Pro';
+    content: "\f307";
+}
+
+.fa-plus-hexagon:before {
+    font-family: 'Font Awesome 5 Pro';
+    content: "\f300";
+}
+
+.fa-times-hexagon:before {
+    font-family: 'Font Awesome 5 Pro';
+    content: "\f2ee";
+}
+
+.fa-mountains:before {
+    font-family: 'Font Awesome 5 Pro';
+    content: "\f6fd";
+}
+
+.fa-trees:before {
+    font-family: 'Font Awesome 5 Pro';
+    content: "\f724";
+}
+
+@font-face {
+    font-family: 'Font Awesome 5 Duotone';
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url("../assets/Fonts/pro-fa-duotone-900.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'Font Awesome 5 Pro';
+    font-style: normal;
+    font-weight: 300;
+    font-display: block;
+    src: url("../assets/Fonts/pro-fa-light-300.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'Font Awesome 5 Pro';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("../assets/Fonts/pro-fa-regular-400.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: 'Font Awesome 5 Pro';
+    font-style: normal;
+    font-weight: 900;
+    font-display: block;
+    src: url("../assets/Fonts/pro-fa-solid-900.woff2") format("woff2");
+}

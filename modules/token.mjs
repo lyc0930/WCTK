@@ -2,7 +2,7 @@ import { Area } from "./area.mjs";
 import { isHighlighting } from "./utils.mjs";
 
 // 标记类
-// 仅抽象放置于场上的、非工事或占领标记的、非帅旗的标记
+// 仅抽象放置于场上的、非工事或控制标记的、非帅旗的标记
 class Token
 {
     constructor(name, area, color = null, dragable = true, background_image = null, initial = name[0], initial_color = 'white')
