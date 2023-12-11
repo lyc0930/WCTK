@@ -110,7 +110,7 @@ class Token
             const shiftY = event.clientY - (rect.top + 0.5 * rect.height);
 
             const phantom_piece = document.createElement("div");
-            phantom_piece.className = "phantom piece";
+            phantom_piece.className = "phantom piece token";
             phantom_piece.id = "phantom_piece";
 
             const onmousemove = (event) =>
@@ -179,7 +179,7 @@ class Token
             const shiftY = event.touches[0].clientY - (rect.top + 0.5 * rect.height);
 
             const phantom_piece = document.createElement("div");
-            phantom_piece.className = "phantom piece";
+            phantom_piece.className = "phantom piece token";
             phantom_piece.id = "phantom_piece";
 
             const ontouchmove = (event) =>
@@ -260,9 +260,6 @@ class infantry extends Token
             // “步旅”可以进入空区域、有己方角色的区域或仅有“步旅”的区域，不可以进入有敌方角色的区域。
             if ((value.terrain === "校场" || value.terrain === "前锋校场" || value.terrain === "平原") && !value.heroes.some(hero => hero.color !== this.color))
             {
-                this._area = value;
-                this._area.cell.appendChild(this.piece);
-
                 // 当一个己方“步旅”移动进入有敌方“步旅”的区域时，移除该区域的双方的各一个“步旅”。
                 for (const token of value.tokens)
                 {
@@ -270,9 +267,11 @@ class infantry extends Token
                     {
                         token.remove();
                         this.remove();
-                        break;
+                        return;
                     }
                 }
+                this._area = value;
+                this._area.cell.appendChild(this.piece);
             }
             else
             {
