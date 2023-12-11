@@ -166,12 +166,7 @@ class Token
 
             event.stopPropagation();
 
-            piece.old_style = piece.style;
-            piece.style.width = "11vmin";
-            piece.style.height = "11vmin";
-            piece.style.zIndex = "92";
-            piece.style.borderWidth = ".8vmin";
-            piece.style.boxShadow = "0 0 0.4em 0.4em rgb(0, 0, 0, 0.15)";
+            piece.style.scale = "0.75";
 
             const rect = piece.getBoundingClientRect();
 
@@ -208,7 +203,7 @@ class Token
 
                 phantom_piece.remove();
 
-                piece.style = piece.old_style;
+                piece.style.scale = "0.70";
 
                 if (this.dragging)
                 {
