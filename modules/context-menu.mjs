@@ -18,6 +18,7 @@ const MENU_LOGO = {
     "【奇门遁甲】": "class='fas fa-arrows-rotate'",
     "【诱敌深入】": "class='fas fa-person-walking-arrow-right'",
     "【草木皆兵】": "class='fas fa-snowman'",
+    "占领": "class='fas fa-arrows-to-circle'",
     "更换地图": "class='fas fa-grip'",
 }
 
@@ -445,7 +446,11 @@ function showTerrainPanel(area)
     {
         if (cell.area.terrain !== area.terrain) continue;
 
-        if (TERRAIN_INFO[area.terrain]["neutral"])
+        const offset = `0.20em`;
+        const blur = `0.10em`;
+        const spread = `0`;
+
+        if (area.color === null)
         {
             let code = '';
             for (let i = 0; i < 4; i++)
@@ -464,9 +469,6 @@ function showTerrainPanel(area)
             }
 
             const color = TERRAIN_INFO[area.terrain]["color"];
-            const offset = `0.20em`;
-            const blur = `0.10em`;
-            const spread = `0`;
 
             const left = `-${offset} 0 ${blur} -${spread} ${color}`;
             const right = `${offset} 0 ${blur} -${spread} ${color}`;
@@ -535,14 +537,15 @@ function showTerrainPanel(area)
         {
             if (cell.classList.contains("Red") && area.color === "Red")
             {
-                cell.style.boxShadow = "0 0 ${half} ${half} rgba(255, 46, 46, 0.8)";
+                cell.style.boxShadow = `0 0 ${blur} ${offset} rgba(255, 46, 46, 0.8)`;
                 cell.style.zIndex = 10;
             }
             else if (cell.classList.contains("Blue") && area.color === "Blue")
             {
-                cell.style.boxShadow = "0 0 ${half} ${half} rgba(46, 46, 255, 0.8)";
+                cell.style.boxShadow = `0 0 ${blur} ${offset} rgba(46, 46, 255, 0.8)`;
                 cell.style.zIndex = 10;
             }
+            console.log(area.color);
         }
     }
 }

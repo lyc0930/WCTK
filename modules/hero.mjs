@@ -408,6 +408,11 @@ class Hero
         items[`break-line-${i++}`] = "<hr>";
         Object.assign(items, this.area._context_menu_items_terrain());
 
+        if (this.area.terrain === "烽火台" || this.area.terrain === "前锋校场" )
+        {
+            Object.assign(items, { "占领": () => { this.area.occupied_by(this) } });
+        }
+
         return items;
     }
 

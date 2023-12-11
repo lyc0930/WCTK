@@ -137,7 +137,7 @@
         "地形效果": "位于此地形的角色的结束阶段，将此地形改为由己方阵营控制，然后：如果此地形原先未被控制，其明置敌方阵营的一名角色的手牌（若己方阵营有被明置手牌的角色，则改为选择暗置己方阵营的一名角色的手牌）；如果此区域原先由敌方阵营控制，则依次执行上述操作两次。",
         "neutral": true,
         "color": "#F77838",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fab fa-gripfire'"
     },
     "哨卡": {
         "className": "outpost",
@@ -196,7 +196,7 @@
         "icon": "class='fad fa-square'"
     },
     "前锋校场": {
-        "className": "vanguard-ground",
+        "className": "front-ground",
         "地形效果": "位于此地形的角色的结束阶段，将此地形改为由己方阵营控制。被控制的前锋校场视为该阵营的校场。",
         "neutral": true,
         "color": "#FFAE90",

@@ -32,10 +32,40 @@
     border: .2vmin solid gray;
 }
 
+:root {
+    --color: 0, 0, 0;
+    --transparency: 0.3;
+}
+
+@keyframes occupy {
+    0% {
+        border-color: rgba(var(--color), calc(var(--transparency) * 2));
+        border-radius: 50%;
+    }
+
+    100% {
+        border-color: rgba(var(--color), var(--transparency));
+        border-radius: 0;
+    }
+}
+
+@keyframes twikle {
+    50% {
+        border-color: rgba(var(--color), calc(var(--transparency) * 2));
+    }
+}
+
+.cell.occupied {
+    border: .6vmin solid rgba(var(--color), var(--transparency));
+    animation: 0.75s ease-out 1 occupy, 1.5s ease-in-out 0.75s infinite twikle;
+}
+
 .cell.Red {
-    border-color: rgba(255, 0, 0, 0.3);
+    --color: 255, 0, 0;
+    border-color: rgba(var(--color), var(--transparency));
 }
 
 .cell.Blue {
-    border-color: rgba(0, 0, 255, 0.3);
+    --color: 0, 0, 255;
+    border-color: rgba(var(--color), var(--transparency));
 }

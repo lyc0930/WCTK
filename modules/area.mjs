@@ -11,6 +11,7 @@ class Area
         this.row = row;
         this.col = col;
         this.terrain = terrain;
+        this.color = null;
         this.cell = this._create_cell();
         Areas[row][col] = this;
     }
@@ -139,9 +140,17 @@ function create_area(row, col, terrain)
     {
         return new caltrop(row, col, terrain);
     }
+    else if (terrain.startsWith("烽火台"))
+    {
+        return new beacon(row, col, terrain);
+    }
     else if (terrain.startsWith("校场"))
     {
         return new ground(row, col, terrain);
+    }
+    else if (terrain.startsWith("前锋校场"))
+    {
+        return new front_ground(row, col, terrain);
     }
     else if (terrain.startsWith("点将台"))
     {
@@ -260,6 +269,21 @@ class caltrop extends Area
     }
 }
 
+class beacon extends Area
+{
+    constructor(row, col, terrain)
+    {
+        super(row, col, "烽火台");
+    }
+
+    occupied_by(hero)
+    {
+        this.color = hero.color;
+        this.cell.classList.remove("Red", "Blue", "occupied");
+        setTimeout(() => { this.cell.classList.add(hero.color); this.cell.classList.add("occupied"); }, 50);
+    }
+}
+
 // 校场
 class ground extends Area
 {
@@ -277,6 +301,22 @@ class ground extends Area
             this.color = "Blue";
             this.cell.classList.add("Blue");
         }
+    }
+}
+
+// 前锋校场
+class front_ground extends Area
+{
+    constructor(row, col, terrain)
+    {
+        super(row, col, "前锋校场");
+    }
+
+    occupied_by(hero)
+    {
+        this.color = hero.color;
+        this.cell.classList.remove("Red", "Blue", "occupied");
+        setTimeout(() => { this.cell.classList.add(hero.color); this.cell.classList.add("occupied"); }, 50);
     }
 }
 
