@@ -244,6 +244,54 @@ class Token
     }
 }
 
+// 步旅
+class infantry extends Token
+{
+    constructor(area, color)
+    {
+        super("步旅", area, color, true, `url(https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Token/infantry_${color}.webp)`, '旅', (color === "Red") ? 'rgba(255, 100, 100, 0.8)' : 'rgba(100, 135, 255, 0.8)');
+    }
+
+    set area(value)
+    {
+        if (value instanceof Area)
+        {
+            // 步旅”只能进入校场（包括前锋校场）和平原地形。
+            // “步旅”可以进入空区域、有己方角色的区域或仅有“步旅”的区域，不可以进入有敌方角色的区域。
+            if ((value.terrain === "校场" || value.terrain === "前锋校场" || value.terrain === "平原") && !value.heroes.some(hero => hero.color !== this.color))
+            {
+                this._area = value;
+                this._area.cell.appendChild(this.piece);
+
+                // 当一个己方“步旅”移动进入有敌方“步旅”的区域时，移除该区域的双方的各一个“步旅”。
+                for (const token of value.tokens)
+                {
+                    if (token.name === "步旅" && token.color !== this.color)
+                    {
+                        token.remove();
+                        this.remove();
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                this._area.cell.appendChild(this.piece);
+            }
+        }
+        else
+        {
+            this._area = null;
+        }
+    }
+
+    get area()
+    {
+        return this._area;
+    }
+
+}
+
 // 工厂函数
 function create_token(name, area, creator)
 {
@@ -257,7 +305,7 @@ function create_token(name, area, creator)
             token = new Token(name, area, creator.color, false, `url(https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Token/puppet.webp)`, '傀', 'rgba(255, 255, 255, 0.8)');
             break;
         case "步旅":
-            token = new Token(name, area, creator.color, true, `url(https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Token/infantry_${creator.color}.webp)`, '旅', (creator.color === "Red") ? 'rgba(255, 100, 100, 0.8)' : 'rgba(100, 135, 255, 0.8)');
+            token = new infantry(area, creator.color);
             break;
         default:
             token = new Token(name, area);
@@ -266,4 +314,4 @@ function create_token(name, area, creator)
     return token;
 }
 
-export { Token, create_token };
+export { Token, create_token, infantry };

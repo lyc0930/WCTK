@@ -1,6 +1,7 @@
 import { TERRAIN, TERRAIN_INFO } from "./data.mjs";
 import { Areas, Heroes } from "./global_variables.mjs";
 import { Area, create_area } from '../modules/area.mjs';
+import { infantry } from '../modules/token.mjs';
 
 // 更换地图
 function setMode(mode, de_novo=true)
@@ -37,6 +38,15 @@ function setMode(mode, de_novo=true)
                 chessboard.replaceChild(new_area.cell, old_area.cell);
             }
         }
+    }
+
+    //  ①游戏开始时，所有校场会分别生成一个对应阵营的“步旅”。
+    if (mode === "步战")
+    {
+        const infantry_red_1 = new infantry(Areas[4][1], "Red");
+        const infantry_red_2 = new infantry(Areas[6][3], "Red");
+        const infantry_blue_1 = new infantry(Areas[0][3], "Blue");
+        const infantry_blue_2 = new infantry(Areas[2][5], "Blue");
     }
 }
 

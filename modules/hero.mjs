@@ -425,8 +425,6 @@ class Hero
             Object.assign(items, {
                 "放置步旅": () =>
                 {
-                    var infantry_count = this.maxHP === 3 ? 2 : 1;
-
                     const click_to_place = (event) =>
                     {
                         if (event.cancelable) event.preventDefault();
@@ -434,8 +432,10 @@ class Hero
 
                         if (navigator.vibrate) navigator.vibrate(20);
 
-                        infantry_count--;
-                        if (infantry_count <= 0)
+                        place_count--;
+                        infantry_count++;
+
+                        if (place_count <= 0 || infantry_count >= 6)
                         {
                             for (const area of Areas.flat())
                             {
@@ -452,8 +452,17 @@ class Hero
 
                     const targets = [];
 
+                    var place_count = this.maxHP === 3 ? 2 : 1;
+                    let infantry_count = 0;
+
                     for (const area of Areas.flat())
                     {
+                        for (const token of area.tokens)
+                        {
+                            if (token.name === "步旅" && token.color === this.color) infantry_count++;
+                            if (infantry_count >= 6) return;
+                        }
+
                         if (area.color !== this.color) continue;
                         if (area.terrain !== "校场" && area.terrain !== "前锋校场") continue;
                         if (area.tokens.some(token => token.name === "步旅")) continue;
@@ -462,6 +471,8 @@ class Hero
                     }
 
                     if (targets.length <= 0) return;
+
+                    place_count = Math.max(6 - infantry_count, place_count, targets.length);
 
                     for (const area of targets)
                     {
