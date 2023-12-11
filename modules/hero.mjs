@@ -410,7 +410,65 @@ class Hero
 
         if (this.area.terrain === "烽火台" || this.area.terrain === "前锋校场" )
         {
-            Object.assign(items, { "占领": () => { this.area.occupied_by(this) } });
+            // 位于此地形的角色的结束阶段，将此地形改为由己方阵营控制。
+            Object.assign(items, {
+                "控制": () =>
+                {
+                    if (this.area.color === this.color) return;
+                    this.area.occupied_by(this)
+                }
+            });
+        }
+        else if (this.area.terrain === "点将台" && this.color === this.area.color)
+        {
+            // 选择一个没有“步旅”的对应阵营校场（若该角色的体力上限为3，则改为选择两个），在目标校场放置一个“步旅”。
+            Object.assign(items, {
+                "放置步旅": () =>
+                {
+                    var infantry_count = this.maxHP === 3 ? 2 : 1;
+
+                    const click_to_place = (event) =>
+                    {
+                        if (event.cancelable) event.preventDefault();
+                        event.stopPropagation();
+
+                        if (navigator.vibrate) navigator.vibrate(20);
+
+                        infantry_count--;
+                        if (infantry_count <= 0)
+                        {
+                            for (const area of Areas.flat())
+                            {
+                                area.unhighlight("choose-target", click_to_place);
+                            }
+                        }
+                        else
+                        {
+                            event.currentTarget.area.unhighlight("choose-target", click_to_place);
+                        }
+
+                        create_token("步旅", event.currentTarget.area, this);
+                    }
+
+                    const targets = [];
+
+                    for (const area of Areas.flat())
+                    {
+                        if (area.color !== this.color) continue;
+                        if (area.terrain !== "校场" && area.terrain !== "前锋校场") continue;
+                        if (area.tokens.some(token => token.name === "步旅")) continue;
+
+                        targets.push(area);
+                    }
+
+                    if (targets.length <= 0) return;
+
+                    for (const area of targets)
+                    {
+                        area.highlight("choose-target", click_to_place);
+                    }
+                }
+            });
         }
 
         return items;
@@ -1803,7 +1861,7 @@ class Hero
     // 【草木皆兵】
     _Cao_Mu_Jie_Bing(limit = 4)
     {
-        const click_to_create = (event) =>
+        const click_to_place = (event) =>
         {
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
@@ -1812,7 +1870,7 @@ class Hero
 
             for (const area of Areas.flat())
             {
-                area.unhighlight("choose-target", click_to_create);
+                area.unhighlight("choose-target", click_to_place);
             }
 
             create_token("稻草人", event.currentTarget.area, this);
@@ -1835,7 +1893,7 @@ class Hero
 
         for (const area of targets)
         {
-            area.highlight("choose-target", click_to_create);
+            area.highlight("choose-target", click_to_place);
         }
     }
 
@@ -2938,7 +2996,7 @@ class Himiko extends Hero
         }
 
         // 定义点击高亮区域行为
-        const click_to_create = (event) =>
+        const click_to_place = (event) =>
         {
             if (event.cancelable) event.preventDefault();
             event.stopPropagation();
@@ -2949,7 +3007,7 @@ class Himiko extends Hero
 
             for (const area of Areas.flat())
             {
-                area.unhighlight("choose-target", click_to_create);
+                area.unhighlight("choose-target", click_to_place);
             }
 
             create_token("傀儡", event.currentTarget.area, this);
@@ -2957,7 +3015,7 @@ class Himiko extends Hero
 
         for (const area of areas)
         {
-            area.highlight("choose-target", click_to_create);
+            area.highlight("choose-target", click_to_place);
         }
     }
 }
