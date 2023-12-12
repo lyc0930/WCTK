@@ -310,3 +310,18 @@ body .piece:hover {
 .cell>.token:only-of-type {
     transform-origin: 0 0;
 }
+
+@keyframes formation {
+    45% {
+        scale: 0.75;
+        box-shadow: 0vmin 0vmin 2vmin 0.8vmin coral;
+    }
+    55% {
+        scale: 0.75;
+        box-shadow: 0vmin 0vmin 2vmin 0.8vmin coral;
+    }
+}
+
+.token.formation {
+    animation: formation 1.5s 3 ease-in-out;
+}

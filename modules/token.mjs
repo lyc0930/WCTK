@@ -1,5 +1,6 @@
 import { Area } from "./area.mjs";
-import { isHighlighting } from "./utils.mjs";
+import { calc_distance, isHighlighting } from "./utils.mjs";
+import { Areas } from "./global_variables.mjs";
 
 // 标记类
 // 仅抽象放置于场上的、非工事或控制标记的、非帅旗的标记
@@ -267,6 +268,7 @@ class infantry extends Token
                 }
                 this._area = value;
                 this._area.cell.appendChild(this.piece);
+                this.check_formation();
             }
             else
             {
@@ -284,6 +286,172 @@ class infantry extends Token
         return this._area;
     }
 
+    // 检查阵型
+    check_formation()
+    {
+        for (const area of Areas.flat())
+        {
+            for (const token of area.tokens)
+            {
+                if (token.name !== "步旅" || token.color !== this.color) continue;
+                token.piece.classList.remove("formation");
+            }
+        }
+
+        this._highlight_formation(this._check_formation_straight());
+        this._highlight_formation(this._check_formation_square());
+        this._highlight_formation(this._check_formation_T());
+    }
+
+    // 检查一字形
+    _check_formation_straight()
+    {
+        let x = this.area.row;
+        let y = this.area.col;
+
+        for (const direction of [[0, 1], [1, 0]])
+        {
+            let dx = direction[0];
+            let dy = direction[1];
+
+            for (let start = -3; start <= 0; start++)
+            {
+                let end = start + 3;
+                if (x + start * dx < 0 || y + start * dy < 0 || x + end * dx >= 7 || y + end * dy >= 7) continue;
+
+                var formation = [];
+                for (let i = start; i <= end; i++)
+                {
+                    for (const token of Areas[x + i * dx][y + i * dy].tokens)
+                    {
+                        if (token.color === this.color)
+                        {
+                            formation.push(token);
+                            break;
+                        }
+                    }
+                }
+
+                if (formation.length === 4)
+                {
+                    return formation;
+                }
+            }
+        }
+        return null;
+    }
+
+    // 检查田字形
+    _check_formation_square()
+    {
+        let x = this.area.row;
+        let y = this.area.col;
+
+        for (const offset of [[-1, -1], [-1, 0], [0, -1], [0, 0]])
+        {
+            let start_x = x + offset[0];
+            let start_y = y + offset[1];
+
+            if (start_x < 0 || start_y < 0 || start_x >= 6 || start_y >= 6) continue;
+
+            var formation = [];
+
+            for (const d of [[0, 0], [0, 1], [1, 0], [1, 1]])
+            {
+                let dx = d[0];
+                let dy = d[1];
+
+                for (const token of Areas[start_x + dx][start_y + dy].tokens)
+                {
+                    if (token.color === this.color)
+                    {
+                        formation.push(token);
+                        break;
+                    }
+                }
+            }
+
+            if (formation.length === 4)
+            {
+                return formation;
+            }
+        }
+
+        return null;
+    }
+
+    // 检查T字形
+    _check_formation_T()
+    {
+        let x = this.area.row;
+        let y = this.area.col;
+
+        const positions = [
+            [[0, -1], [-1, 0], [0, 0], [0, 1]],
+            [[0, -1], [0, 0], [1, 0], [0, 1]],
+            [[0, -1], [-1, 0], [0, 0], [1, 0]],
+            [[-1, 0], [0, 0], [0, 1], [1, 0]],
+        ]
+
+        for (const position of positions)
+        {
+            for (const start of position)
+            {
+                var formation = [];
+                var includes_this = false;
+
+                for (const d of position)
+                {
+                    let dx = d[0] - start[0];
+                    let dy = d[1] - start[1];
+
+                    if (!includes_this && dx === 0 && dy ===0) includes_this = true;
+
+                    if (x + dx < 0 || y + dy < 0 || x + dx >= 7 || y + dy >= 7) break;
+
+                    for (const token of Areas[x + dx][y + dy].tokens)
+                    {
+                        if (token.color === this.color)
+                        {
+                            formation.push(token);
+                            break;
+                        }
+                    }
+                }
+
+                if (formation.length === 4 && includes_this)
+                {
+                    return formation;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    // 高亮阵型
+    _highlight_formation(formation)
+    {
+        if (formation === null) return;
+
+        // 按距离排序
+        var formation_dict = { 0: [], 1: [], 2: [], 3: [] };
+        for (const token of formation)
+        {
+            formation_dict[calc_distance(this.area, token.area)].push(token);
+        }
+
+        for (let i = 0; i < 4; i++)
+        {
+            for (const token of formation_dict[i])
+            {
+                setTimeout(() =>
+                {
+                    token.piece.classList.add("formation");
+                }, i * 250);
+            }
+        }
+    }
 }
 
 // 工厂函数
