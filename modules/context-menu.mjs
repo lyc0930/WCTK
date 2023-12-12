@@ -546,7 +546,6 @@ function showTerrainPanel(area)
                 cell.style.boxShadow = `0 0 ${blur} ${offset} rgba(46, 46, 255, 0.8)`;
                 cell.style.zIndex = 10;
             }
-            console.log(area.color);
         }
     }
 }

@@ -452,7 +452,7 @@ class Hero
 
                     const targets = [];
 
-                    var place_count = this.maxHP === 3 ? 2 : 1;
+                    let place_count = (this.maxHP === 3) ? 2 : 1;
                     let infantry_count = 0;
 
                     for (const area of Areas.flat())
@@ -472,7 +472,7 @@ class Hero
 
                     if (targets.length <= 0) return;
 
-                    place_count = Math.max(6 - infantry_count, place_count, targets.length);
+                    place_count = Math.min(6 - infantry_count, place_count, targets.length);
 
                     for (const area of targets)
                     {
