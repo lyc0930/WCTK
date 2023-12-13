@@ -28,6 +28,35 @@
     content: "\f724";
 }
 
+.fa-water-lower:before {
+    content: "\f774";
+}
+
+.fa-water-rise:before {
+    content: "\f775";
+}
+
+.fa-tally:before {
+    content: "\f69c";
+}
+
+.fa-siren:before {
+    content: "\e02d";
+}
+
+.fad.fa-water:after {
+    content: "\10f773";
+}
+
+.fad.fa-water-lower:after {
+    content: "\10f774";
+}
+
+.fad.fa-water-rise:after {
+    content: "\10f775";
+}
+
+
 @font-face {
     font-family: 'Font Awesome 5 Duotone';
     font-style: normal;

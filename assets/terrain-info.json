@@ -4,21 +4,21 @@
         "地形效果": "无地形效果。",
         "neutral": true,
         "color": "#A9C18E",
-        "icon": "class='far fa-clone'"
+        "icon": "class='fas fa-expand'"
     },
     "树林": {
         "className": "grove",
         "地形效果": "位于此地形的角色需要使用或打出【闪】时，其可以进行判定，若结果为红桃，视为其使用或打出了一张普【闪】。位于此地形的角色受到火焰伤害时，此伤害值+1。",
         "neutral": true,
         "color": "#1B8643",
-        "icon": "class='fas fa-tree'"
+        "icon": "class='fas fa-trees'"
     },
     "山岭": {
         "className": "ridge",
         "地形效果": "该地形不能成为移动路径的终点或转移的目标点。",
         "neutral": true,
         "color": "#606060",
-        "icon": "class='fas fa-mountain'"
+        "icon": "class='fas fa-mountains'"
     },
     "湖泊": {
         "className": "lake",
@@ -67,7 +67,7 @@
         "地形效果": "位于此地形的角色不能使用或打出【闪】。位于此地形的角色的出牌阶段限一次，其可以弃置一张牌，然后其摸一张牌。",
         "neutral": true,
         "color": "#00CED1",
-        "icon": "class='fas fa-water'"
+        "icon": "class='fas fa-water-lower'"
     },
     "投石车": {
         "className": "catapult",
@@ -109,7 +109,7 @@
         "地形效果": "在“起风”结算中，所有位于此地形的角色向风向方向移动一格（不能执行则不移动）。",
         "neutral": true,
         "color": "#1EF1EE",
-        "icon": "class='fas fa-water'"
+        "icon": "class='fad fa-water'"
     },
     "礁石": {
         "className": "reef",
@@ -144,21 +144,21 @@
         "地形效果": "此地形区分阵营。与哨卡阵营不同的角色无法因非地形效果拆除哨卡。当一名角色移动一步后，若其位于阵营不同的哨卡，终止此次移动。当一名角色移动结束时，若其位于阵营不同的哨卡，此次移动无法触发“骑兵”效果。此地形可以通过在平原地形建造“工事”得到。",
         "neutral": false,
         "color": "#99B17E",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fas fa-tally'"
     },
     "掷火器": {
         "className": "fire-thrower",
         "地形效果": "位于此地形的角色出牌阶段限一次，该角色可以弃置一张红色手牌，然后其视为使用一张普【杀】，此【杀】可以选择距离3以内的一名其他角色或一个有“工事”的区域为目标：若目标为其他角色，则此【杀】造成伤害前，此伤害改为火焰伤害；若目标为有“工事”的区域，则此【杀】的效果改为拆除该区域的“工事”。此地形可以通过在树林地形建造“工事”得到。",
         "neutral": true,
         "color": "#054C06",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fas fa-fire-alt'"
     },
     "土城": {
         "className": "bunker",
         "地形效果": "若一个区域为此地形且有角色，其敌对阵营角色无法以任何形式进入此区域。当位于此地形的角色受到黑【杀】造成的伤害时，防止之。此地形可以通过在沙地地形建造“工事”得到。",
         "neutral": true,
         "color": "#9C9756",
-        "icon": "class='fad fa-square'"
+        "icon": "class='fas fa-siren'"
     },
     "战鼓": {
         "className": "drum",
