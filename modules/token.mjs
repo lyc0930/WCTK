@@ -1,5 +1,5 @@
 import { Area } from "./area.mjs";
-import { calc_distance, isHighlighting } from "./utils.mjs";
+import { calc_distance, isHighlighting, record } from "./utils.mjs";
 import { Areas } from "./global_variables.mjs";
 
 // 标记类
@@ -473,6 +473,9 @@ function create_token(name, area, creator)
             token = new Token(name, area);
             break;
     }
+
+    record(`${creator?.name}在(${area.row}, ${area.col})放置了1个${name}`);
+
     return token;
 }
 
