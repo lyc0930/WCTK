@@ -20,6 +20,8 @@ const MENU_LOGO = {
     "【草木皆兵】": "class='fas fa-snowman'",
     "控制": "class='fas fa-arrows-to-circle'",
     "放置步旅": "class='fas fa-street-view'",
+    "建造工事": "class='fas fa-layer-plus'",
+    "拆除工事": "class='fas fa-layer-minus'",
     "更换地图": "class='fas fa-grip'",
 }
 

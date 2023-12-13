@@ -109,7 +109,7 @@
         "地形效果": "在“起风”结算中，所有位于此地形的角色向风向方向移动一格（不能执行则不移动）。",
         "neutral": true,
         "color": "#1EF1EE",
-        "icon": "class='fad fa-water'"
+        "icon": "class='fas fa-wind'"
     },
     "礁石": {
         "className": "reef",

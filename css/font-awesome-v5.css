@@ -29,30 +29,42 @@
 }
 
 .fa-water-lower:before {
+    font-family: 'Font Awesome 5 Pro';
     content: "\f774";
 }
 
 .fa-water-rise:before {
+    font-family: 'Font Awesome 5 Pro';
     content: "\f775";
 }
 
 .fa-tally:before {
+    font-family: 'Font Awesome 5 Pro';
     content: "\f69c";
 }
 
 .fa-siren:before {
+    font-family: 'Font Awesome 5 Pro';
     content: "\e02d";
 }
 
-.fad.fa-water:after {
-    content: "\10f773";
+.fa-layer-minus:before {
+    font-family: 'Font Awesome 5 Pro';
+    content: "\f5fe";
+}
+
+.fa-layer-plus:before {
+    font-family: 'Font Awesome 5 Pro';
+    content: "\f5ff";
 }
 
 .fad.fa-water-lower:after {
+    font-family: 'Font Awesome 5 Pro';
     content: "\10f774";
 }
 
 .fad.fa-water-rise:after {
+    font-family: 'Font Awesome 5 Pro';
     content: "\10f775";
 }
 
