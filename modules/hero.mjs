@@ -1139,6 +1139,8 @@ class Hero
         // 〖固城〗
         if (this._cannot_pass_because_of_gu_cheng(area)) return false;
 
+        if (this._cannot_pass_because_of_bunker(area)) return false;
+
         if (area.terrain === "军营" || area.terrain === "大本营") return true;
 
         if (this._cannot_stay_because_of_terrain(area)) return false;
@@ -1160,6 +1162,12 @@ class Hero
     _cannot_pass_because_of_gu_cheng(area)
     {
         return area.heroes.some(hero => hero.color !== this.color) && this.enemies.some(hero => hero.name === "曹仁" && hero.alive) && area !== this.base;
+    }
+
+    // 因土城而形成的不可进入区域
+    _cannot_pass_because_of_bunker(area)
+    {
+        return (area.terrain === "土城" && area.heroes.some(hero => hero.color !== this.color));
     }
 
     // 因地形而形成的不可进入区域
@@ -1196,6 +1204,9 @@ class Hero
 
         // 〖固城〗
         if (this._cannot_pass_because_of_gu_cheng(area)) return false;
+
+        // 土城
+        if (this._cannot_pass_because_of_bunker(area)) return false;
 
         // 【穿越马】
         if (this.is_ride_on("穿越") && currentPlayer === this) return true;
@@ -1268,6 +1279,7 @@ class Hero
     // 判断是否停下，不再自动寻路
     _pause_at(area)
     {
+        if (area.terrain === "哨卡" && area.color !== this.color) return true;
         if (area.tokens.some(token => token.name === "稻草人")) return true;
         if (area.tokens.some(token => token.name === "傀儡" && token.color !== this.color) && Heroes.some(hero => hero.name === "卑弥呼" && hero.alive)) return true;
         return false;
@@ -1421,6 +1433,10 @@ class Hero
     // 移动一步后
     after_step(start, end, direction)
     {
+        if (this.area.terrain === "哨卡" && this.area.color !== this.color)
+        {
+            this._stop_moving();
+        }
         return;
     }
 
@@ -2733,6 +2749,11 @@ class Zhang_Xiu extends Hero
 
             this.chong_sha(hero, direction);
         }
+
+        if (this.area.terrain === "哨卡" && this.area.color !== this.color)
+        {
+            this._stop_moving();
+        }
     }
 
     // 〖冲杀〗
@@ -3069,6 +3090,11 @@ class Lv_Meng extends Hero
     // 移动一步后
     after_step(start, end, direction)
     {
+        if (this.area.terrain === "哨卡" && this.area.color !== this.color)
+        {
+            this._stop_moving();
+        }
+
         // 〖渡江〗
         // 若你本回合以此法移动过，本回合你使用【杀】的距离限制改为1且你使用的第一张【杀】伤害基数+1。
         if (start.terrain !== "湖泊" || end.terrain !== "湖泊") return;
