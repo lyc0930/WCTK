@@ -2,13 +2,15 @@ import { TERRAIN, TERRAIN_INFO } from "./data.mjs";
 import { Areas, Heroes } from "./global_variables.mjs";
 import { Area, create_area } from '../modules/area.mjs';
 import { infantry } from '../modules/token.mjs';
+import { currentMode, setCurrentMode } from '../modules/global_variables.mjs';
 
 // 更换地图
 function setMode(mode, de_novo=true)
 {
     const mainboard = document.getElementById("mainboard");
     mainboard.style.backgroundImage = `url('https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Map/${mode}.webp')`;
-    mainboard.mode = mode;
+
+    setCurrentMode(mode);
 
     const chessboard = document.getElementById("chessboard");
     const Map = TERRAIN[mode];
@@ -89,9 +91,6 @@ function showModeTable()
     const modeTable = document.getElementById("mode-table");
     modeTable.style.visibility = 'visible';
     modeTable.style.opacity = 1;
-
-    const mainboard = document.getElementById("mainboard");
-    const currentMode = mainboard.mode;
 
     const heroNames = modeTable.getElementsByClassName("mode-name");
     for (const modeName of heroNames)

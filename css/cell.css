@@ -60,6 +60,36 @@
     animation: 0.75s ease-out 1 occupy, 1.5s ease-in-out 0.75s infinite twikle;
 }
 
+.fire-thrower {
+    --color: 66, 155, 47;
+    background-image: url('https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Terrain/fire-thrower.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: local;
+}
+
+.bunker {
+    --color: 184, 107, 27;
+    background-image: url('https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Terrain/bunker.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: local;
+}
+
+.outpost.Red {
+    background-image: url('https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Terrain/outpost-Red.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: local;
+}
+
+.outpost.Blue {
+    background-image: url('https://lyc-sgs.oss-accelerate.aliyuncs.com/zq/Terrain/outpost-Blue.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: local;
+}
+
 .cell.Red {
     --color: 255, 0, 0;
     border-color: rgba(var(--color), var(--transparency));
@@ -68,4 +98,13 @@
 .cell.Blue {
     --color: 0, 0, 255;
     border-color: rgba(var(--color), var(--transparency));
+}
+
+.outpost,
+.fire-thrower,
+.bunker {
+    --transparency: 0.9;
+    background-color: rgba(255, 255, 255);
+    border: .6vmin solid rgba(var(--color), var(--transparency));
+    animation: 0.75s ease-out 1 occupy;
 }

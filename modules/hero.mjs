@@ -1,7 +1,7 @@
 import { HERO_DATA, weapons, armors, horses } from './data.mjs';
 import { isHighlighting, HPColor, drawArrow, drawTeleport, cls, record, calc_distance, calc_direction, Direction, isOnSameLine } from "./utils.mjs";
 import { addContextMenu, showSkillPanel } from './context-menu.mjs';
-import { Areas, Heroes } from "./global_variables.mjs";
+import { Areas, Heroes, currentMode } from "./global_variables.mjs";
 import { Token, create_token } from './token.mjs';
 import { redFlag, blueFlag } from './flags.mjs';
 import { currentPlayer, currentPhase, setCurrentPhase, setCurrentPlayer } from './global_variables.mjs';
@@ -482,6 +482,14 @@ class Hero
             });
         }
 
+        if (currentMode === "马战")
+        {
+            Object.assign(items, {
+                "建造工事": () => { this.build_fortification(); },
+                "拆除工事": () => { this.demolish_fortification(); }
+            });
+        }
+
         return items;
     }
 
@@ -509,6 +517,100 @@ class Hero
             "【诱敌深入】": () => { this.use("【诱敌深入】") },
             "【草木皆兵】": () => { this.use("【草木皆兵】") }
         };
+    }
+
+    build_fortification()
+    {
+        // 选择一个其距离1范围内且对应地形为平原/树林/沙地的区域，然后在该区域建造一个哨卡/掷火器/土城“工事”
+        const click_to_build = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            if (navigator.vibrate) navigator.vibrate(20);
+
+            for (const area of Areas.flat())
+            {
+                area.unhighlight("choose-target", click_to_build);
+            }
+
+            var fortification = null;
+
+            switch (event.currentTarget.area.terrain)
+            {
+                case "平原":
+                    fortification = "哨卡";
+                    event.currentTarget.area.build(fortification, this.color);
+                    break;
+                case "树林":
+                    fortification = "掷火器";
+                    event.currentTarget.area.build(fortification);
+                    break;
+                case "沙地":
+                    fortification = "土城";
+                    event.currentTarget.area.build(fortification);
+                    break;
+                default:
+                    throw new Error(`Unknown terrain: ${event.currentTarget.area.terrain}`);
+            }
+
+            record(`${this.name}在(${event.currentTarget.area.row}, ${event.currentTarget.area.col})建造${fortification}工事`);
+        }
+
+        const targets = [];
+
+        for (const area of Areas.flat())
+        {
+            if (calc_distance(this, area) > 1) continue;
+            if (area.terrain !== "平原" && area.terrain !== "树林" && area.terrain !== "沙地") continue;
+
+            targets.push(area);
+        }
+
+        if (targets.length <= 0) return;
+
+        for (const area of targets)
+        {
+            area.highlight("choose-target", click_to_build);
+        }
+    }
+
+    demolish_fortification()
+    {
+        // 拆除其距离1范围内的一个空区域的“工事”
+        const click_to_demolish = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            if (navigator.vibrate) navigator.vibrate(20);
+
+            for (const area of Areas.flat())
+            {
+                area.unhighlight("choose-target", click_to_demolish);
+            }
+
+            event.currentTarget.area.demolish();
+
+            record(`${this.name}拆除了(${event.currentTarget.area.row}, ${event.currentTarget.area.col})的${event.currentTarget.area.terrain}工事`);
+        }
+
+        const targets = [];
+
+        for (const area of Areas.flat())
+        {
+            if (calc_distance(this, area) > 1) continue;
+            if (!area?.fortified) continue;
+
+            targets.push(area);
+        }
+
+        if (targets.length <= 0) return;
+
+        for (const area of targets)
+        {
+            area.highlight("choose-target", click_to_demolish);
+        }
     }
 
     _create_piece()
@@ -624,7 +726,7 @@ class Hero
             piece.style.height = "11vmin";
             piece.style.zIndex = "92";
             piece.style.borderWidth = ".8vmin";
-            piece.style.boxShadow = "0 0 0.4em 0.4em rgb(0, 0, 0, 0.15)";
+            piece.style.boxShadow = "0 0 1.2vmin 1.2vmin rgb(0, 0, 0, 0.15)";
 
             const rect = piece.getBoundingClientRect();
 

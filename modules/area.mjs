@@ -119,6 +119,58 @@ class Area
         this.cell.classList.remove(className);
         this.cell.removeEventListener("click", listener);
     }
+
+    // 工事
+    build(fortification = null, color = null)
+    {
+        if (fortification === null)
+        {
+            switch (this.terrain)
+            {
+                case "平原":
+                    fortification = "哨卡";
+                    break;
+                case "树林":
+                    fortification = "掷火器";
+                    break;
+                case "沙地":
+                    fortification = "土城";
+                    break;
+                default:
+                    throw new Error(`无法在${this.terrain}建造默认工事`);
+            }
+        }
+
+        if (fortification === "哨卡" && color !== "Red" && color !== "Blue") throw new Error("哨卡必须指定阵营");
+
+        this.fortified = true;
+        this.original_terrain = this.terrain;
+        this.terrain = fortification;
+
+        this.cell.classList.remove(TERRAIN_INFO[this.original_terrain]["className"]);
+        this.cell.classList.add(TERRAIN_INFO[this.terrain]["className"]);
+
+        if (color)
+        {
+            this.color = color;
+            this.cell.classList.add(color);
+        }
+    }
+
+    demolish()
+    {
+        if (!this.fortified) throw new Error("该区域没有工事");
+
+        this.cell.classList.remove(TERRAIN_INFO[this.terrain]["className"]);
+        this.cell.classList.add(TERRAIN_INFO[this.original_terrain]["className"]);
+
+        this.terrain = this.original_terrain;
+        delete this.fortified;
+        delete this.original_terrain;
+
+        this.color = null;
+        this.cell.classList.remove("Red", "Blue");
+    }
 }
 
 // 工厂函数

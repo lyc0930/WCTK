@@ -40,10 +40,11 @@
 
 .cell.choose-target {
     background-color: rgb(255, 100, 0, 0.15);
+    transition: background-color 0.3s ease-out;
 }
 
 .cell.choose-target:hover {
-    background-color: rgb(255, 100, 0, 0.3);
+    background: rgb(255, 100, 0, 0.3);
 }
 
 @keyframes twinkle-choose {

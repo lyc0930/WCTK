@@ -10,6 +10,12 @@ for (let row = 0; row < 7; row++)
     }
 }
 
+var currentMode = null; // 模式
+function setCurrentMode(mode)
+{
+    currentMode = mode;
+}
+
 var currentPlayer = null; // 当前回合玩家
 function setCurrentPlayer(player)
 {
@@ -22,4 +28,4 @@ function setCurrentPhase(phase)
     currentPhase = phase;
 }
 
-export { Heroes, Areas, currentPlayer, setCurrentPlayer, currentPhase, setCurrentPhase };
+export { Heroes, Areas, currentMode, setCurrentMode, currentPlayer, setCurrentPlayer, currentPhase, setCurrentPhase };
