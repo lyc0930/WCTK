@@ -1,8 +1,16 @@
-.cell.move-target {
+.cell.move-target:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
     background-color: rgba(255, 255, 0, 0.2);
 }
 
-.cell.move-target:hover {
+.cell.move-target:hover:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
     background-color: rgba(255, 255, 0, 0.4);
 }
 
@@ -12,12 +20,20 @@
     }
 }
 
-.cell.trap-target {
+.cell.trap-target:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
     background-color: rgba(255, 0, 179, 0.15);
     animation: twinkle-trap 0.5s infinite ease-in-out;
 }
 
-.cell.trap-target:hover {
+.cell.trap-target:hover:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
     background-color: rgba(255, 0, 179, 0.3);
     animation: none;
 }
@@ -28,23 +44,38 @@
     }
 }
 
-.cell.transfer-target {
+.cell.transfer-target:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
     background-color: rgba(20, 200, 43, 0.15);
     animation: twinkle-transfer 0.8s infinite ease-in-out;
 }
 
-.cell.transfer-target:hover {
+.cell.transfer-target:hover:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
     background-color: rgba(20, 200, 43, 0.3);
     animation: none;
 }
 
-.cell.choose-target {
+.cell.choose-target:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
     background-color: rgb(255, 100, 0, 0.15);
-    transition: background-color 0.3s ease-out;
 }
 
-.cell.choose-target:hover {
-    background: rgb(255, 100, 0, 0.3);
+.cell.choose-target:hover:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255, 100, 0, 0.3);
 }
 
 @keyframes twinkle-choose {
