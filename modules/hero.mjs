@@ -590,9 +590,9 @@ class Hero
                 area.unhighlight("choose-target", click_to_demolish);
             }
 
-            event.currentTarget.area.demolish();
-
             record(`${this.name}拆除了(${event.currentTarget.area.row}, ${event.currentTarget.area.col})的${event.currentTarget.area.terrain}工事`);
+
+            event.currentTarget.area.demolish();
         }
 
         const targets = [];
@@ -601,6 +601,7 @@ class Hero
         {
             if (calc_distance(this, area) > 1) continue;
             if (!area?.fortified) continue;
+            if (area.terrain === "哨卡" && area.color !== this.color) continue;
 
             targets.push(area);
         }
