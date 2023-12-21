@@ -484,10 +484,19 @@ class Hero
 
         if (currentMode === "马战")
         {
+            items[`break-line-${i++}`] = "<hr>";
+
             Object.assign(items, {
                 "建造工事": () => { this.build_fortification(); },
                 "拆除工事": () => { this.demolish_fortification(); }
             });
+
+            if (this.area.terrain === "掷火器")
+            {
+                Object.assign(items, {
+                    "拆除工事（掷火器）": () => { this.demolish_fortification_fire_thrower(); }
+                });
+            }
         }
 
         return items;
@@ -601,7 +610,46 @@ class Hero
         {
             if (calc_distance(this, area) > 1) continue;
             if (!area?.fortified) continue;
+            if (area.heroes.length > 0) continue;
             if (area.terrain === "哨卡" && area.color !== this.color) continue;
+
+            targets.push(area);
+        }
+
+        if (targets.length <= 0) return;
+
+        for (const area of targets)
+        {
+            area.highlight("choose-target", click_to_demolish);
+        }
+    }
+
+    demolish_fortification_fire_thrower()
+    {
+        // 拆除其距离3范围内的一个区域的“工事”
+        const click_to_demolish = (event) =>
+        {
+            if (event.cancelable) event.preventDefault();
+            event.stopPropagation();
+
+            if (navigator.vibrate) navigator.vibrate(20);
+
+            for (const area of Areas.flat())
+            {
+                area.unhighlight("choose-target", click_to_demolish);
+            }
+
+            record(`${this.name}拆除了(${event.currentTarget.area.row}, ${event.currentTarget.area.col})的${event.currentTarget.area.terrain}工事`);
+
+            event.currentTarget.area.demolish();
+        }
+
+        const targets = [];
+
+        for (const area of Areas.flat())
+        {
+            if (calc_distance(this, area) > 3) continue;
+            if (!area?.fortified) continue;
 
             targets.push(area);
         }
