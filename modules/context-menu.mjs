@@ -22,6 +22,7 @@ const MENU_LOGO = {
     "放置步旅": "class='fas fa-street-view'",
     "建造工事": "class='fas fa-layer-plus'",
     "拆除工事": "class='fas fa-layer-minus'",
+    "拆除工事（掷火器）": "class='fas fa-location-crosshairs'",
     "更换地图": "class='fas fa-grip'",
 }
 
