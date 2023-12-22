@@ -1,648 +1,648 @@
 [
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "A",
         "name": "【决斗】",
         "fanti": "【決鬥】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "2",
         "name": "【雌雄双股剑】",
         "fanti": "【雌雄雙股劍】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "3",
         "name": "【过河拆桥】",
         "fanti": "【過河拆橋】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "4",
         "name": "【过河拆桥】",
         "fanti": "【過河拆橋】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "5",
         "name": "【青龙偃月刀】",
         "fanti": "【青龍偃月刀】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "6",
         "name": "【乐不思蜀】",
         "fanti": "【樂不思蜀】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "7",
         "name": "【南蛮入侵】",
         "fanti": "【南蠻入侵】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "8",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "9",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "10",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "J",
         "name": "【奇门遁甲】",
         "fanti": "【奇門遁甲】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "Q",
         "name": "【丈八蛇矛】",
         "fanti": "【丈八蛇矛】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "K",
         "name": "【大宛】",
         "fanti": "【大宛】"
     },
         {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "A",
         "name": "【兵贵神速】",
         "fanti": "【兵貴神速】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "2",
         "name": "【八卦阵】",
         "fanti": "【八卦陣】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "3",
         "name": "【奇门遁甲】",
         "fanti": "【奇門遁甲】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "4",
         "name": "【奇门遁甲】",
         "fanti": "【奇門遁甲】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "5",
         "name": "【绝影】",
         "fanti": "【絕影】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "6",
         "name": "【青缸剑】",
         "fanti": "【青缸劍】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "7",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "8",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "9",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "10",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "J",
         "name": "【无懈可击】",
         "fanti": "【無懈可擊】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "Q",
         "name": "【过河拆桥】",
         "fanti": "【過河拆橋】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "K",
         "name": "【南蛮入侵】",
         "fanti": "【南蠻入侵】"
     },
     {
-        "color": "黑桃",
+        "suit": "黑桃",
         "number": "2",
         "name": "【寒冰剑】",
         "fanti": "【寒冰劍】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "A",
         "name": "【万箭齐发】",
         "fanti": "【萬箭齊發】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "2",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "3",
         "name": "【火烧连营】",
         "fanti": "【火燒連營】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "4",
         "name": "【桃】",
         "fanti": "【桃】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "5",
         "name": "【赤兔】",
         "fanti": "【赤兔】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "6",
         "name": "【乐不思蜀】",
         "fanti": "【樂不思蜀】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "7",
         "name": "【桃】",
         "fanti": "【桃】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "8",
         "name": "【无中生有】",
         "fanti": "【無中生有】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "9",
         "name": "【桃】",
         "fanti": "【桃】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "10",
         "name": "射【杀】",
         "fanti": "射【殺】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "J",
         "name": "【无中生有】",
         "fanti": "【無中生有】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "Q",
         "name": "【过河拆桥】",
         "fanti": "【過河拆橋】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "K",
         "name": "【爪黄飞电】",
         "fanti": "【爪黃飛電】"
     },
         {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "A",
         "name": "【桃园结义】",
         "fanti": "【桃園結義】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "2",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "3",
         "name": "【桃】",
         "fanti": "【桃】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "4",
         "name": "【火烧连营】",
         "fanti": "【火燒連營】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "5",
         "name": "【火烧连营】",
         "fanti": "【火燒連營】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "6",
         "name": "【桃】",
         "fanti": "【桃】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "7",
         "name": "【无中生有】",
         "fanti": "【無中生有】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "8",
         "name": "【桃】",
         "fanti": "【桃】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "9",
         "name": "【无中生有】",
         "fanti": "【無中生有】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "10",
         "name": "射【杀】",
         "fanti": "射【殺】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "J",
         "name": "射【杀】",
         "fanti": "射【殺】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "Q",
         "name": "【桃】",
         "fanti": "【桃】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "K",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "红桃",
+        "suit": "红桃",
         "number": "Q",
         "name": "【兵贵神速】",
         "fanti": "【兵貴神速】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "A",
         "name": "【兵贵神速】",
         "fanti": "【兵貴神速】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "2",
         "name": "【八卦阵】",
         "fanti": "【八卦陣】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "3",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "4",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "5",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "6",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "7",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "8",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "9",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "10",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "J",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "Q",
         "name": "【无懈可击】",
         "fanti": "【無懈可擊】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "K",
         "name": "【水淹七军】",
         "fanti": "【淹水七軍】"
     },
         {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "A",
         "name": "【决斗】",
         "fanti": "【決鬥】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "2",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "3",
         "name": "【过河拆桥】",
         "fanti": "【過河拆橋】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "4",
         "name": "【过河拆桥】",
         "fanti": "【過河拆橋】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "5",
         "name": "【的卢】",
         "fanti": "【的盧】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "6",
         "name": "【乐不思蜀】",
         "fanti": "【樂不思蜀】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "7",
         "name": "【南蛮入侵】",
         "fanti": "【南蠻入侵】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "8",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "9",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "10",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "J",
         "name": "【杀】",
         "fanti": "【殺】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "Q",
         "name": "【水淹七军】",
         "fanti": "【淹水七軍】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "K",
         "name": "【无懈可击】",
         "fanti": "【無懈可擊】"
     },
     {
-        "color": "梅花",
+        "suit": "梅花",
         "number": "2",
         "name": "【仁王盾】",
         "fanti": "【仁王盾】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "A",
         "name": "【决斗】",
         "fanti": "【決鬥】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "2",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "3",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "4",
         "name": "【朱雀羽扇】",
         "fanti": "【朱雀羽扇】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "5",
         "name": "【贯石斧】",
         "fanti": "【貫石斧】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "6",
         "name": "射【杀】",
         "fanti": "射【殺】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "7",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "8",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "9",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "10",
         "name": "射【杀】",
         "fanti": "射【殺】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "J",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "Q",
         "name": "【桃】",
         "fanti": "【桃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "K",
         "name": "射【杀】",
         "fanti": "射【殺】"
     },
         {
-        "color": "方块",
+        "suit": "方块",
         "number": "A",
         "name": "【诸葛连弩】",
         "fanti": "【諸葛連弩】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "2",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "3",
         "name": "【火烧连营】",
         "fanti": "【火燒連營】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "4",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "5",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "6",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "7",
         "name": "射【杀】",
         "fanti": "射【殺】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "8",
         "name": "射【杀】",
         "fanti": "射【殺】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "9",
         "name": "射【杀】",
         "fanti": "射【殺】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "10",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "J",
         "name": "【闪】",
         "fanti": "【閃】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "Q",
         "name": "【方天画戟】",
         "fanti": "【方天畫戟】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "K",
         "name": "【紫骅】",
         "fanti": "【紫騁】"
     },
     {
-        "color": "方块",
+        "suit": "方块",
         "number": "Q",
         "name": "【无懈可击】",
         "fanti": "【無懈可擊】"
