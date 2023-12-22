@@ -88,7 +88,7 @@ function addContextMenu(element, object, disable = function () { return false; }
             if (disable()) return;
             if (isHighlighting()) return;
 
-            // if (event.cancelable) event.preventDefault();
+            if (event.cancelable) event.preventDefault();
             // event.stopPropagation();
 
             hideContextMenu();
@@ -106,7 +106,7 @@ function addContextMenu(element, object, disable = function () { return false; }
                     menu.style.visibility = 'visible';
                     menu.style.opacity = 1;
                 }
-            }, 500);
+            }, 270);
 
             element.touchEventListener = {
                 "touchmove": function (event)
