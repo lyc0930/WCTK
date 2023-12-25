@@ -96,21 +96,17 @@ class Card
         if (value)
         {
             this.card_element.style.zIndex = 200;
-            this.card_element.style.transform = this.card_element.style.transform + `scale(1.1)`;
+            this.card_element.style.scale = "1.1";
             this.card_element.style.boxShadow = `0 0 8.8px 8.8px rgba(0, 0, 0, 0.10)`;
         }
         else
         {
-            this.card_element.style.transform = this.card_element.style.transform.replace(/scale\(1\.1\)/, '');
+            this.card_element.style.scale = "none";
             this.card_element.style.boxShadow = `0 0 8px 8px rgba(0, 0, 0, 0.10)`;
 
             if (this.zone === null) return;
 
-            const index = this.zone.cards.indexOf(this.card_element);
-            if (index !== -1)
-            {
-                this.card_element.style.zIndex = index;
-            }
+            this.zone.arrange();
         }
     }
 
@@ -121,71 +117,68 @@ class Card
 
     set dragging(value)
     {
-        if (this._dragging !== value)
-        {
-            this._dragging = value;
-            if (value) // 开始拖动
-            {
-                this._old_zone = this.zone;
-                this.card_element.style.transition = 'none';
+        if (this._dragging === value) return;
 
-                if (this.zone === null) return;
-                this.zone.remove(this);
-                document.body.appendChild(this.card_element);
-            }
-            else // 结束拖动
+        this._dragging = value;
+        if (value) // 开始拖动
+        {
+            this._old_zone = this.zone;
+            this.card_element.style.transition = 'none';
+
+            if (this.zone === null) return;
+            this.zone.remove(this);
+            document.body.appendChild(this.card_element);
+        }
+        else // 结束拖动
+        {
+            setTimeout(() => this.card_element.style.transition = "all 100ms ease-in-out", 100);
+
+            this._old_zone = null;
+
+            // 判断是否在手牌区
+            const hand_zone = document.getElementById("hand-zone").zone;
+            if (hand_zone.zone_element.style.display === "none") return;
+
+            const zone_rect = hand_zone.zone_element.getBoundingClientRect();
+            const card_rect = this.card_element.getBoundingClientRect();
+
+            const X = (card_rect.left + card_rect.right) / 2
+            const Y = (card_rect.top + card_rect.bottom) / 2
+
+            if (X >= zone_rect.left && X <= zone_rect.right && Y >= zone_rect.top && Y <= zone_rect.bottom)
             {
-                setTimeout(() => this.card_element.style.transition = "all 100ms ease-in-out", 100);
                 this.card_element.style.left = null;
                 this.card_element.style.top = null;
-
-                this._old_zone = null;
-
-                // 判断是否在手牌区
-                const hand_zone = document.getElementById("hand-zone").zone;
-                if (hand_zone.zone_element.style.display === "none") return;
-
-                const zone_rect = hand_zone.zone_element.getBoundingClientRect();
-                const card_rect = this.card_element.getBoundingClientRect();
-
-                const X = (card_rect.left + card_rect.right) / 2
-                const Y = (card_rect.top + card_rect.bottom) / 2
-
-                if (X >= zone_rect.left && X <= zone_rect.right && Y >= zone_rect.top && Y <= zone_rect.bottom)
+                if (hand_zone.cards.length === 0)
                 {
-                    console.log(X, zone_rect.left, zone_rect.right);
-                    console.log(Y, zone_rect.top, zone_rect.bottom);
-                    if (hand_zone.cards.length === 0)
+                    hand_zone.add(this);
+                }
+                else
+                {
+                    for (let i = 0; i < hand_zone.cards.length; i++)
                     {
-                        hand_zone.add(this);
-                    }
-                    else
-                    {
-                        for (let i = 0; i < hand_zone.cards.length; i++)
+                        const card_i_rect = hand_zone.cards[i].card_element.getBoundingClientRect();
+                        const card_i_center = card_i_rect.left + 0.5 * card_i_rect.width;
+
+                        if (i === 0 && X <= card_i_center)
                         {
-                            const card_i_rect = hand_zone.cards[i].card_element.getBoundingClientRect();
-                            const card_i_center = card_i_rect.left + 0.5 * card_i_rect.width;
+                            hand_zone.add(this, 0);
+                            break;
+                        }
+                        else if (i === hand_zone.cards.length - 1 && X >= card_i_center)
+                        {
+                            hand_zone.add(this, -1);
+                            break;
+                        }
+                        else
+                        {
+                            const card_j_rect = hand_zone.cards[i + 1].card_element.getBoundingClientRect();
+                            const card_j_center = card_j_rect.left + 0.5 * card_j_rect.width;
 
-                            if (i === 0 && X <= card_i_center)
+                            if (X >= card_i_center && X <= card_j_center)
                             {
-                                hand_zone.add(this, 0);
+                                hand_zone.add(this, i + 1);
                                 break;
-                            }
-                            else if (i === hand_zone.cards.length - 1 && X >= card_i_center)
-                            {
-                                hand_zone.add(this, -1);
-                                break;
-                            }
-                            else
-                            {
-                                const card_j_rect = hand_zone.cards[i + 1].card_element.getBoundingClientRect();
-                                const card_j_center = card_j_rect.left + 0.5 * card_j_rect.width;
-
-                                if (X >= card_i_center && X <= card_j_center)
-                                {
-                                    hand_zone.add(this, i + 1);
-                                    break;
-                                }
                             }
                         }
                     }
@@ -351,7 +344,8 @@ class Card
             const shiftX = event.clientX - (card_rect.left + card_rect.right) / 2;
             const shiftY = event.clientY - (card_rect.top + card_rect.bottom) / 2;
 
-            card.style.transform = `rotate(0deg) translate(${shiftX}px, ${shiftY}px) scale(1.1)`;
+            card.style.rotate = "0deg";
+            card.style.translate = `${shiftX}px, ${shiftY}px`;
 
             const onmousemove = (event) =>
             {
@@ -371,10 +365,8 @@ class Card
                 event.stopPropagation();
 
                 document.removeEventListener('mousemove', onmousemove);
+
                 this.focused = false;
-
-                if (!this.dragging) return;
-
                 this.dragging = false;
             }
 
@@ -411,7 +403,8 @@ class Card
             const shiftX = event.touches[0].clientX - (card_rect.left + card_rect.right) / 2;
             const shiftY = event.touches[0].clientY - (card_rect.top + card_rect.bottom) / 2;
 
-            card.style.transform = `rotate(0deg) translate(${shiftX}px, ${shiftY}px) scale(1.1)`;
+            card.style.rotate = "0deg";
+            card.style.translate = `${shiftX}px, ${shiftY}px`;
 
             const ontouchmove = (event) =>
             {
@@ -435,10 +428,8 @@ class Card
                 event.stopPropagation();
 
                 document.removeEventListener("touchmove", ontouchmove);
+
                 this.focused = false;
-
-                if (!this.dragging) return;
-
                 this.dragging = false;
             }
 

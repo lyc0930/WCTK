@@ -139,7 +139,7 @@ class Hand_Zone extends Zone
             {
                 const card = this.cards[i].card_element;
                 card.style.zIndex = i;
-                card.style.transform = '';
+                card.style.rotate = '0deg';
                 card.style.top = 'auto';
                 card.style.bottom = `10px`;
             }
@@ -175,9 +175,9 @@ class Hand_Zone extends Zone
                 const card = this.cards[i].card_element;
                 card.style.left = (i * interval + 2) + 'px';
                 card.style.zIndex = i;
-                card.style.transform = `rotate(${(i + 0.5 - n / 2) * Math.min(60 / n, 10)}deg)`;
+                card.style.rotate = `${(i + 0.5 - n / 2) * Math.min(60 / n, 10)}deg`;
                 card.style.top = 'auto';
-                card.style.bottom = `${card_margin - Math.pow((i + 0.5 - n / 2), 2) * Math.min(1.5 * card_style.height / Math.pow(n, 2), card_margin)}px`;
+                card.style.bottom = `${card_margin - Math.pow((i + 0.5 - n / 2), 2) * Math.min(1.5 * card_width / Math.pow(n, 2), card_margin)}px`;
             }
         }
     }
