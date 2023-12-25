@@ -1,17 +1,22 @@
 @import "./text.css";
 
- .hand {
-    display: block;
+ .hand-zone {
+    z-index: 199;
+    display: none;
     justify-content: center;
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 50%;
     right: 50%;
     transform: translate(-50%, 0);
-    background-color: aliceblue;
+    -webkit-backdrop-filter: blur(0.1em);
+            backdrop-filter: blur(0.1em);
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
+
 }
 
 .card {
+    z-index: 200;
     aspect-ratio: 2/3;
     position: absolute;
     border: 4px solid black;
@@ -84,9 +89,9 @@
 }
 
 @media screen and (orientation:landscape) {
-    .hand {
-        width: 70vw;
-        height: 30vh;
+    .hand-zone {
+        width: 93vmin;
+        height: 18vw;
     }
 
     .card {
@@ -100,9 +105,9 @@
 }
 
 @media screen and (orientation:portrait) {
-    .hand {
+    .hand-zone {
         width: 100vw;
-        height: 30vh;
+        height: 24vh;
     }
 
     .card {
