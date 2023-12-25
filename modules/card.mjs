@@ -204,39 +204,39 @@ class Card
         card_number.className = "card-number";
         card_number.innerText = this.number;
 
-        const card_color = document.createElement("span");
-        card_color.className = "card-color";
+        const card_suit = document.createElement("span");
+        card_suit.className = "card-suit";
         if (this.suit === "黑桃")
         {
             card_number.style.color = "#000000";
-            card_color.style.color = "#000000";
-            card_color.innerHTML = '♠';
+            card_suit.style.color = "#000000";
+            card_suit.innerHTML = '♠';
         }
         else if (this.suit === "红桃")
         {
             card_number.style.color = "#ff2e2e";
-            card_color.style.color = "#ff2e2e";
-            card_color.innerHTML = '♥';
+            card_suit.style.color = "#ff2e2e";
+            card_suit.innerHTML = '♥';
         }
         else if (this.suit === "梅花")
         {
             card_number.style.color = "#000000";
-            card_color.style.color = "#000000";
-            card_color.innerHTML = '♣';
+            card_suit.style.color = "#000000";
+            card_suit.innerHTML = '♣';
         }
         else if (this.suit === "方块")
         {
             card_number.style.color = "#ff2e2e";
-            card_color.style.color = "#ff2e2e";
-            card_color.innerHTML = '♦';
+            card_suit.style.color = "#ff2e2e";
+            card_suit.innerHTML = '♦';
         }
         else
         {
-            card_color.innerHTML = ' ';
+            card_suit.innerHTML = ' ';
         }
 
         card_info.appendChild(card_number);
-        card_info.appendChild(card_color);
+        card_info.appendChild(card_suit);
 
         const card_name = document.createElement("span");
         card_name.className = "card-name";

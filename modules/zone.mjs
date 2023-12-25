@@ -124,6 +124,7 @@ class Hand_Zone extends Zone
 
     arrange()
     {
+        if (this.zone_element.style.display === "none") return;
         if (this.cards.length === 0) return;
 
         const hand_rect = this.zone_element.getBoundingClientRect();

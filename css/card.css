@@ -5,6 +5,8 @@
     display: none;
     justify-content: center;
     position: fixed;
+    width: var(--hand-zone-width);
+    height: var(--hand-zone-height);
     bottom: 0;
     left: 50%;
     right: 50%;
@@ -17,6 +19,8 @@
 
 .card {
     z-index: 200;
+    height: var(--card-height);
+    font-size: var(--font-size);
     aspect-ratio: 2/3;
     position: absolute;
     border: 4px solid black;
@@ -46,7 +50,8 @@
     font-family: 'fzlb';
 }
 
-.card-color {
+.card-suit {
+    font-size: var(--font-size);
     transform: translateY(-20%);
     text-align: center;
 }
@@ -90,32 +95,24 @@
 
 @media screen and (orientation:landscape) {
     .hand-zone {
-        width: 93vmin;
-        height: 18vw;
+        --hand-zone-width: 93vmin;
+        --hand-zone-height: 18vw;
     }
 
     .card {
-        height: 15vw;
-        font-size: 2.4vw;
-    }
-
-    .card-color {
-        font-size: 2.4vw;
+        --card-height: 15vw;
+        --font-size: calc(var(--card-height) * 0.16);
     }
 }
 
 @media screen and (orientation:portrait) {
     .hand-zone {
-        width: 100vw;
-        height: 24vh;
+        --hand-zone-width: 100vw;
+        --hand-zone-height: 20vh;
     }
 
     .card {
-        height: 20vh;
-        font-size: 6.4vw;
-    }
-
-    .card-color {
-        font-size: 6.4vw;
+        --card-height: 20vh;
+        --font-size: calc(var(--card-height) * 0.16);
     }
 }
