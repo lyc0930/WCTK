@@ -71,8 +71,13 @@ class Hand_Zone extends Zone
         this.zone_element = zone_element;
         zone_element.zone = this;
 
-        window.addEventListener("resize", this.arrange);
+        window.addEventListener("resize", () => { this.arrange(); });
         screen.orientation.addEventListener("change", () => setTimeout(this.arrange, 100));
+        document.addEventListener("click", (event) =>
+        {
+            // if (this.zone_element.style.display === "none") return;
+            // this.hide();
+        });
     }
 
     get cards()

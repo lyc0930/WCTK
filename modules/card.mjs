@@ -96,13 +96,11 @@ class Card
         if (value)
         {
             this.card_element.style.zIndex = 200;
-            this.card_element.style.scale = "1.1";
-            this.card_element.style.boxShadow = `0 0 8.8px 8.8px rgba(0, 0, 0, 0.10)`;
+            this.card_element.classList.add("focused");
         }
         else
         {
-            this.card_element.style.scale = "none";
-            this.card_element.style.boxShadow = `0 0 8px 8px rgba(0, 0, 0, 0.10)`;
+            this.card_element.classList.remove("focused");
 
             if (this.zone === null) return;
 
@@ -123,7 +121,7 @@ class Card
         if (value) // 开始拖动
         {
             this._old_zone = this.zone;
-            this.card_element.style.transition = 'none';
+            this.card_element.classList.add("dragging");
 
             if (this.zone === null) return;
             this.zone.remove(this);
@@ -131,7 +129,7 @@ class Card
         }
         else // 结束拖动
         {
-            setTimeout(() => this.card_element.style.transition = "all 100ms ease-in-out", 100);
+            this.card_element.classList.remove("dragging");
 
             this._old_zone = null;
 
@@ -204,31 +202,30 @@ class Card
         card_number.className = "card-number";
         card_number.innerText = this.number;
 
-        const card_suit = document.createElement("span");
-        card_suit.className = "card-suit";
+        const card_suit = document.createElement("i");
         if (this.suit === "黑桃")
         {
             card_number.style.color = "#000000";
             card_suit.style.color = "#000000";
-            card_suit.innerHTML = '♠';
+            card_suit.className = "card-suit fas fa-spade";
         }
         else if (this.suit === "红桃")
         {
             card_number.style.color = "#ff2e2e";
             card_suit.style.color = "#ff2e2e";
-            card_suit.innerHTML = '♥';
+            card_suit.className = "card-suit fas fa-heart";
         }
         else if (this.suit === "梅花")
         {
             card_number.style.color = "#000000";
             card_suit.style.color = "#000000";
-            card_suit.innerHTML = '♣';
+            card_suit.className = "card-suit fas fa-club";
         }
         else if (this.suit === "方块")
         {
             card_number.style.color = "#ff2e2e";
             card_suit.style.color = "#ff2e2e";
-            card_suit.innerHTML = '♦';
+            card_suit.className = "card-suit fas fa-diamond";
         }
         else
         {

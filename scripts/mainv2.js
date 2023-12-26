@@ -51,7 +51,7 @@ function initializeHands(n = 3)
         for (let i = 0; i < n; i++)
         {
             let index = Math.floor(Math.random() * (DECK.length - i));
-            let card = create_card(DECK[index].number, DECK[index].suit, DECK[index].name, DECK[index].name, DECK[index].fanti);
+            let card = create_card(DECK[index].number, DECK[index].suit, DECK[index].name, DECK[index].fanti);
             a_hand_of_cards.push(card);
         }
         hero.hand = a_hand_of_cards;

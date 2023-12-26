@@ -58,6 +58,16 @@
     content: "\f5ff";
 }
 
+.fa-spade:before {
+    font-family: 'Font Awesome 5 Pro';
+    content: "\f2f4";
+}
+
+.fa-club:before {
+    font-family: 'Font Awesome 5 Pro';
+    content: "\f327";
+}
+
 .fad.fa-water-lower:after {
     font-family: 'Font Awesome 5 Pro';
     content: "\10f774";
