@@ -135,7 +135,7 @@ class Hand_Zone extends Zone
         const hand_rect = this.zone_element.getBoundingClientRect();
         const card_style = window.getComputedStyle(this.cards[0].card_element);
         const card_width = 2 / 3 * parseFloat(card_style.height) + 2 * parseFloat(card_style.borderWidth);
-        const card_margin = 10;
+        const card_margin = 8;
 
         const n = this.cards.length;
 
@@ -147,7 +147,7 @@ class Hand_Zone extends Zone
                 card.style.zIndex = i;
                 card.style.rotate = '0deg';
                 card.style.top = 'auto';
-                card.style.bottom = `10px`;
+                card.style.bottom = `${card_margin}px`;
             }
 
             if (n % 2 === 0)
@@ -176,12 +176,13 @@ class Hand_Zone extends Zone
         else
         {
             const interval = (hand_rect.width - card_width - 4) / (n - 1);
+            const angle = Math.min(45 / n, 10);
             for (let i = 0; i < n; i++)
             {
                 const card = this.cards[i].card_element;
                 card.style.left = (i * interval + 2) + 'px';
                 card.style.zIndex = i;
-                card.style.rotate = `${(i + 0.5 - n / 2) * Math.min(60 / n, 10)}deg`;
+                card.style.rotate = `${(i + 0.5 - n / 2) * angle}deg`;
                 card.style.top = 'auto';
                 card.style.bottom = `${card_margin - Math.pow((i + 0.5 - n / 2), 2) * Math.min(1.5 * card_width / Math.pow(n, 2), card_margin)}px`;
             }

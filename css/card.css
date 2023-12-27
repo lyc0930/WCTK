@@ -18,6 +18,7 @@
 }
 
 .hand-zone:not(:hover):not(:active):not(body:has(.card.dragging)>.hand-zone) {
+    transition-delay: 500ms;
     bottom: calc(var(--hand-zone-height) * (-0.4));
 }
 
@@ -130,19 +131,19 @@ body>.card.card:not(.focused) {
     }
 
     .card {
-        --card-height: 15vw;
+        --card-height: 14.4vw;
         --font-size: calc(var(--card-height) * 0.16);
     }
 }
 
 @media screen and (orientation:portrait) {
     .hand-zone {
-        --hand-zone-width: 100vw;
+        --hand-zone-width: 93vmin;
         --hand-zone-height: 20vh;
     }
 
     .card {
-        --card-height: 20vh;
+        --card-height: 16vh;
         --font-size: calc(var(--card-height) * 0.16);
     }
 }
