@@ -756,7 +756,7 @@ const history = new History();
 // 初始化BP
 function initializeBP()
 {
-    document.addEventListener("contextmenu", event => { event.preventDefault(); event.stopPropagation(); }); // 禁用右键菜单
+    document.addEventListener("contextmenu", (event) => { event.preventDefault(); event.stopPropagation(); }); // 禁用右键菜单
 
     createHeroTable();
     createHeroBoard();

@@ -27,7 +27,7 @@ body {
 }
 
 label {
-    text-wrap: nowrap;
+    white-space: nowrap;
     text-overflow: clip;
     touch-action: none;
     pointer-events: none;
@@ -108,7 +108,7 @@ img {
     position: absolute;
     font-family: fantasy, Arial, sans-serif;
     font-weight: bold;
-    text-wrap: nowrap;
+    white-space: nowrap;
     color: rgb(0, 0, 0, 0.10);
     transition: all 0.3s ease-in-out;
 }
@@ -137,7 +137,7 @@ img {
     font-weight: bold;
     font-size: 1.8em;
     text-align: center;
-    text-wrap: nowrap;
+    white-space: nowrap;
     -webkit-transform: translateX(-50%);
             transform: translateX(-50%);
     z-index: 96;

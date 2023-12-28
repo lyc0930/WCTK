@@ -12,7 +12,7 @@
         top 70ms ease-out;
 
     font-family: 'fzlb';
-    text-wrap: nowrap;
+    white-space: nowrap;
     text-align: center;
 
     line-height: 10vmin;

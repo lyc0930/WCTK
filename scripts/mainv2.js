@@ -64,7 +64,7 @@ function initializeGame(mode = "野战", names = [])
     setMode(mode);
     generateFlags();
 
-    document.addEventListener("contextmenu", event => { event.preventDefault(); event.stopPropagation(); }); // 禁用右键菜单
+    document.addEventListener("contextmenu", (event) => { event.preventDefault(); event.stopPropagation(); }); // 禁用右键菜单
 
     document.addEventListener('mouseup', function (event)
     {

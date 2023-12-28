@@ -280,7 +280,7 @@ class Card
 
                 name_text.style.fontSize = "1.2em";
                 name_text.style.transform = "translateX(-0.15em)";
-                name_text.style.textWrap = "nowrap";
+                name_text.style.whiteSpace = "nowrap";
                 name_text.innerHTML = this.name_fanti;
 
                 right_bracket.style.fontSize = "1.2em";
@@ -293,7 +293,7 @@ class Card
 
                 name_text.style.fontSize = "0.9em";
                 name_text.style.transform = "translateX(-0.4em)";
-                name_text.style.textWrap = "nowrap";
+                name_text.style.whiteSpace = "nowrap";
                 name_text.innerHTML = this.name_fanti;
 
                 right_bracket.style.fontSize = "0.8em";
@@ -311,7 +311,7 @@ class Card
 
                 name_text.style.fontSize = "0.8em";
                 name_text.style.width = "3em";
-                name_text.style.textWrap = "nowrap";
+                name_text.style.whiteSpace = "nowrap";
                 name_text.innerHTML = this.name_fanti.substr(0, 2) + "<br>" + this.name_fanti.substr(2, 3);
 
                 right_bracket.style.fontSize = "1.2em";
