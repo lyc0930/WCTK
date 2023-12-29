@@ -79,7 +79,7 @@ function initializeGame(mode = "野战", names = [])
     initializePieces(names);
 
     const hand_zone = create_zone("hand");
-    initializeHands(5);
+    initializeHands(10);
 
     hand_zone.show(Heroes[0]);
 }

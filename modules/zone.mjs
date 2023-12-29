@@ -68,16 +68,25 @@ class Hand_Zone extends Zone
     constructor(zone_element)
     {
         super();
-        this.zone_element = zone_element;
-        zone_element.zone = this;
+        this.zone_element = this._create_zone();
 
-        window.addEventListener("resize", () => { this.arrange(); });
-        screen.orientation.addEventListener("change", () => setTimeout(this.arrange, 100));
+        window.addEventListener("resize", () => setTimeout(() => { this.arrange() }, 50));
+        screen.orientation.addEventListener("change", () => setTimeout(() => { this.arrange() }, 50));
         document.addEventListener("click", (event) =>
         {
-            // if (this.zone_element.style.display === "none") return;
+            // if (this.zone_element.style.visibility === "hidden") return;
             // this.hide();
         });
+    }
+
+    _create_zone()
+    {
+        const zone_element = document.createElement("div");
+        zone_element.id = "hand-zone";
+        zone_element.className = "hand-zone";
+        zone_element.zone = this;
+        document.body.appendChild(zone_element);
+        return zone_element;
     }
 
     get cards()
@@ -110,7 +119,8 @@ class Hand_Zone extends Zone
         }
         this.hero = null;
         this.zone_element.innerHTML = "";
-        this.zone_element.style.display = "none";
+        this.zone_element.style.visibility = "hidden";
+        this.zone_element.style.opacity = 0;
     }
 
     show(hero)
@@ -123,19 +133,20 @@ class Hand_Zone extends Zone
             this.zone_element.appendChild(card.card_element);
         }
 
-        this.zone_element.style.display = "block";
+        this.zone_element.style.visibility = "visible";
+        this.zone_element.style.opacity = 1;
         this.arrange();
     }
 
     arrange()
     {
-        if (this.zone_element.style.display === "none") return;
+        if (this.zone_element.style.visibility !== "visible" || this.zone_element.style.opacity === "0") return;
         if (this.cards.length === 0) return;
 
         const hand_rect = this.zone_element.getBoundingClientRect();
         const card_style = window.getComputedStyle(this.cards[0].card_element);
         const card_width = 2 / 3 * parseFloat(card_style.height) + 2 * parseFloat(card_style.borderWidth);
-        const card_margin = 8;
+        const card_margin = 4;
 
         const n = this.cards.length;
 
@@ -175,16 +186,17 @@ class Hand_Zone extends Zone
         }
         else
         {
-            const interval = (hand_rect.width - card_width - 4) / (n - 1);
-            const angle = Math.min(45 / n, 10);
+            const interval = Math.min((hand_rect.width / n - card_margin));
+            const left_margin = (hand_rect.width - interval * n - card_margin * (n - 1)) / 2 - card_margin / 2;
+            const angle = 45 / n;
             for (let i = 0; i < n; i++)
             {
                 const card = this.cards[i].card_element;
-                card.style.left = (i * interval + 2) + 'px';
+                card.style.left = (i * interval + card_margin + left_margin) + 'px';
                 card.style.zIndex = i;
                 card.style.rotate = `${(i + 0.5 - n / 2) * angle}deg`;
                 card.style.top = 'auto';
-                card.style.bottom = `${card_margin - Math.pow((i + 0.5 - n / 2), 2) * Math.min(1.5 * card_width / Math.pow(n, 2), card_margin)}px`;
+                card.style.bottom = `${card_margin - Math.pow((i + 0.5 - n / 2), 2) * 1.5 * card_width / Math.pow(n, 2)}px`;
             }
         }
     }
@@ -196,8 +208,7 @@ function create_zone(type)
     switch (type)
     {
         case "hand":
-            const hand_zone = document.getElementById("hand-zone");
-            return new Hand_Zone(hand_zone);
+            return new Hand_Zone();
         default:
             return new Zone();
     }
