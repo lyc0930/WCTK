@@ -1257,6 +1257,9 @@ class Hero
         // 土城
         if (this._cannot_pass_because_of_bunker(area)) return false;
 
+        // 会终止移动于有其他角色的区域的情况
+        if (this._pause_at(area) && area.heroes.some(hero => hero !== this)) return false;
+
         // 【穿越马】
         if (this.is_ride_on("穿越") && currentPlayer === this) return true;
 
