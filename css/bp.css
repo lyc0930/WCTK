@@ -20,8 +20,7 @@ body {
 
 body {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+    gap: 1vmin;
     align-content: space-around;
     align-items: center;
 }
@@ -41,9 +40,9 @@ img {
 .board {
     -webkit-backdrop-filter: blur(3px);
             backdrop-filter: blur(3px);
-    margin: 0.5vmin;
-    display: flex;
-    flex-wrap: wrap;
+
+    display: grid;
+    gap: 0.5vmin;
     justify-content: space-evenly;
     align-content: space-evenly;
 }
@@ -55,11 +54,17 @@ img {
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: local;
+
+    grid-template-columns: repeat(4, auto);
+    grid-template-rows: repeat(4, auto);
 }
 
 .factionBoard {
     aspect-ratio: 0.5;
     border-radius: 2vmin;
+
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(4, auto);
 }
 
 @keyframes twinkle {
@@ -106,7 +111,8 @@ img {
 
 .candidate>.vacancy-number {
     position: absolute;
-    font-family: fantasy, Arial, sans-serif;
+    font-family: Arial, sans-serif;
+    letter-spacing: 0;
     font-weight: bold;
     white-space: nowrap;
     color: rgb(0, 0, 0, 0.10);
@@ -146,24 +152,29 @@ img {
 }
 
 @media screen and (orientation:landscape) {
+    body {
+        justify-content: center;
+        flex-wrap: nowrap;
+    }
+
     #heroBoard {
-        width: 48%;
+        width: min(96vh, 48vw);
     }
 
     .factionBoard {
-        width: 24%;
+        width: min(48vh, 24vw);
     }
 
     .candidate {
-        width: 18vh;
+        width: min(20vh, 10vw);
     }
 
     .candidate:has(.cell:empty)>.vacancy-number {
-        font-size: 15vh;
+        font-size: min(15vh, 7.5vw);
     }
 
     .candidate:has(.cell:not(:empty))>.vacancy-number {
-        font-size: 5vh;
+        font-size: min(5vh, 2.5vw);
     }
 
     #redBoard {
@@ -175,7 +186,7 @@ img {
     }
 
     .hero-name {
-        font-size: 3vh;
+        font-size: min(3vh, 1.5vw);
     }
 
     #first-move-tooltip {
@@ -184,6 +195,11 @@ img {
 }
 
 @media screen and (orientation:portrait) {
+    body {
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+
     #heroBoard {
         width: 100%;
     }
@@ -197,7 +213,7 @@ img {
     }
 
     .candidate:has(.cell:empty)>.vacancy-number {
-        font-size: 18vw;
+        font-size: 15vw;
     }
 
     .candidate:has(.cell:not(:empty))>.vacancy-number {
